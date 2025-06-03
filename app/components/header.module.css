@@ -1,0 +1,69 @@
+.customNavbar {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* Bootstrap's fixed-top handles z-index, but you can add z-index: 1030; if needed */
+}
+
+/* Estilo para el logo/nombre de la tienda */
+.customNavbar .navbar-brand {
+  font-weight: 500;
+  color: #000;
+  font-size: 1.25rem;
+}
+.customNavbar .navbar-brand:hover {
+  color: #6c757d !important; /* Usamos !important para asegurar la sobreescritura si es necesario */
+}
+
+/* Estilo para los enlaces de navegación principales (centrales) */
+.customNavbar .navbar-nav.mx-auto .nav-link {
+  color: #333;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+.customNavbar .navbar-nav.mx-auto .nav-link:hover {
+  color: #6c757d !important;
+}
+
+/* Estilo para los enlaces de iconos y los iconos mismos */
+.iconsNav :global(.nav-link) {
+  color: #333; /* El color del icono se hereda de este color de enlace */
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.iconsNav .nav-link:hover {
+  color: #6c757d; /* El color del icono también cambiará al pasar el mouse */
+}
+.iconsNav .nav-link .bi {
+  /* Estilo específico para los iconos Bootstrap dentro de los enlaces */
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+/* Estilos responsivos para el menú colapsado */
+@media (max-width: 991.98px) {
+  /* Punto de quiebre lg de Bootstrap */
+  /* Enlaces de navegación central en móvil */
+  .customNavbar .navbar-nav.mx-auto .nav-item .nav-link {
+    text-align: left; /* Alineación a la izquierda como en Apple */
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  /* Barra de navegación de iconos en móvil */
+  .iconsNav {
+    /* Esta clase está directamente en el <ul> de los iconos */
+    flex-direction: row !important; /* Mantiene los iconos en fila */
+    justify-content: flex-start !important; /* Los alinea a la izquierda */
+    margin-top: 0.5rem; /* Espacio sobre los iconos */
+    padding-left: 0.5rem; /* Para alinear con los enlaces de texto si también tienen padding */
+  }
+
+  .iconsNav .nav-item {
+    margin-right: 1rem; /* Espacio entre iconos */
+  }
+  .iconsNav .nav-item:last-child {
+    margin-right: 0;
+  }
+}
