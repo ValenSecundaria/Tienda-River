@@ -1,7 +1,11 @@
+/* -------------------------------------------
+   Mantener fuentes y estilos generales del nav
+   ------------------------------------------- */
 .customNavbar {
+  position: relative; /* El <nav> será el contenedor posicionado */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  /* Bootstrap's fixed-top handles z-index, but you can add z-index: 1030; if needed */
+  /* Bootstrap’s fixed-top maneja z-index internamente, pero si necesitas, puedes agregar: z-index: 1030; */
 }
 
 /* Estilo para el logo/nombre de la tienda */
@@ -11,7 +15,7 @@
   font-size: 1.25rem;
 }
 .customNavbar .navbar-brand:hover {
-  color: #6c757d !important; /* Usamos !important para asegurar la sobreescritura si es necesario */
+  color: #6c757d !important;
 }
 
 /* Estilo para los enlaces de navegación principales (centrales) */
@@ -28,42 +32,146 @@
 
 /* Estilo para los enlaces de iconos y los iconos mismos */
 .iconsNav :global(.nav-link) {
-  color: #333; /* El color del icono se hereda de este color de enlace */
+  color: #333;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
 .iconsNav .nav-link:hover {
-  color: #6c757d; /* El color del icono también cambiará al pasar el mouse */
+  color: #6c757d;
 }
 .iconsNav .nav-link .bi {
-  /* Estilo específico para los iconos Bootstrap dentro de los enlaces */
   font-size: 1.2rem;
   vertical-align: middle;
 }
 
 /* Estilos responsivos para el menú colapsado */
 @media (max-width: 991.98px) {
-  /* Punto de quiebre lg de Bootstrap */
-  /* Enlaces de navegación central en móvil */
   .customNavbar .navbar-nav.mx-auto .nav-item .nav-link {
-    text-align: left; /* Alineación a la izquierda como en Apple */
+    text-align: left;
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
   }
 
-  /* Barra de navegación de iconos en móvil */
   .iconsNav {
-    /* Esta clase está directamente en el <ul> de los iconos */
-    flex-direction: row !important; /* Mantiene los iconos en fila */
-    justify-content: flex-start !important; /* Los alinea a la izquierda */
-    margin-top: 0.5rem; /* Espacio sobre los iconos */
-    padding-left: 0.5rem; /* Para alinear con los enlaces de texto si también tienen padding */
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    margin-top: 0.5rem;
+    padding-left: 0.5rem;
   }
 
   .iconsNav .nav-item {
-    margin-right: 1rem; /* Espacio entre iconos */
+    margin-right: 1rem;
   }
   .iconsNav .nav-item:last-child {
     margin-right: 0;
+  }
+}
+
+/* ================================================
+   STYLES PARA EL MEGA-MENÚ (A TODO ANCHO EN DESKTOP)
+   ================================================ */
+
+/* El <li> que contiene el enlace y mega menú ya no necesita posición relativa */
+/* .megaItem {
+     posición por defecto: static;
+   }
+*/
+
+/* En desktop, el mega‐menú se mostrará a 100% del ancho de la página.
+   Para ello, posicionamos absolute respecto al nav (ancestro con position: relative),
+   lo anclamos a left: 0 y le damos width: 100%. */
+.megaMenu {
+  display: none;               /* Oculto por defecto */
+  position: absolute;          /* Se posiciona respecto a .customNavbar */
+  top: 100%;                   /* Justo debajo del header */
+  left: 0;                     /* Empieza en el borde izquierdo del viewport */
+  width: 100%;                 /* Ocupar todo el ancho del header (y del viewport) */
+  background-color: #fff;
+  padding: 1.5rem 0;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  transition: opacity 0.2s ease;
+  opacity: 0;
+}
+
+/* Mostrar el mega-menú al hacer hover sobre el <li> correspondiente */
+.megaItem:hover .megaMenu {
+  display: block;
+  opacity: 1;
+}
+
+/* Evita que se cierre al bajar un poco el cursor */
+.megaMenu::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+/* Estilos para los enlaces dentro del mega-menú */
+.megaMenu .dropdown-item {
+  color: #333;
+  padding-left: 0;
+  padding-right: 0;
+}
+.megaMenu .dropdown-item:hover {
+  color: #007bff;
+}
+
+/* En pantallas pequeñas (mobile), el mega‐menú se vuelve bloque estático y se apilan las columnas */
+@media (max-width: 767px) {
+  .megaMenu {
+    position: static;    /* Comportamiento como bloque normal dentro del nav colapsado */
+    width: 100%;
+    box-shadow: none;
+    padding: 0.5rem 0;
+    opacity: 1;          /* Sin transición en mobile */
+  }
+  .megaMenu .row {
+    display: flex;
+    flex-direction: column;
+  }
+  .megaMenu .col-12 {
+    margin-bottom: 1rem;
+  }
+}
+
+/* ================================================
+   STYLES PARA EL OVERLAY (FONDO BORROSO CON TRANSICIÓN)
+   ================================================ */
+
+/* 1) Estilos base para el overlay (invisible por defecto) */
+.overlay {
+  /* No usamos display:none para que la transición funcione */
+  position: fixed;          /* Cubre todo el viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0); /* Sin color al inicio */
+  backdrop-filter: blur(0px);         /* Sin blur al inicio */
+  z-index: 50;              /* Debe quedar debajo del mega-menú (z-index: 100) */
+  pointer-events: none;     /* Permite clics a través del overlay */
+  transition:
+    background-color 0.25s ease,
+    backdrop-filter 0.25s ease;
+  opacity: 0;               /* Comenzamos transparente */
+}
+
+/* 2) Clase que se agrega cuando isHoveringMenu === true */
+.showOverlay {
+  opacity: 1;                                /* Visible */
+  background-color: rgba(0, 0, 0, 0.3);      /* Oscurecido */
+  backdrop-filter: blur(5px);                /* Desenfoque con transición */
+}
+
+/* 3) Ajustes en pantallas pequeñas (mobile) */
+@media (max-width: 767px) {
+  .overlay {
+    /* En mobile, desactivamos el blur para evitar rendimiento pesado */
+    backdrop-filter: none;
+    background-color: rgba(0, 0, 0, 0.15);
   }
 }
