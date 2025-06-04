@@ -76,7 +76,7 @@ export default function Header() {
                           <ul className="list-unstyled">
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria1`}
+                                href={`${item.href}/categoria1/sub-categoria1`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 1
@@ -84,7 +84,7 @@ export default function Header() {
                             </li>
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria2`}
+                                href={`${item.href}/categoria2/sub-categoria2`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 2
@@ -92,7 +92,7 @@ export default function Header() {
                             </li>
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria3`}
+                                href={`${item.href}/categoria3/sub-categoria3`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 3
@@ -109,7 +109,7 @@ export default function Header() {
                           <ul className="list-unstyled">
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria4`}
+                                href={`${item.href}/categoria/sub-categoria4`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 4
@@ -117,7 +117,7 @@ export default function Header() {
                             </li>
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria5`}
+                                href={`${item.href}/categoria/sub-categoria5`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 5
@@ -125,7 +125,7 @@ export default function Header() {
                             </li>
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria6`}
+                                href={`${item.href}/categoria/sub-categoria6`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 6
@@ -142,7 +142,7 @@ export default function Header() {
                           <ul className="list-unstyled">
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria7`}
+                                href={`${item.href}/categoria/sub-categoria7`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 7
@@ -150,7 +150,7 @@ export default function Header() {
                             </li>
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria8`}
+                                href={`${item.href}/categoria/sub-categoria8`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 8
@@ -158,7 +158,7 @@ export default function Header() {
                             </li>
                             <li>
                               <Link
-                                href={`${item.href}/subcategoria9`}
+                                href={`${item.href}/categoria/sub-categoria9`}
                                 className="dropdown-item"
                               >
                                 Subcategoría 9
