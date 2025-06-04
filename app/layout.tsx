@@ -1,18 +1,20 @@
-import type React from "react"
-import type { Metadata } from "next"
-// Asegúrate de que globals.css se importe.
-// Tailwind CSS está preinstalado en proyectos v0; si no lo usas, puedes limpiar globals.css de directivas @tailwind.
-import "./globals.css"
+// app/layout.tsx
+import type React from "react";
+import type { Metadata } from "next";
+import "./globals.css";
+
+import Header from "./components/header";
+import Footer from "./components/footer";
 
 export const metadata: Metadata = {
-  title: "StyleHub",
-  description: "Tu tienda de ropa favorita, inspirada en Apple.",
-}
+  title: "Tienda-River",
+  description: "La tienda no-oficial de River Plate",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="es">
@@ -31,18 +33,23 @@ export default function RootLayout({
         />
       </head>
       <body className="d-flex flex-column min-vh-100">
-        {children}
-        {/* Bootstrap JS Bundle (opcional para este componente específico ya que el toggle se maneja con React state) */}
-        {/* Si usas otros componentes de Bootstrap que requieran JS (como Dropdowns, Modals), descomenta la siguiente línea: */}
+        <Header />
+        <main className="flex-grow-1">{children}</main>
+        <Footer />
+
+        {/* 
+          Si en el futuro usás componentes de Bootstrap que requieran JS (Dropdowns, Modals, etc.),
+          podés descomentar esta línea para incluir el bundle:
+        */}
         {/*
-        <script 
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
-          crossOrigin="anonymous" 
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+          crossOrigin="anonymous"
           defer
         ></script>
         */}
       </body>
     </html>
-  )
+  );
 }

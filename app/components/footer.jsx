@@ -12,32 +12,32 @@ export default function Footer() {
             <h5 className="text-uppercase mb-3">Ayuda</h5>
             <ul className="list-unstyled">
               <li>
-                <Link href="/api/ayuda/contactanos" className="text-white-50">
+                <Link href="/ayuda/contactanos" className="text-white-50">
                   Contactanos
                 </Link>
               </li>
               <li>
-                <Link href="/api/ayuda/metodos-de-pago" className="text-white-50">
+                <Link href="/ayuda/metodos-de-pago" className="text-white-50">
                   Métodos de pago
                 </Link>
               </li>
               <li>
-                <Link href="/api/ayuda/preguntas-frecuentes" className="text-white-50">
+                <Link href="/ayuda/preguntas-frecuentes" className="text-white-50">
                   Preguntas frecuentes
                 </Link>
               </li>
               <li>
-                <Link href="/api/ayuda/seguimiento-envio" className="text-white-50">
+                <Link href="/ayuda/seguimiento-envio" className="text-white-50">
                   Seguí tu envío
                 </Link>
               </li>
               <li>
-                <Link href="/api/ayuda/terminos-y-condiciones" className="text-white-50">
+                <Link href="/ayuda/terminos-y-condiciones" className="text-white-50">
                   Términos y condiciones de uso
                 </Link>
               </li>
               <li>
-                <Link href="/api/ayuda/defensa-al-consumidor" className="text-white-50">
+                <Link href="/ayuda/defensa-al-consumidor" className="text-white-50">
                   Defensa de las y los consumidores
                 </Link>
               </li>
@@ -52,13 +52,13 @@ export default function Footer() {
             <h5 className="text-uppercase mb-3">Servicios</h5>
             <ul className="list-unstyled">
               <li>
-                <Link href="/api/servicios/tiendas" className="text-white-50">
+                <Link href="/servicios/tiendas" className="text-white-50">
                   Tiendas
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/api/servicios/cambios-y-devoluciones"
+                  href="/servicios/cambios-y-devoluciones"
                   className="text-white-50"
                 >
                   Cambios y Devoluciones
@@ -66,7 +66,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/api/servicios/cuidado-de-los-productos"
+                  href="/servicios/cuidado-de-los-productos"
                   className="text-white-50"
                 >
                   Cuidado de los productos
@@ -74,7 +74,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/api/servicios/guia-de-talles"
+                  href="/servicios/guia-de-talles"
                   className="text-white-50"
                 >
                   Guía de talles
@@ -82,7 +82,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/api/servicios/politica-de-privacidad"
+                  href="/servicios/politica-de-privacidad"
                   className="text-white-50"
                 >
                   Política de privacidad
@@ -97,25 +97,25 @@ export default function Footer() {
             <p className="fw-bold">GO WILD</p>
             <ul className="list-unstyled">
               <li>
-                <Link href="/api/acerca-de/compania" className="text-white-50">
+                <Link href="/acerca-de/compania" className="text-white-50">
                   Compañía
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/api/acerca-de/noticias-corporativas"
+                  href="/acerca-de/noticias-corporativas"
                   className="text-white-50"
                 >
                   Noticias Corporativas
                 </Link>
               </li>
               <li>
-                <Link href="/api/acerca-de/empleo" className="text-white-50">
+                <Link href="/acerca-de/empleo" className="text-white-50">
                   Empleo
                 </Link>
               </li>
               <li>
-                <Link href="/api/acerca-de/mundo-river-sale" className="text-white-50">
+                <Link href="/acerca-de/mundo-river-sale" className="text-white-50">
                   MUNDO-RIVER Sale
                 </Link>
               </li>

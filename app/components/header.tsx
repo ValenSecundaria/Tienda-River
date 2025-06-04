@@ -29,7 +29,7 @@ export default function Header() {
         <div className="container-fluid px-3 px-lg-4">
           {/* Logo */}
           <Link href="/" className="navbar-brand">
-            StyleHub
+            Tienda-River
           </Link>
 
           {/* Botón hamburguesa para mobile */}

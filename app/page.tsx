@@ -7,11 +7,11 @@ import styles from "./components/header.module.css" // Importamos los CSS Module
 import Header from "./components/header";
 import Footer from "./components/footer";
 
-import Tiendas from "./api/servicios/tiendas/tiendas"
-import CambiosYDevoluciones from "./api/servicios/cambios-y-devoluciones/cambios-y-devoluciones"
-import CuidadoDeLosProductos from "./api/servicios/cuidado-de-los-productos/cuidado-de-los-productos"
-import GuiaDeTalles from "./api/servicios/guia-de-talles/guia-de-talles"
-import PoliticaDePrivacidad from "./api/servicios/politica-de-privacidad/politica-de-privacidad"
+import Tiendas from "./servicios/tiendas/tiendas"
+import CambiosYDevoluciones from "./servicios/cambios-y-devoluciones/cambios-y-devoluciones"
+import CuidadoDeLosProductos from "./servicios/cuidado-de-los-productos/cuidado-de-los-productos"
+import GuiaDeTalles from "./servicios/guia-de-talles/guia-de-talles"
+import PoliticaDePrivacidad from "./servicios/politica-de-privacidad/politica-de-privacidad"
 
 const navItems = [
   { label: "Hombre", href: "/hombre" },
@@ -29,7 +29,6 @@ export default function Page() {
 
   return (
     <>
-      <Header/>
         <div>
           <Tiendas />
           <CambiosYDevoluciones />
@@ -37,7 +36,6 @@ export default function Page() {
           <GuiaDeTalles />
           <PoliticaDePrivacidad />
         </div>
-      <Footer/>
     </>
   )
 }
