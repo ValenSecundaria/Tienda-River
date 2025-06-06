@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import styles from "./header.module.css"; // Importamos los CSS Modules
+import styles from "./header.module.css"; // Importa tus estilos de Header
 
 const navItems = [
   { label: "Hombre", href: "/hombre" },
@@ -14,12 +14,71 @@ const navItems = [
 ];
 
 export default function Header() {
-  // Este estado será true mientras el mouse esté sobre un <li className="megaItem">
+  // --- Mega-menú y colapso de Navbar ---
   const [isHoveringMenu, setIsHoveringMenu] = useState(false);
-
-  // Estado para controlar la colapsabilidad en móvil
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+
+  // --- Búsqueda (reemplaza lupa por campo de texto) ---
+  const [searchOpen, setSearchOpen] = useState(false);
+  const toggleSearch = () => setSearchOpen(!searchOpen);
+
+  // --- Popup de registro de usuario ---
+  const [userOpen, setUserOpen] = useState(false);
+  const userRef = useRef<HTMLDivElement | null>(null);
+
+  // Estados para el formulario de registro
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Cerrar popup si se hace clic fuera
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      // Si el clic está fuera del div referenciado, cierro el popup
+      if (userRef.current && !userRef.current.contains(event.target as Node)) {
+        setUserOpen(false);
+      }
+    }
+
+    if (userOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [userOpen]);
+
+  // Manejar envío del formulario de registro
+  async function handleRegisterSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    try {
+      const resp = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) {
+        // Si la respuesta no es 2xx, mostramos el error (puedes personalizar)
+        alert(data.error || "Error al registrar usuario");
+      } else {
+        // Registro exitoso: data podría devolver el usuario creado
+        console.log("Usuario registrado:", data);
+        // Limpio campos y cierro popup
+        setEmail("");
+        setPassword("");
+        setUserOpen(false);
+      }
+    } catch (err) {
+      console.error("Error al conectar con API de registro:", err);
+      alert("Error interno. Intenta nuevamente.");
+    }
+  }
 
   return (
     <header>
@@ -31,6 +90,28 @@ export default function Header() {
           <Link href="/" className="navbar-brand">
             Tienda-River
           </Link>
+
+          {/* Móvil: reemplaza icono por input al abrir búsqueda */}
+          <div className="d-lg-none mx-auto">
+            {searchOpen ? (
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Buscar producto..."
+                autoFocus
+                onBlur={() => setSearchOpen(false)}
+                // En onChange podrías capturar valor si quieres
+              />
+            ) : (
+              <button
+                className="btn nav-link p-0"
+                onClick={toggleSearch}
+                aria-label="Abrir búsqueda"
+              >
+                <i className="bi bi-search"></i>
+              </button>
+            )}
+          </div>
 
           {/* Botón hamburguesa para mobile */}
           <button
@@ -54,9 +135,7 @@ export default function Header() {
                 <li
                   className={`nav-item ${styles.megaItem}`}
                   key={item.label}
-                  // Cuando el mouse entra a este <li>, habilito el overlay
                   onMouseEnter={() => setIsHoveringMenu(true)}
-                  // Cuando sale, lo deshabilito
                   onMouseLeave={() => setIsHoveringMenu(false)}
                 >
                   {/* Enlace principal */}
@@ -64,11 +143,11 @@ export default function Header() {
                     {item.label}
                   </Link>
 
-                  {/* Mega-menú que aparece al hacer hover */}
+                  {/* Mega-menú (idéntico a tu versión anterior) */}
                   <div className={styles.megaMenu}>
                     <div className="container">
                       <div className="row">
-                        {/* Ejemplo de columna 1 */}
+                        {/* Columna 1 */}
                         <div className="col-12 col-md-4 mb-3">
                           <h6 className="text-uppercase fw-bold mb-2">
                             {item.label} – Categoría 1
@@ -101,7 +180,7 @@ export default function Header() {
                           </ul>
                         </div>
 
-                        {/* Ejemplo de columna 2 */}
+                        {/* Columna 2 */}
                         <div className="col-12 col-md-4 mb-3">
                           <h6 className="text-uppercase fw-bold mb-2">
                             {item.label} – Categoría 2
@@ -134,7 +213,7 @@ export default function Header() {
                           </ul>
                         </div>
 
-                        {/* Ejemplo de columna 3 */}
+                        {/* Columna 3 */}
                         <div className="col-12 col-md-4 mb-3">
                           <h6 className="text-uppercase fw-bold mb-2">
                             {item.label} – Categoría 3
@@ -174,29 +253,114 @@ export default function Header() {
               ))}
             </ul>
 
-            {/* Íconos de búsqueda y carrito */}
+            {/* Íconos de búsqueda, carrito y usuario */}
             <ul
               className={`navbar-nav flex-row align-items-center ms-lg-auto ${styles.iconsNav}`}
             >
-              <li className="nav-item">
-                <Link href="/search" className="nav-link" aria-label="Buscar">
-                  <i className="bi bi-search"></i>
-                </Link>
+              {/* Desktop: reemplaza lupa por input de búsqueda */}
+              <li className="nav-item d-none d-lg-flex align-items-center position-relative">
+                {searchOpen ? (
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Buscar producto..."
+                    autoFocus
+                    onBlur={() => setSearchOpen(false)}
+                  />
+                ) : (
+                  <button
+                    className="btn nav-link p-0"
+                    onClick={toggleSearch}
+                    aria-label="Abrir búsqueda"
+                  >
+                    <i className="bi bi-search"></i>
+                  </button>
+                )}
               </li>
+
+              {/* Carrito de compras */}
               <li className="nav-item">
                 <Link href="/cart" className="nav-link" aria-label="Carrito de compras">
                   <i className="bi bi-cart"></i>
                 </Link>
+              </li>
+
+              {/* Botón de usuario: abre popup de registro */}
+              <li className="nav-item position-relative">
+                <button
+                  className="btn nav-link p-0"
+                  onClick={() => setUserOpen(!userOpen)}
+                  aria-label="Abrir registro de usuario"
+                >
+                  <i className="bi bi-person-circle"></i>
+                </button>
+
+                {/* Popup de registro */}
+                {userOpen && (
+                  <div
+                    ref={userRef}
+                    className={`card position-absolute end-0 mt-2 ${styles.userPopup}`}
+                    style={{ width: "300px", zIndex: 9999 }}
+                  >
+                    <div className="card-body">
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h5 className="card-title m-0">Registrarse</h5>
+                        <button
+                          type="button"
+                          className="btn-close"
+                          aria-label="Cerrar"
+                          onClick={() => setUserOpen(false)}
+                        ></button>
+                      </div>
+
+                      {/* Formulario de registro */}
+                      <form onSubmit={handleRegisterSubmit}>
+                        <div className="mb-3">
+                          <label htmlFor="emailUser" className="form-label">
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            className="form-control"
+                            id="emailUser"
+                            placeholder="usuario@ejemplo.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <label htmlFor="passwordUser" className="form-label">
+                            Contraseña
+                          </label>
+                          <input
+                            type="password"
+                            className="form-control"
+                            id="passwordUser"
+                            placeholder="********"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                          />
+                        </div>
+                        <button type="submit" className="btn btn-primary w-100">
+                          Crear cuenta
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                )}
               </li>
             </ul>
           </div>
         </div>
       </nav>
 
-      {/* Overlay que cubrirá toda la página y aplicará el blur.
-          Solo se muestra si isHoveringMenu === true */}
+      {/* Overlay que cubrirá toda la página y aplicará el blur */}
       <div
-        className={`${styles.overlay} ${isHoveringMenu ? styles.showOverlay : ""}`}
+        className={`${styles.overlay} ${
+          isHoveringMenu ? styles.showOverlay : ""
+        }`}
       ></div>
     </header>
   );
