@@ -2,31 +2,27 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model categorias {
-  id          Int         @id @default(autoincrement())
-  nombre      String      @db.VarChar(100)
-  slug        String      @unique @db.VarChar(100)
-  descripcion String?
-  productos   productos[]
-}
-
-model colores {
-  id               Int                @id @default(autoincrement())
-  nombre           String             @unique @db.VarChar(50)
-  codigo_hex       String             @db.VarChar(7)
-  productovariante productovariante[]
+  id             Int             @id @default(autoincrement())
+  nombre         String          @db.VarChar(100)
+  slug           String          @unique @db.VarChar(100)
+  descripcion    String?
+  imagen_url     String?         @db.VarChar(255)
+  fecha_creacion DateTime        @default(now()) @db.Timestamp(6)
+  productos      productos[]
+  subcategorias  subcategorias[]
 }
 
 model estadoorden {
   id          Int       @id @default(autoincrement())
   nombre      String    @db.VarChar(50)
   descripcion String?
+  es_final    Boolean   @default(false)
   ordenes     ordenes[]
 }
 
@@ -34,15 +30,16 @@ model estadopago {
   id            Int             @id @default(autoincrement())
   nombre        String          @db.VarChar(50)
   descripcion   String?
+  es_final      Boolean         @default(false)
   transacciones transacciones[]
 }
 
 model orden_promociones {
-  orden_id     Int        // <-- Cambiado de BigInt a Int para igualar `ordenes.id`
-  promocion_id BigInt
-
-  ordenes      ordenes     @relation(fields: [orden_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  promociones  promociones @relation(fields: [promocion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orden_id        Int
+  promocion_id    Int
+  monto_descuento Decimal     @db.Decimal(10, 2)
+  ordenes         ordenes     @relation(fields: [orden_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  promociones     promociones @relation(fields: [promocion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([orden_id, promocion_id])
 }
@@ -54,6 +51,9 @@ model ordenes {
   transaccion_id    Int
   fecha             DateTime            @default(now()) @db.Timestamp(6)
   total             Decimal             @db.Decimal(10, 2)
+  direccion_envio   String?
+  tracking_number   String?             @db.VarChar(50)
+  notas             String?
   orden_promociones orden_promociones[]
   estadoorden       estadoorden         @relation(fields: [estado_orden_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   transacciones     transacciones       @relation(fields: [transaccion_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -63,15 +63,18 @@ model ordenes {
   @@index([usuario_id], map: "idx_ordenes_usuario_id")
 }
 
-/// Este modelo tenía `orden_id Int` (ya coincide con `ordenes.id Int`)
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model ordenitems {
   id                   Int              @id @default(autoincrement())
   orden_id             Int
   producto_variante_id Int
   cantidad             Int
   precio_unitario      Decimal          @db.Decimal(10, 2)
+  descuento            Decimal?         @default(0) @db.Decimal(10, 2)
   ordenes              ordenes          @relation(fields: [orden_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   productovariante     productovariante @relation(fields: [producto_variante_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([orden_id], map: "idx_orden_items_orden_id")
 }
 
 model pagos {
@@ -79,67 +82,114 @@ model pagos {
   nombre        String          @db.VarChar(100)
   detalle       String?
   activo        Boolean         @default(true)
+  icono         String?         @db.VarChar(50)
   transacciones transacciones[]
 }
 
+model productoimagenes {
+  id          Int       @id @default(autoincrement())
+  producto_id Int
+  imagen_url  String    @db.VarChar(255)
+  orden       Int       @default(0) @db.SmallInt
+  productos   productos @relation(fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model productos {
   id               Int                @id @default(autoincrement())
   nombre           String             @db.VarChar(100)
   descripcion      String?
   precio_base      Decimal            @db.Decimal(10, 2)
-  categoria_id     Int
+  categoria_id     Int?
+  subcategoria_id  Int?
   activo           Boolean            @default(true)
   fecha_creacion   DateTime           @default(now()) @db.Timestamp(6)
-  imagen_url       String?            @db.VarChar(255)
-  categorias       categorias         @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  imagen_principal String?            @db.VarChar(255)
+  productoimagenes productoimagenes[]
+  categorias       categorias?        @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subcategorias    subcategorias?     @relation(fields: [subcategoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   productovariante productovariante[]
 
   @@index([categoria_id], map: "idx_productos_categoria_id")
+  @@index([subcategoria_id], map: "idx_productos_subcategoria_id")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model productovariante {
-  id          Int          @id @default(autoincrement())
-  producto_id Int
-  talle_id    Int
-  color_id    Int
-  stock       Int
-  sku         String       @unique @db.VarChar(100)
-  imagen      String?      @db.VarChar(255)
-  ordenitems  ordenitems[]
-  colores     colores      @relation(fields: [color_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  productos   productos    @relation(fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  talles      talles       @relation(fields: [talle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id               Int          @id @default(autoincrement())
+  producto_id      Int
+  talle_id         Int
+  color_nombre     String       @db.VarChar(50)
+  color_codigo_hex String       @db.VarChar(7)
+  stock            Int
+  sku              String       @unique @db.VarChar(100)
+  precio_adicional Decimal?     @default(0) @db.Decimal(10, 2)
+  imagen           String?      @db.VarChar(255)
+  fecha_creacion   DateTime     @default(now()) @db.Timestamp(6)
+  ordenitems       ordenitems[]
+  productos        productos    @relation(fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  talles           talles       @relation(fields: [talle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([producto_id], map: "idx_producto_variante_producto_id")
+  @@index([talle_id], map: "idx_producto_variante_talle_id")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model promociones {
-  id                BigInt              @id @default(autoincrement())
+  id                Int                 @id @default(autoincrement())
   codigo            String              @unique @db.VarChar(30)
   descripcion       String?
   porcentaje_desc   Decimal?            @db.Decimal(5, 2)
+  monto_desc        Decimal?            @db.Decimal(10, 2)
+  fecha_inicio      DateTime            @db.Timestamp(6)
+  fecha_fin         DateTime            @db.Timestamp(6)
   uso_maximo        Int                 @default(1)
   uso_por_usuario   Int                 @default(1)
+  minimo_compra     Decimal?            @db.Decimal(10, 2)
+  aplica_categorias Json?
+  aplica_productos  Json?
+  activo            Boolean             @default(true)
   orden_promociones orden_promociones[]
+
+  @@index([activo], map: "idx_promociones_activo")
+  @@index([codigo], map: "idx_promociones_codigo")
+}
+
+model subcategorias {
+  id             Int         @id @default(autoincrement())
+  nombre         String      @db.VarChar(100)
+  slug           String      @unique @db.VarChar(100)
+  descripcion    String?
+  categoria_id   Int
+  imagen_url     String?     @db.VarChar(255)
+  fecha_creacion DateTime    @default(now()) @db.Timestamp(6)
+  productos      productos[]
+  categorias     categorias  @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([nombre, categoria_id], map: "uq_subcategoria_categoria")
+  @@index([categoria_id], map: "idx_subcategorias_categoria_id")
 }
 
 model talles {
   id               Int                @id @default(autoincrement())
   nombre           String             @unique @db.VarChar(50)
+  orden            Int                @default(0) @db.SmallInt
   productovariante productovariante[]
 }
 
 model transacciones {
-  id             Int        @id @default(autoincrement())
-  usuario_id     Int
-  monto_total    Decimal    @db.Decimal(10, 2)
-  fecha          DateTime   @default(now()) @db.Timestamp(6)
-  estado_pago_id Int
-  forma_pago_id  Int
-  ordenes        ordenes[]
-  estadopago     estadopago @relation(fields: [estado_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  pagos          pagos      @relation(fields: [forma_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  usuarios       usuarios   @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                 Int        @id @default(autoincrement())
+  usuario_id         Int
+  monto_total        Decimal    @db.Decimal(10, 2)
+  fecha              DateTime   @default(now()) @db.Timestamp(6)
+  estado_pago_id     Int
+  forma_pago_id      Int
+  codigo_transaccion String?    @unique @db.VarChar(50)
+  datos_adicionales  Json?
+  ordenes            ordenes[]
+  estadopago         estadopago @relation(fields: [estado_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pagos              pagos      @relation(fields: [forma_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuarios           usuarios   @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([usuario_id], map: "idx_transacciones_usuario_id")
 }
@@ -148,7 +198,7 @@ model usuarios {
   id             Int             @id @default(autoincrement())
   nombre         String          @db.VarChar(100)
   email          String          @unique @db.VarChar(100)
-  contraseña     String          @map("contraseña") @db.VarChar(255)
+  contrase_a     String          @map("contraseña") @db.VarChar(255)
   rol            String          @db.VarChar(50)
   telefono       String?         @db.VarChar(20)
   fecha_creacion DateTime        @default(now()) @db.Timestamp(6)

@@ -1,84 +1,81 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import styles from "./header.module.css"; // Importa tus estilos de Header
+import styles from "./header.module.css";
+import AddSubcategoryForm from "./CategoryForms/AddSubcategoryForm";
+import AddCategoryForm from "./CategoryForms/AddCategoryForm";
 
-const navItems = [
-  { label: "Hombre", href: "/hombre" },
-  { label: "Mujer", href: "/mujer" },
-  { label: "Niños", href: "/ninos" },
-  { label: "Accesorios", href: "/accesorios" },
-  { label: "Ofertas", href: "/ofertas" },
-  { label: "Novedades", href: "/novedades" },
-];
+// Tipos
+type Subcategoria = { id: number; nombre: string; descripcion?: string };
+type Categoria = { id: number; nombre: string; subcategorias: Subcategoria[] };
+type NavItem = { label: string; href: string; categorias: Categoria[] };
+
+const slugify = (text: string) =>
+  (text ?? "").toLowerCase().replace(/\s+/g, "-").replace(/[^\w\-]+/g, "");
 
 export default function Header() {
-  // --- Mega-menú y colapso de Navbar ---
+  const [navItems, setNavItems] = useState<NavItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [isHoveringMenu, setIsHoveringMenu] = useState(false);
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
-  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
-
-  // --- Búsqueda (reemplaza lupa por campo de texto) ---
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const [addingSubcategory, setAddingSubcategory] = useState<{
+    seccionLabel: string;
+    categoriaId: number;
+    categoriaNombre: string;
+  } | null>(null);
+
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+
+  useEffect(() => {
+    async function loadNav() {
+      try {
+        const res = await fetch("/api/categorias");
+        const items: NavItem[] = await res.json();
+        setNavItems(items);
+      } catch (e) {
+        console.error("Error al cargar categorías:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadNav();
+  }, []);
+
+  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   const toggleSearch = () => setSearchOpen(!searchOpen);
 
-  // --- Popup de registro de usuario ---
-  const [userOpen, setUserOpen] = useState(false);
-  const userRef = useRef<HTMLDivElement | null>(null);
+  const handleSaveSubcategory = async (nombre: string, descripcion?: string) => {
+    await crearSubcategoria(nombre, descripcion ?? "");
+  };
 
-  // Estados para el formulario de registro
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const handleSaveCategory = async (nombre: string, descripcion?: string) => {
+    crearCategoria(nombre, descripcion ?? "");
+  };
 
-  // Cerrar popup si se hace clic fuera
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      // Si el clic está fuera del div referenciado, cierro el popup
-      if (userRef.current && !userRef.current.contains(event.target as Node)) {
-        setUserOpen(false);
-      }
-    }
+  const handleCancelSubcategory = () => {
+    setAddingSubcategory(null);
+    setIsHoveringMenu(false);
+  };
 
-    if (userOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+  const handleCancelCategory = () => {
+    setShowCategoryModal(false);
+    setIsHoveringMenu(false);
+  };
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [userOpen]);
+  const overlayActive =
+    isHoveringMenu || !!addingSubcategory || showCategoryModal;
 
-  // Manejar envío del formulario de registro
-  async function handleRegisterSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    try {
-      const resp = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await resp.json();
-      if (!resp.ok) {
-        // Si la respuesta no es 2xx, mostramos el error (puedes personalizar)
-        alert(data.error || "Error al registrar usuario");
-      } else {
-        // Registro exitoso: data podría devolver el usuario creado
-        console.log("Usuario registrado:", data);
-        // Limpio campos y cierro popup
-        setEmail("");
-        setPassword("");
-        setUserOpen(false);
-      }
-    } catch (err) {
-      console.error("Error al conectar con API de registro:", err);
-      alert("Error interno. Intenta nuevamente.");
-    }
-  }
+  if (loading)
+    return (
+      <div className="text-center my-5">
+        <div className="spinner-border text-primary" role="status" />
+        <p className="mt-2">Cargando menú...</p>
+      </div>
+    );
 
   return (
     <header>
@@ -86,12 +83,10 @@ export default function Header() {
         className={`${styles.customNavbar} navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top`}
       >
         <div className="container-fluid px-3 px-lg-4">
-          {/* Logo */}
           <Link href="/" className="navbar-brand">
             Tienda-River
           </Link>
 
-          {/* Móvil: reemplaza icono por input al abrir búsqueda */}
           <div className="d-lg-none mx-auto">
             {searchOpen ? (
               <input
@@ -100,7 +95,6 @@ export default function Header() {
                 placeholder="Buscar producto..."
                 autoFocus
                 onBlur={() => setSearchOpen(false)}
-                // En onChange podrías capturar valor si quieres
               />
             ) : (
               <button
@@ -113,7 +107,6 @@ export default function Header() {
             )}
           </div>
 
-          {/* Botón hamburguesa para mobile */}
           <button
             className="navbar-toggler"
             type="button"
@@ -125,7 +118,6 @@ export default function Header() {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          {/* Menú colapsable */}
           <div
             className={`collapse navbar-collapse ${!isNavCollapsed ? "show" : ""}`}
             id="navbarNavContent"
@@ -133,235 +125,133 @@ export default function Header() {
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
               {navItems.map((item) => (
                 <li
-                  className={`nav-item ${styles.megaItem}`}
                   key={item.label}
+                  className={`nav-item ${styles.megaItem}`}
                   onMouseEnter={() => setIsHoveringMenu(true)}
                   onMouseLeave={() => setIsHoveringMenu(false)}
                 >
-                  {/* Enlace principal */}
                   <Link href={item.href} className="nav-link">
                     {item.label}
                   </Link>
 
-                  {/* Mega-menú (idéntico a tu versión anterior) */}
                   <div className={styles.megaMenu}>
                     <div className="container">
                       <div className="row">
-                        {/* Columna 1 */}
-                        <div className="col-12 col-md-4 mb-3">
-                          <h6 className="text-uppercase fw-bold mb-2">
-                            {item.label} – Categoría 1
-                          </h6>
-                          <ul className="list-unstyled">
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria1/sub-categoria1`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 1
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria2/sub-categoria2`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 2
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria3/sub-categoria3`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 3
-                              </Link>
-                            </li>
-                          </ul>
-                        </div>
+                        {item.categorias.map((cat) => (
+                          <div className="col-12 col-md-4 mb-3" key={cat.id}>
+                            <h6 className="text-uppercase fw-bold mb-2">
+                              {item.label} – {cat.nombre}
+                            </h6>
+                            <ul className="list-unstyled">
+                              {cat.subcategorias.map((sub) => (
+                                <li key={sub.id}>
+                                  <span className="dropdown-item text-muted">
+                                    {sub.nombre}
+                                  </span>
+                                </li>
+                              ))}
 
-                        {/* Columna 2 */}
-                        <div className="col-12 col-md-4 mb-3">
-                          <h6 className="text-uppercase fw-bold mb-2">
-                            {item.label} – Categoría 2
-                          </h6>
-                          <ul className="list-unstyled">
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria/sub-categoria4`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 4
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria/sub-categoria5`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 5
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria/sub-categoria6`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 6
-                              </Link>
-                            </li>
-                          </ul>
-                        </div>
+                              <li className="mt-2">
+                                <button
+                                  className="btn btn-outline-secondary btn-sm w-100 d-flex align-items-center justify-content-center"
+                                  onClick={() =>
+                                    setAddingSubcategory({
+                                      seccionLabel: item.label,
+                                      categoriaId: cat.id,
+                                      categoriaNombre: cat.nombre,
+                                    })
+                                  }
+                                >
+                                  <i className="bi bi-plus-circle me-2" />
+                                  Agregar subcategoría
+                                </button>
+                              </li>
 
-                        {/* Columna 3 */}
-                        <div className="col-12 col-md-4 mb-3">
-                          <h6 className="text-uppercase fw-bold mb-2">
-                            {item.label} – Categoría 3
-                          </h6>
-                          <ul className="list-unstyled">
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria/sub-categoria7`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 7
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria/sub-categoria8`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 8
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href={`${item.href}/categoria/sub-categoria9`}
-                                className="dropdown-item"
-                              >
-                                Subcategoría 9
-                              </Link>
-                            </li>
-                          </ul>
+                              {addingSubcategory &&
+                              addingSubcategory.categoriaId === cat.id ? (
+                                <AddSubcategoryForm
+                                  categoriaNombre={cat.nombre}
+                                  onSubmit={handleSaveSubcategory}
+                                  onCancel={handleCancelSubcategory}
+                                />
+                              ) : null}
+                            </ul>
+                          </div>
+                        ))}
+
+                        <div className="col-12 mt-3 text-center">
+                          <button
+                            className="btn btn-success d-inline-flex align-items-center gap-2 px-4 py-2"
+                            onClick={() => setShowCategoryModal(true)}
+                          >
+                            <i className="bi bi-plus-circle" />
+                            Nueva categoría
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* Fin mega-menú */}
                 </li>
               ))}
-            </ul>
-
-            {/* Íconos de búsqueda, carrito y usuario */}
-            <ul
-              className={`navbar-nav flex-row align-items-center ms-lg-auto ${styles.iconsNav}`}
-            >
-              {/* Desktop: reemplaza lupa por input de búsqueda */}
-              <li className="nav-item d-none d-lg-flex align-items-center position-relative">
-                {searchOpen ? (
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Buscar producto..."
-                    autoFocus
-                    onBlur={() => setSearchOpen(false)}
-                  />
-                ) : (
-                  <button
-                    className="btn nav-link p-0"
-                    onClick={toggleSearch}
-                    aria-label="Abrir búsqueda"
-                  >
-                    <i className="bi bi-search"></i>
-                  </button>
-                )}
-              </li>
-
-              {/* Carrito de compras */}
-              <li className="nav-item">
-                <Link href="/cart" className="nav-link" aria-label="Carrito de compras">
-                  <i className="bi bi-cart"></i>
-                </Link>
-              </li>
-
-              {/* Botón de usuario: abre popup de registro */}
-              <li className="nav-item position-relative">
-                <button
-                  className="btn nav-link p-0"
-                  onClick={() => setUserOpen(!userOpen)}
-                  aria-label="Abrir registro de usuario"
-                >
-                  <i className="bi bi-person-circle"></i>
-                </button>
-
-                {/* Popup de registro */}
-                {userOpen && (
-                  <div
-                    ref={userRef}
-                    className={`card position-absolute end-0 mt-2 ${styles.userPopup}`}
-                    style={{ width: "300px", zIndex: 9999 }}
-                  >
-                    <div className="card-body">
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="card-title m-0">Registrarse</h5>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          aria-label="Cerrar"
-                          onClick={() => setUserOpen(false)}
-                        ></button>
-                      </div>
-
-                      {/* Formulario de registro */}
-                      <form onSubmit={handleRegisterSubmit}>
-                        <div className="mb-3">
-                          <label htmlFor="emailUser" className="form-label">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            className="form-control"
-                            id="emailUser"
-                            placeholder="usuario@ejemplo.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label htmlFor="passwordUser" className="form-label">
-                            Contraseña
-                          </label>
-                          <input
-                            type="password"
-                            className="form-control"
-                            id="passwordUser"
-                            placeholder="********"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <button type="submit" className="btn btn-primary w-100">
-                          Crear cuenta
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                )}
-              </li>
             </ul>
           </div>
         </div>
       </nav>
 
-      {/* Overlay que cubrirá toda la página y aplicará el blur */}
-      <div
-        className={`${styles.overlay} ${
-          isHoveringMenu ? styles.showOverlay : ""
-        }`}
-      ></div>
+      <div className={`${styles.overlay} ${overlayActive ? styles.showOverlay : ""}`} />
+
+      {showCategoryModal && (
+        <AddCategoryForm
+          onSubmit={handleSaveCategory}
+          onCancel={handleCancelCategory}
+        />
+      )}
     </header>
   );
+
+  async function crearCategoria(nombre: string, descripcion: string) {
+    try {
+      const res = await fetch("/api/categorias", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, descripcion }),
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      setShowCategoryModal(false);
+      setIsHoveringMenu(false);
+
+      const updated = await fetch("/api/categorias");
+      const items: NavItem[] = await updated.json();
+      setNavItems(items);
+    } catch (e) {
+      console.error(e);
+      alert("No se pudo guardar la categoría");
+    }
+  }
+
+  async function crearSubcategoria(nombre: string, descripcion: string) {
+    try {
+      const res = await fetch("/api/categorias/subcategorias", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre,
+          descripcion,
+          categoria_id: addingSubcategory?.categoriaId,
+        }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+
+      const updated = await fetch("/api/categorias");
+      const items: NavItem[] = await updated.json();
+      setNavItems(items);
+    } catch (e) {
+      console.error(e);
+      alert("No se pudo guardar subcategoría");
+    }
+    setAddingSubcategory(null);
+    setIsHoveringMenu(false);
+  }
 }
