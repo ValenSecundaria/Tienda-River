@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./header.module.css";
 import AddSubcategoryForm from "./CategoryForms/AddSubcategoryForm";
 import AddCategoryForm from "./CategoryForms/AddCategoryForm";
+import PoputMP from "./FormMercadoPago/PoputMP"; // Ruta corregida
 
 // Tipos
 type Subcategoria = { id: number; nombre: string; descripcion?: string };
@@ -17,10 +18,10 @@ const slugify = (text: string) =>
 export default function Header() {
   const [navItems, setNavItems] = useState<NavItem[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [isHoveringMenu, setIsHoveringMenu] = useState(false);
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showCartPopup, setShowCartPopup] = useState(false); // nuevo estado
 
   const [addingSubcategory, setAddingSubcategory] = useState<{
     seccionLabel: string;
@@ -79,33 +80,11 @@ export default function Header() {
 
   return (
     <header>
-      <nav
-        className={`${styles.customNavbar} navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top`}
-      >
+      <nav className={`${styles.customNavbar} navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top`}>
         <div className="container-fluid px-3 px-lg-4">
           <Link href="/" className="navbar-brand">
             Tienda-River
           </Link>
-
-          <div className="d-lg-none mx-auto">
-            {searchOpen ? (
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Buscar producto..."
-                autoFocus
-                onBlur={() => setSearchOpen(false)}
-              />
-            ) : (
-              <button
-                className="btn nav-link p-0"
-                onClick={toggleSearch}
-                aria-label="Abrir búsqueda"
-              >
-                <i className="bi bi-search"></i>
-              </button>
-            )}
-          </div>
 
           <button
             className="navbar-toggler"
@@ -115,7 +94,7 @@ export default function Header() {
             aria-expanded={!isNavCollapsed}
             aria-label="Toggle navigation"
           >
-            <span className="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon" />
           </button>
 
           <div
@@ -133,7 +112,7 @@ export default function Header() {
                   <Link href={item.href} className="nav-link">
                     {item.label}
                   </Link>
-
+                  {/* menú desplegable */}
                   <div className={styles.megaMenu}>
                     <div className="container">
                       <div className="row">
@@ -150,7 +129,6 @@ export default function Header() {
                                   </span>
                                 </li>
                               ))}
-
                               <li className="mt-2">
                                 <button
                                   className="btn btn-outline-secondary btn-sm w-100 d-flex align-items-center justify-content-center"
@@ -166,7 +144,6 @@ export default function Header() {
                                   Agregar subcategoría
                                 </button>
                               </li>
-
                               {addingSubcategory &&
                               addingSubcategory.categoriaId === cat.id ? (
                                 <AddSubcategoryForm
@@ -178,7 +155,6 @@ export default function Header() {
                             </ul>
                           </div>
                         ))}
-
                         <div className="col-12 mt-3 text-center">
                           <button
                             className="btn btn-success d-inline-flex align-items-center gap-2 px-4 py-2"
@@ -195,8 +171,22 @@ export default function Header() {
               ))}
             </ul>
           </div>
+
+          {/* ICONOS DERECHA */}
+          <div className="d-flex align-items-center gap-3 ms-auto">
+            <button className="btn p-0" onClick={toggleSearch} aria-label="Buscar">
+              <i className="bi bi-search fs-5" />
+            </button>
+            <Link href="/login" className="text-dark" aria-label="Login">
+              <i className="bi bi-person fs-5" />
+            </Link>
+            <button className="btn p-0" onClick={() => setShowCartPopup(true)} aria-label="Carrito">
+              <i className="bi bi-cart fs-5" />
+            </button>
+          </div>
         </div>
       </nav>
+
 
       <div className={`${styles.overlay} ${overlayActive ? styles.showOverlay : ""}`} />
 
@@ -206,6 +196,8 @@ export default function Header() {
           onCancel={handleCancelCategory}
         />
       )}
+
+      {showCartPopup && <PoputMP onClose={() => setShowCartPopup(false)} />}
     </header>
   );
 
@@ -242,6 +234,7 @@ export default function Header() {
           categoria_id: addingSubcategory?.categoriaId,
         }),
       });
+
       if (!res.ok) throw new Error(await res.text());
 
       const updated = await fetch("/api/categorias");
