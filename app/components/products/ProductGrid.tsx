@@ -1,9 +1,13 @@
 import { ProductCard } from "./ProductCard";
-import { prisma } from "@/app/lib/prisma"; // Asegúrate de tener esta instancia configurada
+import { prisma } from "@/app/lib/prisma"; 
 
-export async function ProductGrid() {
+export async function ProductGrid({ categoria }) {
   const productos = await prisma.productos.findMany({
-    where: { activo: true },
+    where: {
+      categorias: {
+        slug: categoria,
+      },
+    },
     include: {
       categorias: true,
     },
@@ -11,6 +15,33 @@ export async function ProductGrid() {
       fecha_creacion: "desc",
     },
   });
+
+  if (productos.length === 0) {
+    return (
+      <div className="product-grid-container">
+        <h2>Productos</h2>
+        <div className="no-products">
+          No hay productos actualmente en esta categoría.
+        </div>
+        <style>{`
+          .product-grid-container {
+            width: 100%;
+          }
+          
+          .no-products {
+            padding: 1rem;
+            font-size: 1.1rem;
+            color: #555;
+            text-align: center;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            margin: 2rem 0;
+            background-color: #fafafa;
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="product-grid-container">
