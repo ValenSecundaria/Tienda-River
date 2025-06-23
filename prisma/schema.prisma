@@ -98,6 +98,7 @@ model productoimagenes {
 model productos {
   id               Int                @id @default(autoincrement())
   nombre           String             @db.VarChar(100)
+  slug           String      @unique @db.VarChar(100)
   descripcion      String?
   precio_base      Decimal            @db.Decimal(10, 2)
   categoria_id     Int?
