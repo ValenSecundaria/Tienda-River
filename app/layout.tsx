@@ -34,12 +34,14 @@ export default function RootLayout({
       </head>
       <body className="d-flex flex-column min-vh-100">
         <Header />
-        <main className="flex-grow-1">{children}</main>
+        {/* Aquí le damos un padding para que el Header no tape el contenido */}
+        <main className="flex-grow-1" style={{ paddingTop: "56px" }}>
+          {children}
+        </main>
         <Footer />
-
-        {/* 
-          Si en el futuro usás componentes de Bootstrap que requieran JS (Dropdowns, Modals, etc.),
-          podés descomentar esta línea para incluir el bundle:
+        {/*
+        Si en el futuro usás componentes de Bootstrap que requieran JS (Dropdowns, Modals, etc.),
+        podés descomentar esta línea para incluir el bundle:
         */}
         {/*
         <script

@@ -2,7 +2,8 @@ import { ProductCard } from "./ProductCard";
 import { prisma } from "@/app/lib/prisma"; 
 
 export async function ProductGrid({ categoria }) {
-  const productos = await prisma.productos.findMany({
+  // Traemos productos junto con la categoría
+  const productosData = await prisma.productos.findMany({
     where: {
       categorias: {
         slug: categoria,
@@ -16,6 +17,12 @@ export async function ProductGrid({ categoria }) {
     },
   });
 
+  // Parseamos para convertir Decimal -> Number
+  const productos = productosData.map((producto) => ({
+    ...producto,
+    precio_base: producto.precio_base.toNumber(),
+  }));
+
   if (productos.length === 0) {
     return (
       <div className="product-grid-container">
@@ -27,7 +34,7 @@ export async function ProductGrid({ categoria }) {
           .product-grid-container {
             width: 100%;
           }
-          
+
           .no-products {
             padding: 1rem;
             font-size: 1.1rem;
