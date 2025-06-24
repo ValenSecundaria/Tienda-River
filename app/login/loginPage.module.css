@@ -1,0 +1,114 @@
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+
+  position: relative;
+
+  /* Ahora NO asignamos directamente el background aquí,
+     lo pasamos al ::before para poder desenfocarlo */
+}
+
+.main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  /* Aquí va la imagen de fondo */
+  background-image: url("/images/stadium-background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Aplicamos el blur SOLO al fondo */
+  filter: blur(2px);
+
+  /* Para que quede detrás del contenido */
+  z-index: -1;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  width: 100%;
+  background: #dc2626;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: 0;
+  padding: 1rem;
+}
+
+.logoImage {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logoText {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+@media (min-width: 768px) {
+  .main {
+    height: 100vh;
+  }
+
+  .container {
+    margin-top: -8rem;
+  }
+
+  .logoContainer {
+    height: 120px;
+  }
+
+  .logoText {
+    font-size: 1.875rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .main {
+    padding: 0.5rem;
+    background-attachment: scroll;
+  }
+
+  .container {
+    max-width: 350px;
+  }
+
+  .logoContainer {
+    height: 80px;
+    padding: 0.75rem;
+  }
+
+  .logoImage {
+    height: 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    max-width: 320px;
+  }
+
+  .logoContainer {
+    height: 70px;
+  }
+
+  .logoImage {
+    height: 40px;
+  }
+}

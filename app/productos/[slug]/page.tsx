@@ -1,3 +1,4 @@
+
 import { prisma } from "@/app/lib/prisma"
 import Image from "next/image"
 import styles from "./ProductPage.module.css"

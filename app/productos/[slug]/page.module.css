@@ -1,0 +1,155 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.imageSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.imageContainer {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.variantSection {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.variantTitle {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.colorSection,
+.sizeSection {
+  margin-bottom: 15px;
+}
+
+.sectionLabel {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.colorGrid {
+  display: flex;
+  gap: 10px;
+}
+
+.colorOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.colorCircle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.colorName {
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+.sizeGrid {
+  display: flex;
+  gap: 10px;
+}
+
+.sizeOption {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sizeName {
+  font-size: 1rem;
+}
+
+.outOfStock {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.variantDetails {
+  margin-top: 20px;
+}
+
+.variantList {
+  list-style: none;
+  padding: 0;
+}
+
+.variantItem {
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.variantInfo {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.smallColorCircle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.variantSize,
+.variantStock {
+  font-size: 0.9rem;
+}
+
+.additionalPrice {
+  color: green;
+}
+
+.variantSku {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.detailsSection {
+  margin-top: 30px;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.description {
+  line-height: 1.6;
+  color: #555;
+}
+
+.price {
+  font-size: 1.8rem;
+  color: #333;
+}
