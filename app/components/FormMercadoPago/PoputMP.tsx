@@ -38,13 +38,14 @@ export default function PoputMP({ onClose }: CartPopupProps) {
     }
 
     const data = await res.json();
+    console.log(data)
     if (data.init_point) {
       window.location.href = data.init_point;
     } else {
       alert("No se recibió el link de pago");
     }
-  } catch (error) {
-    alert("Hubo un error al iniciar el pago con Mercado Pago: " + error.message);
+  } catch (err) {
+    alert("Hubo un error al iniciar el pago con Mercado Pago: " + err);
   }
   };
 
