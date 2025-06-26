@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         email: "test_user_1045774516@testuser.com",
       },
     };
+    
 
     const response = await mercadopago.preferences.create(preference);
     console.log("Init point generado:", response.body.init_point);

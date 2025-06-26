@@ -23,12 +23,6 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [showCartPopup, setShowCartPopup] = useState(false); // nuevo estado
 
-  const [addingSubcategory, setAddingSubcategory] = useState<{
-    seccionLabel: string;
-    categoriaId: number;
-    categoriaNombre: string;
-  } | null>(null);
-
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   useEffect(() => {
@@ -48,27 +42,6 @@ export default function Header() {
 
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   const toggleSearch = () => setSearchOpen(!searchOpen);
-
-  const handleSaveSubcategory = async (nombre: string, descripcion?: string) => {
-    await crearSubcategoria(nombre, descripcion ?? "");
-  };
-
-  const handleSaveCategory = async (nombre: string, descripcion?: string) => {
-    crearCategoria(nombre, descripcion ?? "");
-  };
-
-  const handleCancelSubcategory = () => {
-    setAddingSubcategory(null);
-    setIsHoveringMenu(false);
-  };
-
-  const handleCancelCategory = () => {
-    setShowCategoryModal(false);
-    setIsHoveringMenu(false);
-  };
-
-  const overlayActive =
-    isHoveringMenu || !!addingSubcategory || showCategoryModal;
 
   if (loading)
     return (
@@ -129,41 +102,9 @@ export default function Header() {
                                   </span>
                                 </li>
                               ))}
-                              <li className="mt-2">
-                                <button
-                                  className="btn btn-outline-secondary btn-sm w-100 d-flex align-items-center justify-content-center"
-                                  onClick={() =>
-                                    setAddingSubcategory({
-                                      seccionLabel: item.label,
-                                      categoriaId: cat.id,
-                                      categoriaNombre: cat.nombre,
-                                    })
-                                  }
-                                >
-                                  <i className="bi bi-plus-circle me-2" />
-                                  Agregar subcategoría
-                                </button>
-                              </li>
-                              {addingSubcategory &&
-                              addingSubcategory.categoriaId === cat.id ? (
-                                <AddSubcategoryForm
-                                  categoriaNombre={cat.nombre}
-                                  onSubmit={handleSaveSubcategory}
-                                  onCancel={handleCancelSubcategory}
-                                />
-                              ) : null}
                             </ul>
                           </div>
                         ))}
-                        <div className="col-12 mt-3 text-center">
-                          <button
-                            className="btn btn-success d-inline-flex align-items-center gap-2 px-4 py-2"
-                            onClick={() => setShowCategoryModal(true)}
-                          >
-                            <i className="bi bi-plus-circle" />
-                            Nueva categoría
-                          </button>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -187,64 +128,8 @@ export default function Header() {
         </div>
       </nav>
 
-
-      <div className={`${styles.overlay} ${overlayActive ? styles.showOverlay : ""}`} />
-
-      {showCategoryModal && (
-        <AddCategoryForm
-          onSubmit={handleSaveCategory}
-          onCancel={handleCancelCategory}
-        />
-      )}
-
       {showCartPopup && <PoputMP onClose={() => setShowCartPopup(false)} />}
     </header>
   );
-
-  async function crearCategoria(nombre: string, descripcion: string) {
-    try {
-      const res = await fetch("/api/categorias", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion }),
-      });
-
-      if (!res.ok) throw new Error(await res.text());
-
-      setShowCategoryModal(false);
-      setIsHoveringMenu(false);
-
-      const updated = await fetch("/api/categorias");
-      const items: NavItem[] = await updated.json();
-      setNavItems(items);
-    } catch (e) {
-      console.error(e);
-      alert("No se pudo guardar la categoría");
-    }
-  }
-
-  async function crearSubcategoria(nombre: string, descripcion: string) {
-    try {
-      const res = await fetch("/api/categorias/subcategorias", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre,
-          descripcion,
-          categoria_id: addingSubcategory?.categoriaId,
-        }),
-      });
-
-      if (!res.ok) throw new Error(await res.text());
-
-      const updated = await fetch("/api/categorias");
-      const items: NavItem[] = await updated.json();
-      setNavItems(items);
-    } catch (e) {
-      console.error(e);
-      alert("No se pudo guardar subcategoría");
-    }
-    setAddingSubcategory(null);
-    setIsHoveringMenu(false);
-  }
+  
 }

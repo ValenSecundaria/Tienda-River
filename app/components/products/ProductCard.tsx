@@ -11,7 +11,7 @@ export function ProductCard({ producto }) {
       {/* Image Container */}
       <div className={styles.imageContainer}>
         <Image
-          src="https://celadasa.vtexassets.com/arquivos/ids/230631-1200-auto?v=638197635089300000&width=1200&height=auto&aspect=true"
+          src="/imagenes/productos/camiseta-river.jpg"
           alt={producto.nombre}
           width={400}
           height={300}
