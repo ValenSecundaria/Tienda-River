@@ -1,3 +1,6 @@
+clave para ingresar con 123456: 
+$2b$10$QvvU.o5NQCPIzM.UxADj3cRp4B7U5AMXSd1A7hxIZ2QtUrfeLzzq
+
 npm install react react-dom next
 
 npm install lucide-react

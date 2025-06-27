@@ -1,0 +1,34 @@
+.dashboardLayout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.mainContent {
+  flex: 1;
+  margin-left: 280px;
+  min-height: 100vh;
+}
+
+.contentWrapper {
+  padding: 24px;
+  max-width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .contentWrapper {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .contentWrapper {
+    padding: 12px;
+  }
+}

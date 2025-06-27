@@ -1,33 +1,38 @@
-    import type React from "react"
+import styles from "./page.module.css"
 
-const CambiosYDevoluciones: React.FC = () => {
+export default function DashboardPage() {
   return (
-    <div className="container mt-4">
-      <h1>Cambios y Devoluciones</h1>
-      <p>
-        Tenés hasta 30 días para cambiar o devolver tu compra. Conocé todos los detalles de nuestra política de cambios
-        y devoluciones.
-      </p>
+    <div className={styles.dashboard}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Dashboard</h1>
+        <p className={styles.subtitle}>Administrador-Tienda River</p>
+      </header>
 
-      <div className="mt-4">
-        <h3>Condiciones para cambios:</h3>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item">El producto debe estar en perfectas condiciones</li>
-          <li className="list-group-item">Conservar etiquetas originales</li>
-          <li className="list-group-item">Presentar comprobante de compra</li>
-          <li className="list-group-item">Plazo máximo: 30 días desde la compra</li>
-        </ul>
-      </div>
+      <div className={styles.statsGrid}>
+        <div className={styles.statCard}>
+          <h3>Productos Totales</h3>
+          <p className={styles.statNumber}>1,234</p>
+          <span className={styles.statChange}>+12% este mes</span>
+        </div>
 
-      <div className="mt-4">
-        <h3>¿Cómo realizar un cambio?</h3>
-        <p>
-          Podés acercarte a cualquiera de nuestras sucursales o contactarnos por email a cambios@tienda.com para
-          coordinar el envío.
-        </p>
+        <div className={styles.statCard}>
+          <h3>Órdenes Pendientes</h3>
+          <p className={styles.statNumber}>56</p>
+          <span className={styles.statChange}>+8% esta semana</span>
+        </div>
+
+        <div className={styles.statCard}>
+          <h3>Usuarios Activos</h3>
+          <p className={styles.statNumber}>2,891</p>
+          <span className={styles.statChange}>+15% este mes</span>
+        </div>
+
+        <div className={styles.statCard}>
+          <h3>Ingresos</h3>
+          <p className={styles.statNumber}>$45,678</p>
+          <span className={styles.statChange}>+23% este mes</span>
+        </div>
       </div>
     </div>
   )
 }
-
-export default CambiosYDevoluciones
