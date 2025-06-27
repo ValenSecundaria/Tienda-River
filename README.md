@@ -19,6 +19,10 @@ npx prisma migrate dev # Para aplicar la estructura ( o npx prisma db push para 
 
 npm install mercadopago@1.5.7 //Dependencias de mp
 
+npm install exceljs (para exportar datos)
+curl -H "x-api-key: pass123" "http://localhost:3000/api/export/productos?format=xlsx" -o productos.xlsx (Para probar localmente, te genera una planilla excel en la carpeta de la consola donde estes ubicado).
+en .env : EXPORT_API_KEY= pass123
+
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/2gizGE2c)
 
 # Proyecto 2 - Desarrollo de Aplicación Web Completa con Next.js y PostgreSQL
