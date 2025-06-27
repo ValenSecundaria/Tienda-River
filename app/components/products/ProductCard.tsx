@@ -11,7 +11,10 @@ export function ProductCard({ producto }) {
       {/* Image Container */}
       <div className={styles.imageContainer}>
         <Image
-          src="/imagenes/productos/camiseta-river.jpg"
+          src={
+            producto.imagen_principal ??
+            "/placeholder.svg?text=Sin+imagen&width=400&height=300"
+          }
           alt={producto.nombre}
           width={400}
           height={300}
@@ -33,7 +36,9 @@ export function ProductCard({ producto }) {
 
         {/* Category Badge */}
         <div className={styles.categoryBadge}>
-          <span className={styles.categoryText}>{producto.categorias.nombre}</span>
+          <span className={styles.categoryText}>
+            {producto.categorias?.nombre ?? "Sin categoría"}
+          </span>
         </div>
       </div>
 
@@ -46,7 +51,9 @@ export function ProductCard({ producto }) {
         {/* Price and Action */}
         <div className={styles.footer}>
           <div className={styles.priceContainer}>
-            <span className={styles.price}>${producto.precio_base.toLocaleString()}</span>
+            <span className={styles.price}>
+              ${producto.precio_base.toLocaleString()}
+            </span>
             <span className={styles.priceLabel}>Precio base</span>
           </div>
 

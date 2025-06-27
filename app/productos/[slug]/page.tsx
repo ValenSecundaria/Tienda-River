@@ -38,7 +38,7 @@ export default async function ProductPage({ params }) {
         <div className={styles.imageSection}>
           <div className={styles.imageContainer}>
             <Image
-              src="https://celadasa.vtexassets.com/arquivos/ids/230631-1200-auto?v=638197635089300000&width=1200&height=auto&aspect=true"
+              src={producto.imagen_principal ?? "https://celadasa.vtexassets.com/arquivos/ids/230631-1200-auto?v=638197635089300000&width=1200&height=auto&aspect=true"}
               alt={producto.nombre}
               width={600}
               height={600}
