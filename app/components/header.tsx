@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./header.module.css";
-import AddSubcategoryForm from "./CategoryForms/AddSubcategoryForm";
-import AddCategoryForm from "./CategoryForms/AddCategoryForm";
-import PoputMP from "./FormMercadoPago/PoputMP"; // Ruta corregida
+import Carrito from "./FormMercadoPago/Carrito"; // Ruta corregida
 
 // Tipos
 type Subcategoria = { id: number; nombre: string; descripcion?: string };
@@ -23,7 +21,6 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [showCartPopup, setShowCartPopup] = useState(false); // nuevo estado
 
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   useEffect(() => {
     async function loadNav() {
@@ -128,7 +125,7 @@ export default function Header() {
         </div>
       </nav>
 
-      {showCartPopup && <PoputMP onClose={() => setShowCartPopup(false)} />}
+      {showCartPopup && <Carrito onClose={() => setShowCartPopup(false)} />}
     </header>
   );
   

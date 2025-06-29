@@ -1,7 +1,16 @@
 // app/[categoria]/page.tsx
+
 import { ProductGrid } from "@/app/components/products/ProductGrid";
 
-export default async function CategoryPage({ params }) {
+interface CategoryPageParams {
+  categoria: string;
+}
+
+interface CategoryPageProps {
+  params: CategoryPageParams;
+}
+
+export default async function CategoryPage({ params }: CategoryPageProps) {
   const { categoria } = params;
 
   return (

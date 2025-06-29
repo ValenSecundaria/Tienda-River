@@ -1,0 +1,39 @@
+.product-grid-container {
+  width: 100%;
+}
+
+.product-grid-container h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.no-products {
+  padding: 1rem;
+  font-size: 1.1rem;
+  color: #555;
+  text-align: center;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  margin: 2rem 0;
+  background-color: #fafafa;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+/* Responsive para que funcione en pantallas más chicas */
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

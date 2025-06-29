@@ -1,9 +1,14 @@
 import { ProductCard } from "./ProductCard";
-import { prisma } from "@/app/lib/prisma"; 
+import { prisma } from "@/app/lib/prisma";
+import type { productos } from "@prisma/client";
+import "./ProductGrid.css";
 
-export async function ProductGrid({ categoria }) {
-  // Traemos productos junto con la categoría
-  const productosData = await prisma.productos.findMany({
+interface ProductGridProps {
+  categoria: string;
+}
+
+export async function ProductGrid({ categoria }: ProductGridProps) {
+  const productosData: productos[] = await prisma.productos.findMany({
     where: {
       categorias: {
         slug: categoria,
@@ -17,7 +22,7 @@ export async function ProductGrid({ categoria }) {
     },
   });
 
-  // Parseamos para convertir Decimal -> Number
+  // Mapear productos para convertir Decimal a Number
   const productos = productosData.map((producto) => ({
     ...producto,
     precio_base: producto.precio_base.toNumber(),
@@ -30,22 +35,6 @@ export async function ProductGrid({ categoria }) {
         <div className="no-products">
           No hay productos actualmente en esta categoría.
         </div>
-        <style>{`
-          .product-grid-container {
-            width: 100%;
-          }
-
-          .no-products {
-            padding: 1rem;
-            font-size: 1.1rem;
-            color: #555;
-            text-align: center;
-            border: 1px dashed #ccc;
-            border-radius: 8px;
-            margin: 2rem 0;
-            background-color: #fafafa;
-          }
-        `}</style>
       </div>
     );
   }
@@ -58,36 +47,6 @@ export async function ProductGrid({ categoria }) {
           <ProductCard key={producto.id} producto={producto} />
         ))}
       </div>
-      <style>{`
-        .product-grid-container {
-          width: 100%;
-        }
-
-        .product-grid-container h2 {
-          font-size: 1.25rem;
-          font-weight: bold;
-          margin-bottom: 1rem;
-        }
-
-        .product-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 1rem;
-        }
-
-        /* Responsive para que funcione en pantallas más chicas */
-        @media (max-width: 1024px) {
-          .product-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-
-        @media (max-width: 640px) {
-          .product-grid {
-            grid-template-columns: repeat(1, 1fr);
-          }
-        }
-      `}</style>
     </div>
   );
 }

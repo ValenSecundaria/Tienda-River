@@ -65,14 +65,12 @@ model ordenes {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model ordenitems {
-  id                   Int              @id @default(autoincrement())
-  orden_id             Int
-  producto_variante_id Int
-  cantidad             Int
-  precio_unitario      Decimal          @db.Decimal(10, 2)
-  descuento            Decimal?         @default(0) @db.Decimal(10, 2)
-  ordenes              ordenes          @relation(fields: [orden_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  productovariante     productovariante @relation(fields: [producto_variante_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id              Int      @id @default(autoincrement())
+  orden_id        Int
+  cantidad        Int
+  precio_unitario Decimal  @db.Decimal(10, 2)
+  descuento       Decimal? @default(0) @db.Decimal(10, 2)
+  ordenes         ordenes  @relation(fields: [orden_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([orden_id], map: "idx_orden_items_orden_id")
 }
@@ -86,53 +84,32 @@ model pagos {
   transacciones transacciones[]
 }
 
-model productoimagenes {
-  id          Int       @id @default(autoincrement())
-  producto_id Int
-  imagen_url  String    @db.VarChar(255)
-  orden       Int       @default(0) @db.SmallInt
-  productos   productos @relation(fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model productos {
   id               Int                @id @default(autoincrement())
   nombre           String             @db.VarChar(100)
-  slug           String      @unique @db.VarChar(100)
+  slug             String             @unique @db.VarChar(100)
   descripcion      String?
   precio_base      Decimal            @db.Decimal(10, 2)
   categoria_id     Int?
   subcategoria_id  Int?
   activo           Boolean            @default(true)
   fecha_creacion   DateTime           @default(now()) @db.Timestamp(6)
+  stock            Int                @default(0)
+  color_nombre     String?            @db.VarChar(50)
+  color_codigo_hex String?            @db.VarChar(7)
+  talle            String?            @db.VarChar(10)
   imagen_principal String?            @db.VarChar(255)
-  productoimagenes productoimagenes[]
+  producto_base_id Int?
+  carrito_producto carrito_producto[]
+  productos        productos?         @relation("productosToproductos", fields: [producto_base_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto_base")
+  other_productos  productos[]        @relation("productosToproductos")
   categorias       categorias?        @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   subcategorias    subcategorias?     @relation(fields: [subcategoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  productovariante productovariante[]
 
   @@index([categoria_id], map: "idx_productos_categoria_id")
   @@index([subcategoria_id], map: "idx_productos_subcategoria_id")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model productovariante {
-  id               Int          @id @default(autoincrement())
-  producto_id      Int
-  talle_id         Int
-  color_nombre     String       @db.VarChar(50)
-  color_codigo_hex String       @db.VarChar(7)
-  stock            Int
-  sku              String       @unique @db.VarChar(100)
-  precio_adicional Decimal?     @default(0) @db.Decimal(10, 2)
-  imagen           String?      @db.VarChar(255)
-  fecha_creacion   DateTime     @default(now()) @db.Timestamp(6)
-  ordenitems       ordenitems[]
-  productos        productos    @relation(fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  talles           talles       @relation(fields: [talle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([producto_id], map: "idx_producto_variante_producto_id")
-  @@index([talle_id], map: "idx_producto_variante_talle_id")
+  @@index([producto_base_id], map: "idx_productos_producto_base_id")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -172,10 +149,9 @@ model subcategorias {
 }
 
 model talles {
-  id               Int                @id @default(autoincrement())
-  nombre           String             @unique @db.VarChar(50)
-  orden            Int                @default(0) @db.SmallInt
-  productovariante productovariante[]
+  id     Int    @id @default(autoincrement())
+  nombre String @unique @db.VarChar(50)
+  orden  Int    @default(0) @db.SmallInt
 }
 
 model transacciones {
@@ -203,6 +179,27 @@ model usuarios {
   rol            String          @db.VarChar(50)
   telefono       String?         @db.VarChar(20)
   fecha_creacion DateTime        @default(now()) @db.Timestamp(6)
+  carrito        carrito?
   ordenes        ordenes[]
   transacciones  transacciones[]
+}
+
+model carrito {
+  id               Int                @id @default(autoincrement())
+  usuario_id       Int                @unique
+  fecha_creacion   DateTime?          @default(now()) @db.Timestamp(6)
+  usuarios         usuarios           @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_carrito_usuario")
+  carrito_producto carrito_producto[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model carrito_producto {
+  id          Int       @id @default(autoincrement())
+  carrito_id  Int
+  producto_id Int
+  cantidad    Int
+  carrito     carrito   @relation(fields: [carrito_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_cp_carrito")
+  productos   productos @relation(fields: [producto_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_cp_producto")
+
+  @@unique([carrito_id, producto_id], map: "unique_carrito_producto")
 }
