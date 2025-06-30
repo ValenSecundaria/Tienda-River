@@ -77,19 +77,19 @@ export default function Carrito({ onClose }: CarritoProps) {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await fetch("/api/carrito")
-        if (!res.ok) throw new Error("Error al cargar el carrito")
-        const data = await res.json()
-        setProductos(data)
+        const res = await fetch("/api/carrito/cookies");
+        if (!res.ok) throw new Error("Error al cargar el carrito");
+        const data = await res.json();
+        setProductos(data);
       } catch (error) {
-        console.error("Error al obtener productos del carrito:", error)
+        console.error("Error al obtener productos del carrito:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchProductos()
-  }, [])
+    fetchProductos();
+  }, []);
 
   const handlePagarConMercadoPago = async () => {
     try {
@@ -117,21 +117,21 @@ export default function Carrito({ onClose }: CarritoProps) {
   }
 
   const handleEliminarProducto = async (productoId: number) => {
-  try {
-    const res = await fetch(`/api/carrito/${productoId}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/carrito/cookies/${productoId}`, {
+        method: "DELETE",
+      });
 
-    if (!res.ok) {
-      throw new Error("No se pudo eliminar el producto");
+      if (!res.ok) {
+        throw new Error("No se pudo eliminar el producto");
+      }
+
+      // Actualizar el estado local
+      setProductos((prev) => prev.filter((p) => p.id !== productoId));
+    } catch (error) {
+      console.error("Error eliminando producto:", error);
+      alert("Error al eliminar producto del carrito");
     }
-
-    // Actualizamos el estado local
-    setProductos((prev) => prev.filter((p) => p.id !== productoId));
-  } catch (error) {
-    console.error("Error eliminando producto:", error);
-    alert("Error al eliminar producto del carrito");
-  }
 };
 
 

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { prisma } from "../../lib/prisma"
+import { cookies } from "next/headers"
 
 export async function GET() {
+  
   const carrito = await prisma.carrito.findUnique({
     where: { id: 1 },
     include: {
