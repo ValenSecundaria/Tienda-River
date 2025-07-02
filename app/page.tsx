@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./HomePage.module.css";
+import HeroBannerRiver from "./components/page-principal/hero-banner/hero-banner-river";
+
 
 type Categoria = {
   id: number;
@@ -103,47 +105,9 @@ export default function HomePage() {
     <div className="d-flex flex-column min-vh-100">
       <main className="flex-grow-1">
         {/* Hero Section con fondo responsive */}
-        <section
-          className={`${styles["hero-banner"]} d-flex align-items-center justify-content-center text-white position-relative`}
-          style={{
-            backgroundImage: "url('/imagenes/fondo-principal/Fondo.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
-            backgroundRepeat: "no-repeat",
-            height: heroHeight,
-            color: "white",
-            overflow: "hidden",
-            transition: "height 0.3s ease", // suave transición al cambiar altura
-          }}
-        >
-          <div
-            className={`${styles["hero-overlay"]} position-absolute top-0 start-0 w-100 h-100`}
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 1 }}
-          ></div>
-          <div
-            className="container-fluid text-center position-relative"
-            style={{ zIndex: 3 }}
-          >
-            <div className="row justify-content-center">
-              <div className="col-lg-8">
-                <h1 className="display-2 fw-bold mb-4">
-                  🏆 TIENDA OFICIAL RIVER PLATE
-                </h1>
-                <p className="lead fs-3 mb-4">
-                  Viví la pasión millonaria con la indumentaria oficial
-                </p>
-                <p className="fs-5 mb-4">⚪🔴 Desde 1901 haciendo historia ⚪🔴</p>
-                <Link
-                  href="/components/ofertas"
-                  className={`btn ${styles["btn-river"]} btn-lg px-5 py-3`}
-                >
-                  Ver Colección Oficial
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        
+        <HeroBannerRiver/>
+        
         {/* Categorías Destacadas */}
         <section className={`py-5 ${styles["bg-river-light"]}`}>
           <div className="container">
@@ -203,43 +167,6 @@ export default function HomePage() {
                 )
               )}
             </div>
-
-            {/* Subida de imagen a Cloudinary */}
-            <div className="mt-5">
-              <h3 className="text-center mb-3">Subir Imagen de Categoría</h3>
-              <form
-                onSubmit={handleUploadImage}
-                className="text-center"
-                encType="multipart/form-data"
-              >
-                <input
-                  type="file"
-                  name="file"
-                  accept="image/*"
-                  multiple
-                  className="form-control mb-3"
-                  style={{ maxWidth: "400px", margin: "0 auto" }}
-                />
-                <button
-                  type="submit"
-                  className={`btn btn-primary ${uploading ? "disabled" : ""}`}
-                >
-                  {uploading ? "Subiendo..." : "Subir Imagen"}
-                </button>
-              </form>
-
-              {imageUrl && (
-                <div className="text-center mt-4">
-                  <p>Imagen subida:</p>
-                  <img
-                    src={imageUrl}
-                    alt="Subida"
-                    className="img-fluid rounded shadow"
-                    style={{ maxHeight: "300px" }}
-                  />
-                </div>
-              )}
-            </div>
           </div>
         </section>
 
@@ -287,3 +214,4 @@ export default function HomePage() {
     </div>
   );
 }
+

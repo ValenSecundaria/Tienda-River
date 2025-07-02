@@ -9,10 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/react": "^3.21.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@prisma/client": "^6.10.1",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "exceljs": "^4.4.0",
+    "framer-motion": "^12.23.0",
     "lucide-react": "^0.511.0",
     "mercadopago": "^1.5.14",
     "next": "^15.3.3",
