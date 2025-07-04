@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import CustomLink from "../../custom-links"
 
 interface SlideData {
   id: number
@@ -94,9 +95,9 @@ export default function HeroBannerRiver() {
                 <h1 className="title">{slide.title}</h1>
                 <p className="subtitle">{slide.subtitle}</p>
                 <p className="phrase">{slide.phrase}</p>
-                <Link href={slide.buttonLink} className="cta-button">
+                <CustomLink href={slide.buttonLink} className="cta-button">
                   {slide.buttonText}
-                </Link>
+                </CustomLink>
               </div>
             </div>
           </div>
@@ -182,9 +183,9 @@ export default function HeroBannerRiver() {
           height: 100%;
           background: linear-gradient(
             135deg,
-            rgba(0, 0, 0, 0.7) 0%,
-            rgba(139, 0, 0, 0.4) 50%,
-            rgba(0, 0, 0, 0.8) 100%
+            rgba(0, 0, 0, 0.75) 0%,
+            rgba(139, 0, 0, 0.5) 50%,
+            rgba(0, 0, 0, 0.85) 100%
           );
           z-index: 1;
         }
@@ -218,15 +219,16 @@ export default function HeroBannerRiver() {
           font-size: clamp(2.5rem, 5vw, 4rem);
           font-weight: 900;
           margin-bottom: 1rem;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+          text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
           letter-spacing: -0.02em;
           line-height: 1.1;
-          background: linear-gradient(45deg, #ffffff, #ff6b6b, #ffffff);
+          background: linear-gradient(45deg, #ffffff, #dc143c, #ffffff);
           background-size: 200% 200%;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: gradientShift 3s ease-in-out infinite;
+          animation: gradientShift 4s ease-in-out infinite;
+          font-family: 'Arial Black', 'Helvetica', sans-serif;
         }
 
         @keyframes gradientShift {
@@ -236,38 +238,47 @@ export default function HeroBannerRiver() {
 
         .subtitle {
           font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-          font-weight: 400;
+          font-weight: 500;
           margin-bottom: 1.5rem;
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
           line-height: 1.4;
-          color: #f0f0f0;
+          color: #f8f9fa;
+          font-family: 'Helvetica Neue', 'Arial', sans-serif;
+          letter-spacing: 0.5px;
         }
 
         .phrase {
           font-size: clamp(1rem, 2vw, 1.3rem);
-          font-weight: 600;
+          font-weight: 700;
           margin-bottom: 2.5rem;
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-          color: #ffeb3b;
-          letter-spacing: 0.5px;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+          color: #ffffff;
+          letter-spacing: 1px;
+          font-family: 'Arial Black', 'Helvetica', sans-serif;
+          text-transform: uppercase;
+          background: linear-gradient(45deg, #ffffff, #f8f9fa);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
         .cta-button {
           display: inline-block;
           background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
           color: white;
-          padding: 18px 40px;
+          padding: 20px 45px;
           font-size: 1.2rem;
-          font-weight: 700;
+          font-weight: 800;
           text-decoration: none;
           border-radius: 50px;
           transition: all 0.3s ease;
           text-transform: uppercase;
-          letter-spacing: 1px;
-          box-shadow: 0 8px 25px rgba(220, 20, 60, 0.4);
-          border: 2px solid transparent;
+          letter-spacing: 1.5px;
+          box-shadow: 0 10px 30px rgba(220, 20, 60, 0.5);
+          border: 3px solid transparent;
           position: relative;
           overflow: hidden;
+          font-family: 'Arial Black', 'Helvetica', sans-serif;
         }
 
         .cta-button::before {
@@ -277,8 +288,8 @@ export default function HeroBannerRiver() {
           left: -100%;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-          transition: left 0.5s;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+          transition: left 0.6s;
         }
 
         .cta-button:hover::before {
@@ -286,24 +297,25 @@ export default function HeroBannerRiver() {
         }
 
         .cta-button:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 12px 35px rgba(220, 20, 60, 0.6);
-          border-color: rgba(255, 255, 255, 0.3);
+          transform: translateY(-4px);
+          box-shadow: 0 15px 40px rgba(220, 20, 60, 0.7);
+          border-color: rgba(255, 255, 255, 0.4);
+          background: linear-gradient(135deg, #ff1744 0%, #dc143c 100%);
         }
 
         .cta-button:active {
-          transform: translateY(-1px);
+          transform: translateY(-2px);
         }
 
         .nav-arrow {
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          background: rgba(255, 255, 255, 0.1);
-          border: 2px solid rgba(255, 255, 255, 0.3);
+          background: rgba(0, 0, 0, 0.3);
+          border: 3px solid rgba(220, 20, 60, 0.8);
           color: white;
-          width: 60px;
-          height: 60px;
+          width: 65px;
+          height: 65px;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -311,13 +323,14 @@ export default function HeroBannerRiver() {
           cursor: pointer;
           transition: all 0.3s ease;
           z-index: 3;
-          backdrop-filter: blur(10px);
+          backdrop-filter: blur(15px);
         }
 
         .nav-arrow:hover {
-          background: rgba(220, 20, 60, 0.8);
-          border-color: rgba(220, 20, 60, 1);
-          transform: translateY(-50%) scale(1.1);
+          background: rgba(220, 20, 60, 0.9);
+          border-color: #ffffff;
+          transform: translateY(-50%) scale(1.15);
+          box-shadow: 0 8px 25px rgba(220, 20, 60, 0.6);
         }
 
         .nav-arrow-left {
@@ -334,28 +347,54 @@ export default function HeroBannerRiver() {
           left: 50%;
           transform: translateX(-50%);
           display: flex;
-          gap: 12px;
+          gap: 15px;
           z-index: 3;
+          background: rgba(0, 0, 0, 0.3);
+          padding: 12px 20px;
+          border-radius: 25px;
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
         .indicator {
-          width: 12px;
-          height: 12px;
+          width: 14px;
+          height: 14px;
           border-radius: 50%;
-          border: 2px solid rgba(255, 255, 255, 0.5);
+          border: 2px solid rgba(255, 255, 255, 0.6);
           background: transparent;
           cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .indicator::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: transparent;
           transition: all 0.3s ease;
         }
 
         .indicator.active {
           background: #dc143c;
-          border-color: #dc143c;
-          transform: scale(1.2);
+          border-color: #ffffff;
+          transform: scale(1.3);
+          box-shadow: 0 0 15px rgba(220, 20, 60, 0.8);
         }
 
-        .indicator:hover {
-          border-color: rgba(255, 255, 255, 0.8);
+        .indicator.active::before {
+          background: #ffffff;
+        }
+
+        .indicator:hover:not(.active) {
+          border-color: #dc143c;
+          background: rgba(220, 20, 60, 0.3);
+          transform: scale(1.1);
         }
 
         /* Responsive Design */
@@ -370,8 +409,8 @@ export default function HeroBannerRiver() {
           }
 
           .nav-arrow {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
           }
 
           .nav-arrow-left {
@@ -383,12 +422,19 @@ export default function HeroBannerRiver() {
           }
 
           .cta-button {
-            padding: 15px 30px;
+            padding: 16px 32px;
             font-size: 1.1rem;
           }
 
           .indicators {
             bottom: 20px;
+            gap: 12px;
+            padding: 10px 16px;
+          }
+
+          .indicator {
+            width: 12px;
+            height: 12px;
           }
         }
 
@@ -399,8 +445,8 @@ export default function HeroBannerRiver() {
           }
 
           .nav-arrow {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
           }
 
           .nav-arrow-left {
@@ -412,8 +458,18 @@ export default function HeroBannerRiver() {
           }
 
           .cta-button {
-            padding: 12px 25px;
+            padding: 14px 28px;
             font-size: 1rem;
+          }
+
+          .indicators {
+            gap: 10px;
+            padding: 8px 14px;
+          }
+
+          .indicator {
+            width: 10px;
+            height: 10px;
           }
         }
       `}</style>
