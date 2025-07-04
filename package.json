@@ -18,6 +18,7 @@
     "cloudinary": "^2.7.0",
     "exceljs": "^4.4.0",
     "framer-motion": "^12.23.0",
+    "localtunnel": "^2.0.2",
     "lucide-react": "^0.511.0",
     "mercadopago": "^1.5.14",
     "next": "^15.3.3",

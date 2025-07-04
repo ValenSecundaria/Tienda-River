@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/app/lib/prisma"
 const mercadopago = require("mercadopago");
 
 mercadopago.configure({
@@ -9,54 +10,51 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    const transaccion = await prisma.transacciones.create({
+      data: {
+        usuario_id: 1,  //Harcodeado
+        monto_total: Number(body.price),
+        estado_pago_id: 1, // estado "pendiente"
+        forma_pago_id: 1,  // id correspondiente a "MercadoPago"
+      },
+    })
+
+    const orden = await prisma.ordenes.create({
+      data: {
+        usuario_id: 1,   //Harcodeado
+        estado_orden_id: 1, // estado "pendiente"
+        transaccion_id: transaccion.id,
+        total: Number(body.price),
+        direccion_envio: body.direccion || null,
+      },
+    })
+
+
     const preference = {
       items: [
         {
-          id: body.id || "item-id-prueba",
-          title: body.title || "Producto de prueba",
+          id: orden.id.toString(),
+          title: body.title || "Producto",
           description: body.description || "Descripción del producto",
-          unit_price: Number(body.price || 1),
+          unit_price: Number(body.price),
           quantity: Number(body.quantity || 1),
           currency_id: "ARS",
         },
       ],
-      payer: {
-        name: "Lalo",
-        surname: "Landa",
-        email: "gemetrov@gmail.com",
-        phone: {
-          area_code: "0353",
-          number: 154115273,
-        },
-        address: {
-          street_name: "calle falsa",
-          street_number: 123,
-          zip_code: "5900",
-        },
-      },
       back_urls: {
-        success: `${process.env.URL_BASE || "https://prueba-mp-kappa.vercel.app"}/mercado-pago/success`,
-        failure: `${process.env.URL_BASE || "https://prueba-mp-kappa.vercel.app"}/mercado-pago/failure`,
-        pending: `${process.env.URL_BASE || "https://prueba-mp-kappa.vercel.app"}/mercado-pago/pending`,
+        success: `${process.env.URL_BASE}/mercado-pago/success`,
+        failure: `${process.env.URL_BASE}/mercado-pago/failure`,
+        pending: `${process.env.URL_BASE}/mercado-pago/pending`,
       },
-      notification_url: `${process.env.URL_BASE || "https://prueba-mp-kappa.vercel.app"}/api/mercado-pago/webhook`,
+      notification_url: `${process.env.URL_BASE}/api/mercado-pago/webhook`,
       auto_return: "approved",
-      payment_methods: {
-        excluded_payment_methods: [
-          {
-            id: "visa"
-          }
-        ],
-        excluded_payment_types: [],
-        installments: 6,
-      },
-      external_reference: "gemetrovalentin@hotmail.com"
+      external_reference: transaccion.id.toString(),
+
     };
 
     const response = await mercadopago.preferences.create(preference);
-    console.log("Init point generado:", response.body.init_point);
-
     return NextResponse.json({ init_point: response.body.init_point });
+    
   } catch (error: any) {
     console.error("Error creando preferencia:", error);
     return NextResponse.json({ error: error.message || "Error creando preferencia" }, { status: 500 });
