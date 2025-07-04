@@ -8,3 +8,5 @@ Tambien harcodeado el id en 1 en Carrito:
 npm uninstall -g ngrok
 
 Harcodeado el nombre del pago en el webhook
+
+Arreglar Product Card para el deploy, ya que hay un error implicito!!

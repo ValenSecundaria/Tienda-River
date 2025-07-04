@@ -98,12 +98,7 @@ export default function Footer() {
                 <CustomLink href="/acerca-de/empleo" className="footer-link">
                   Empleo
                 </CustomLink>
-              </li>
-              <li>
-                <CustomLink href="/acerca-de/mundo-river-sale" className="footer-link">
-                  MUNDO-RIVER Sale
-                </CustomLink>
-              </li>
+              </li>       
             </ul>
           </div>
 

@@ -512,7 +512,7 @@
 }
 
 /* ================================================
-   RESPONSIVE
+   RESPONSIVE MEJORADO
    ================================================ */
 
 @media (max-width: 991.98px) {
@@ -554,21 +554,505 @@
 
 @media (max-width: 767px) {
   .megaMenu {
-    position: static;
-    width: 100%;
-    box-shadow: none;
-    padding: 1rem 0;
-    opacity: 1;
-    transform: none;
-    background: rgba(248, 250, 252, 0.95);
+    display: none !important;
   }
 
   .backgroundOverlay {
     display: none;
   }
 
-  .subcategoriesGrid {
-    grid-template-columns: 1fr;
+  /* Reorganizar el header para móvil */
+  .customNavbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  /* Botón hamburguesa a la izquierda */
+  .modernToggler {
+    order: 1;
+    margin-right: 1rem;
+    z-index: 1060;
+  }
+
+  /* Logo centrado */
+  .brandContainer {
+    order: 2;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+  }
+
+  /* Iconos a la derecha */
+  .iconContainer {
+    order: 3;
+    z-index: 1050;
+  }
+
+  /* Sidebar desde la izquierda */
+  .navbar-collapse {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(5px) !important;
+    z-index: 1040 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    opacity: 0 !important;
+  }
+
+  .navbar-collapse.show {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
+
+  /* Sidebar content */
+  .mobileMenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(220, 38, 38, 0.1);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    overflow-y: auto;
+    padding: 1rem 0;
+    z-index: 1050;
+    animation: slideInFromLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobileMenuContent {
+    padding: 1rem 0;
+    padding-top: 80px; /* Espacio para no chocar con el header */
+  }
+
+  .mobileCategory {
+    border-bottom: 1px solid rgba(220, 38, 38, 0.05);
+    margin: 0;
+  }
+
+  .mobileCategory:last-child {
+    border-bottom: none;
+  }
+
+  .mobileCategoryHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: transparent;
+    border-radius: 0;
+    margin: 0;
+    transition: all 0.3s ease;
+  }
+
+  .mobileCategoryHeader:hover {
+    background: rgba(220, 38, 38, 0.02);
+  }
+
+  .mobileCategoryLink {
+    flex: 1;
+    color: #1f2937 !important;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none !important;
+    padding: 0;
+    transition: all 0.3s ease;
+  }
+
+  .mobileCategoryLink:hover {
+    color: #dc2626 !important;
+  }
+
+  .categoryToggle {
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .categoryToggle:hover {
+    color: #dc2626;
+    background: rgba(220, 38, 38, 0.05);
+  }
+
+  .mobileSubcategories {
+    background: rgba(248, 250, 252, 0.5);
+    border-radius: 0;
+    padding: 0.5rem 0;
+    margin: 0;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .mobileSubcategoryLink {
+    display: block;
+    color: #4b5563 !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none !important;
+    padding: 0.75rem 2rem;
+    transition: all 0.3s ease;
+    border-radius: 0;
+    margin: 0;
+    position: relative;
+  }
+
+  .mobileSubcategoryLink:hover {
+    color: #dc2626 !important;
+    background: rgba(220, 38, 38, 0.05);
+  }
+
+  .mobileSubcategoryLink::before {
+    content: "•";
+    position: absolute;
+    left: 1.5rem;
+    color: #dc2626;
+    font-weight: bold;
+  }
+
+  /* Ajustar tamaños para móvil */
+  .logoContainer {
+    gap: 8px;
+  }
+
+  .riverShield {
+    width: 28px;
+    height: 32px;
+  }
+
+  .brandText {
+    font-size: 1.1rem;
+  }
+
+  .iconContainer {
+    gap: 0.5rem !important;
+  }
+
+  .iconButton {
+    width: 38px;
+    height: 38px;
+  }
+
+  .iconButton i {
+    font-size: 1.1rem;
+  }
+
+  .loginIcon i {
+    font-size: 1.2rem;
+  }
+}
+
+/* Animación mejorada para el sidebar */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Overlay para cerrar el sidebar tocando fuera */
+@media (max-width: 767px) {
+  .navbar-collapse::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 280px;
+    width: calc(100vw - 280px);
+    height: 100vh;
+    background: transparent;
+    cursor: pointer;
+  }
+}
+
+/* Mantener el diseño desktop intacto */
+@media (min-width: 768px) {
+  .modernToggler {
+    display: none;
+  }
+
+  .brandContainer {
+    position: static !important;
+    transform: none !important;
+  }
+
+  .customNavbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: normal;
+  }
+}
+
+/* ================================================
+   MENÚ MÓVIL COMPLETAMENTE REDISEÑADO
+   ================================================ */
+
+/* ================================================
+   BREAKPOINTS PARA PANTALLAS MUY PEQUEÑAS
+   ================================================ */
+
+/* iPhone Pro Max 14 y similares (430px) */
+@media (max-width: 430px) {
+  .customNavbar .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Reducir tamaño del botón hamburguesa */
+  .modernToggler {
+    padding: 6px;
+    margin-right: 0.5rem;
+  }
+
+  .togglerIcon {
+    width: 18px;
+    height: 14px;
+  }
+
+  /* Reducir tamaño del logo */
+  .logoContainer {
+    gap: 6px;
+  }
+
+  .riverShield {
+    width: 24px;
+    height: 28px;
+  }
+
+  .brandText {
+    font-size: 1rem;
+  }
+
+  /* Reducir tamaño de iconos */
+  .iconContainer {
+    gap: 0.25rem !important;
+  }
+
+  .iconButton {
+    width: 34px;
+    height: 34px;
+  }
+
+  .iconButton i {
+    font-size: 1rem;
+  }
+
+  .loginIcon {
+    padding: 0.25rem;
+  }
+
+  .loginIcon i {
+    font-size: 1.1rem;
+  }
+
+  .cartBadge {
+    font-size: 0.65rem;
+    min-width: 16px;
+    height: 16px;
+    top: -3px;
+    right: -3px;
+  }
+}
+
+/* Pantallas extra pequeñas (375px y menos) */
+@media (max-width: 375px) {
+  .customNavbar .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Botón hamburguesa más pequeño */
+  .modernToggler {
+    padding: 5px;
+    margin-right: 0.25rem;
+  }
+
+  .togglerIcon {
+    width: 16px;
+    height: 12px;
+  }
+
+  .togglerIcon span {
+    height: 1.5px;
+  }
+
+  /* Logo más compacto */
+  .logoContainer {
+    gap: 4px;
+  }
+
+  .riverShield {
+    width: 22px;
+    height: 26px;
+  }
+
+  .brandText {
+    font-size: 0.9rem;
+  }
+
+  /* Iconos más pequeños */
+  .iconContainer {
+    gap: 0.15rem !important;
+  }
+
+  .iconButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .iconButton i {
+    font-size: 0.95rem;
+  }
+
+  .loginIcon {
+    padding: 0.2rem;
+  }
+
+  .loginIcon i {
+    font-size: 1rem;
+  }
+
+  .cartBadge {
+    font-size: 0.6rem;
+    min-width: 14px;
+    height: 14px;
+    padding: 1px 4px;
+  }
+}
+
+/* Samsung Galaxy S8+ y similares (360px) */
+@media (max-width: 360px) {
+  .customNavbar .container-fluid {
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+  }
+
+  /* Botón hamburguesa compacto */
+  .modernToggler {
+    padding: 4px;
+    margin-right: 0.3rem;
+  }
+
+  .togglerIcon {
+    width: 15px;
+    height: 11px;
+  }
+
+  .togglerIcon span {
+    height: 1.5px;
+  }
+
+  /* Logo súper compacto - ocultar texto */
+  .brandText {
+    display: none;
+  }
+
+  .logoContainer {
+    gap: 0;
+    justify-content: center;
+  }
+
+  .riverShield {
+    width: 24px;
+    height: 28px;
+  }
+
+  /* Iconos más compactos */
+  .iconContainer {
+    gap: 0.1rem !important;
+  }
+
+  .iconButton {
+    width: 30px;
+    height: 30px;
+  }
+
+  .iconButton i {
+    font-size: 0.9rem;
+  }
+
+  .loginIcon {
+    padding: 0.15rem;
+  }
+
+  .loginIcon i {
+    font-size: 0.95rem;
+  }
+
+  .cartBadge {
+    font-size: 0.55rem;
+    min-width: 13px;
+    height: 13px;
+    padding: 1px 3px;
+    top: -2px;
+    right: -2px;
+  }
+}
+
+/* Pantallas súper pequeñas (320px y menos) */
+@media (max-width: 320px) {
+  .customNavbar .container-fluid {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  /* Botón hamburguesa mínimo */
+  .modernToggler {
+    padding: 3px;
+    margin-right: 0.25rem;
+  }
+
+  .togglerIcon {
+    width: 14px;
+    height: 10px;
+  }
+
+  /* Logo mínimo */
+  .riverShield {
+    width: 22px;
+    height: 26px;
+  }
+
+  /* Iconos mínimos */
+  .iconButton {
+    width: 28px;
+    height: 28px;
+  }
+
+  .iconButton i {
+    font-size: 0.85rem;
+  }
+
+  .loginIcon i {
+    font-size: 0.9rem;
+  }
+
+  .cartBadge {
+    font-size: 0.5rem;
+    min-width: 12px;
+    height: 12px;
+    padding: 1px 2px;
   }
 }
 
@@ -605,4 +1089,109 @@
 .brandContainer:focus {
   outline: 2px solid #dc2626;
   outline-offset: 2px;
+}
+
+/* ================================================
+   MENÚ MÓVIL MEJORADO
+   ================================================ */
+
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  z-index: 1040;
+  overflow-y: auto;
+  padding-top: 80px; /* Espacio para el header */
+}
+
+.mobileMenuContent {
+  padding: 1rem;
+  max-width: 100%;
+}
+
+.mobileCategory {
+  border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+.mobileCategoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.mobileCategoryLink {
+  flex: 1;
+  color: #1f2937 !important;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none !important;
+  padding: 0 1rem;
+  transition: all 0.3s ease;
+}
+
+.mobileCategoryLink:hover {
+  color: #dc2626 !important;
+}
+
+.categoryToggle {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.categoryToggle:hover {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.mobileSubcategories {
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 8px;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.mobileSubcategoryLink {
+  display: block;
+  color: #4b5563 !important;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  margin: 0.25rem 0.5rem;
+}
+
+.mobileSubcategoryLink:hover {
+  color: #dc2626 !important;
+  background: rgba(220, 38, 38, 0.05);
+  transform: translateX(8px);
+}
+
+/* Animación para subcategorías */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

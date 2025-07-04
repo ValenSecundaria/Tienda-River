@@ -26,6 +26,8 @@ export function ProductCard({ producto }) {
         setAgregado(true);
         setMensajeVisible(true);
 
+        window.dispatchEvent(new Event("carrito-update"))
+        
         setTimeout(() => {
           setMensajeVisible(false);
           setAgregado(false);

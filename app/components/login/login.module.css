@@ -1,0 +1,507 @@
+/* ================================================
+   PÁGINA DE LOGIN COMPLETA
+   ================================================ */
+
+.loginPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%, #f8fafc 100%);
+  padding-top: 80px; /* Compensar header fijo */
+  padding-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.loginPage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(220, 38, 38, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.loginContainer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 2rem;
+  align-items: center;
+}
+
+.loginCard {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(220, 38, 38, 0.05);
+  overflow: hidden;
+  max-width: 450px;
+  width: 100%;
+  position: relative;
+}
+
+.loginCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #dc2626 0%, #ffffff 25%, #dc2626 50%, #ffffff 75%, #dc2626 100%);
+  animation: borderFlow 3s linear infinite;
+}
+
+@keyframes borderFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+
+/* ================================================
+   HEADER DEL LOGIN
+   ================================================ */
+
+.loginHeader {
+  text-align: center;
+  padding: 2.5rem 2rem 1.5rem;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.02) 0%, rgba(255, 255, 255, 0.8) 100%);
+  border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+}
+
+.riverShield {
+  width: 80px;
+  height: 95px;
+  margin: 0 auto 1.5rem;
+  position: relative;
+  filter: drop-shadow(0 4px 8px rgba(220, 38, 38, 0.2));
+  animation: shieldFloat 3s ease-in-out infinite;
+}
+
+@keyframes shieldFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.shieldImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.riverShield:hover .shieldImage {
+  transform: scale(1.05) rotate(2deg);
+  filter: brightness(1.1);
+}
+
+.welcomeTitle {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #1f2937 0%, #dc2626 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: "Arial Black", "Helvetica", sans-serif;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.welcomeSubtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ================================================
+   FOOTER DEL LOGIN
+   ================================================ */
+
+.loginFooter {
+  padding: 1.5rem 2rem 2rem;
+  background: rgba(248, 250, 252, 0.5);
+  border-top: 1px solid rgba(220, 38, 38, 0.1);
+}
+
+.footerText {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.registerLink {
+  color: #dc2626;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.registerLink::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #dc2626;
+  transition: width 0.3s ease;
+}
+
+.registerLink:hover {
+  color: #991b1b;
+}
+
+.registerLink:hover::after {
+  width: 100%;
+}
+
+.socialLogin {
+  text-align: center;
+}
+
+.socialText {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.socialButtons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.socialButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  justify-content: center;
+  max-width: 120px;
+}
+
+.socialButton:hover {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.02);
+  color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+.socialButton i {
+  font-size: 1rem;
+}
+
+/* ================================================
+   DECORACIÓN LATERAL
+   ================================================ */
+
+.decorationSide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  position: relative;
+}
+
+.riverPattern {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 2rem;
+}
+
+.patternElement {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(220, 38, 38, 0.2);
+  border-radius: 50%;
+  animation: patternFloat 4s ease-in-out infinite;
+}
+
+.patternElement:nth-child(1) {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 0s;
+}
+
+.patternElement:nth-child(2) {
+  bottom: 0;
+  left: 0;
+  animation-delay: 1.3s;
+}
+
+.patternElement:nth-child(3) {
+  bottom: 0;
+  right: 0;
+  animation-delay: 2.6s;
+}
+
+@keyframes patternFloat {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+    border-color: rgba(220, 38, 38, 0.2);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+    border-color: rgba(220, 38, 38, 0.4);
+  }
+}
+
+.motivationalText {
+  text-align: center;
+  max-width: 300px;
+}
+
+.motivationalText h2 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #dc2626;
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: "Arial Black", "Helvetica", sans-serif;
+  text-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+  animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+  }
+  100% {
+    text-shadow: 0 4px 8px rgba(220, 38, 38, 0.4);
+  }
+}
+
+.motivationalText p {
+  font-size: 1.1rem;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 1024px) {
+  .loginContainer {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    justify-items: center;
+  }
+
+  .decorationSide {
+    order: -1;
+    min-height: auto;
+    padding: 1rem 0;
+  }
+
+  .riverPattern {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .patternElement {
+    width: 45px;
+    height: 45px;
+  }
+
+  .motivationalText h2 {
+    font-size: 2rem;
+  }
+
+  .motivationalText p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .loginPage {
+    padding-top: 70px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .loginContainer {
+    gap: 1.5rem;
+  }
+
+  .loginCard {
+    max-width: 100%;
+  }
+
+  .loginHeader {
+    padding: 2rem 1.5rem 1rem;
+  }
+
+  .riverShield {
+    width: 60px;
+    height: 72px;
+    margin-bottom: 1rem;
+  }
+
+  .welcomeTitle {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+
+  .welcomeSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .loginFooter {
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .socialButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .socialButton {
+    max-width: 100%;
+  }
+
+  .decorationSide {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginPage {
+    padding-top: 60px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .loginHeader {
+    padding: 1.5rem 1rem 0.75rem;
+  }
+
+  .riverShield {
+    width: 50px;
+    height: 60px;
+  }
+
+  .welcomeTitle {
+    font-size: 1.25rem;
+  }
+
+  .loginFooter {
+    padding: 0.75rem 1rem 1rem;
+  }
+}
+
+/* ================================================
+   MEJORAS DE ACCESIBILIDAD
+   ================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .riverShield,
+  .patternElement,
+  .motivationalText h2,
+  .loginCard::before {
+    animation: none;
+  }
+}
+
+.registerLink:focus,
+.socialButton:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+/* ================================================
+   MODO OSCURO
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .loginPage {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 25%, #1f2937 50%, #111827 75%, #1f2937 100%);
+  }
+
+  .loginCard {
+    background: rgba(31, 41, 55, 0.95);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(220, 38, 38, 0.2);
+  }
+
+  .loginHeader {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(31, 41, 55, 0.8) 100%);
+    border-bottom-color: rgba(220, 38, 38, 0.2);
+  }
+
+  .welcomeTitle {
+    color: #f9fafb;
+  }
+
+  .welcomeSubtitle {
+    color: #d1d5db;
+  }
+
+  .loginFooter {
+    background: rgba(17, 24, 39, 0.5);
+    border-top-color: rgba(220, 38, 38, 0.2);
+  }
+
+  .footerText,
+  .socialText {
+    color: #d1d5db;
+  }
+
+  .socialButton {
+    background: rgba(31, 41, 55, 0.8);
+    border-color: rgba(75, 85, 99, 0.5);
+    color: #d1d5db;
+  }
+
+  .socialButton:hover {
+    background: rgba(220, 38, 38, 0.1);
+    border-color: #dc2626;
+    color: #dc2626;
+  }
+
+  .motivationalText p {
+    color: #d1d5db;
+  }
+}

@@ -5,6 +5,7 @@ import styles from "./Carrito.module.css"
 
 interface CarritoProps {
   onClose: () => void
+  
 }
 
 interface Producto {
@@ -47,6 +48,7 @@ const inlineStyles = {
 
 
 export default function Carrito({ onClose }: CarritoProps) {
+
   
   const popupRef = useRef<HTMLDivElement>(null)
   const [productos, setProductos] = useState<Producto[]>([])
@@ -133,6 +135,8 @@ export default function Carrito({ onClose }: CarritoProps) {
 
       // Actualizar el estado local
       setProductos((prev) => prev.filter((p) => p.id !== productoId));
+      window.dispatchEvent(new Event("carrito-update"))
+
     } catch (error) {
       console.error("Error eliminando producto:", error);
       alert("Error al eliminar producto del carrito");
