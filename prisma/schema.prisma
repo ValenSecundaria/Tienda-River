@@ -77,12 +77,16 @@ model ordenitems {
 
 model pagos {
   id            Int             @id @default(autoincrement())
-  nombre        String          @db.VarChar(100)
-  detalle       String?
+  nombre        String          @db.VarChar(100) // MercadoPago, PayPal, etc.
+  detalle       String?         // descripción del pago
   activo        Boolean         @default(true)
   icono         String?         @db.VarChar(50)
-  transacciones transacciones[]
+  transacciones transacciones[] // transacciones asociadas
+
+  usuario_id    Int?            // Nuevo: usuario que realizó el pago (opcional)
+  usuario usuarios? @relation(fields: [usuario_id], references: [id], name: "PagoUsuario")
 }
+
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model productos {
@@ -155,18 +159,20 @@ model talles {
 }
 
 model transacciones {
-  id                 Int        @id @default(autoincrement())
-  usuario_id         Int
-  monto_total        Decimal    @db.Decimal(10, 2)
-  fecha              DateTime   @default(now()) @db.Timestamp(6)
+  id                 Int          @id @default(autoincrement())
+  usuario_id         Int?         // AHORA OPCIONAL
+  monto_total        Decimal      @db.Decimal(10, 2)
+  fecha              DateTime     @default(now()) @db.Timestamp(6)
   estado_pago_id     Int
-  forma_pago_id      Int
-  codigo_transaccion String?    @unique @db.VarChar(50)
+  forma_pago_id      Int?         // AHORA OPCIONAL
+  codigo_transaccion String?      @unique @db.VarChar(50)
   datos_adicionales  Json?
   ordenes            ordenes[]
-  estadopago         estadopago @relation(fields: [estado_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  pagos              pagos      @relation(fields: [forma_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  usuarios           usuarios   @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  // Relaciones
+  estadopago         estadopago   @relation(fields: [estado_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pagos              pagos?       @relation(fields: [forma_pago_id], references: [id]) // OPCIONAL
+  usuarios           usuarios?    @relation(fields: [usuario_id], references: [id])
 
   @@index([usuario_id], map: "idx_transacciones_usuario_id")
 }
@@ -182,6 +188,8 @@ model usuarios {
   carrito        carrito?
   ordenes        ordenes[]
   transacciones  transacciones[]
+
+  pagos   pagos[]  @relation("PagoUsuario")
 }
 
 model carrito {

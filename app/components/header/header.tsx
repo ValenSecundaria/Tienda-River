@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import styles from "./header.module.css"
-import Carrito from "../FormMercadoPago/Carrito"
+import Carrito from "../mercadoPago/FormMercadoPago/Carrito"
 
 // Tipos
 type Subcategoria = { id: number; nombre: string; descripcion?: string }

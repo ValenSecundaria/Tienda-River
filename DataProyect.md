@@ -4,3 +4,7 @@ Tambien harcodeado el id en 1 en Carrito:
 
 //CONSULTAS
 ¿ Usamos un cron para eliminar los carritos asociados a usuarios que no se registran ? ¿ Para este proyecto es necesario por la complejidad ?
+
+npm uninstall -g ngrok
+
+Harcodeado el nombre del pago en el webhook

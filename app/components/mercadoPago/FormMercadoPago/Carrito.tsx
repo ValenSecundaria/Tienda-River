@@ -92,29 +92,34 @@ export default function Carrito({ onClose }: CarritoProps) {
   }, []);
 
   const handlePagarConMercadoPago = async () => {
-    try {
-      const res = await fetch("/api/mercado-pago/crear-preferencia", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      })
+      try {
+        const res = await fetch("/api/mercado-pago/crear-preferencia", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            price: 1, // monto fijo de prueba
+            title: "Producto de prueba",
+            description: "Compra de prueba con Mercado Pago",
+            quantity: 1
+          }),
+        });
 
-      if (!res.ok) {
-        const errorText = await res.text()
-        alert("Error en la API: " + errorText)
-        return
-      }
+        if (!res.ok) {
+          const errorText = await res.text();
+          alert("Error en la API: " + errorText);
+          return;
+        }
 
-      const data = await res.json()
-      if (data.init_point) {
-        window.location.href = data.init_point
-      } else {
-        alert("No se recibió el link de pago")
+        const data = await res.json();
+        if (data.init_point) {
+          window.location.href = data.init_point;
+        } else {
+          alert("No se recibió el link de pago");
+        }
+      } catch (err) {
+        alert("Hubo un error al iniciar el pago con Mercado Pago: " + err);
       }
-    } catch (err) {
-      alert("Hubo un error al iniciar el pago con Mercado Pago: " + err)
-    }
-  }
+  };
 
   const handleEliminarProducto = async (productoId: number) => {
     try {
