@@ -25,6 +25,7 @@ export async function getProducts(filters?: {
   orderDirection?: "asc" | "desc"
 }) {
   try {
+    console.log("intentando obtener productos");
     const where: any = {}
 
     // Filtro de búsqueda por nombre
@@ -46,7 +47,9 @@ export async function getProducts(filters?: {
     }
 
     const products = await prisma.productos.findMany({
-      where,
+      where:{
+        producto_base_id :null
+      },
       orderBy: {
         [filters?.orderBy || "fecha_creacion"]: filters?.orderDirection || "desc",
       },
@@ -63,12 +66,12 @@ export async function getProducts(filters?: {
             nombre: true,
           },
         },
-        _count: {
+        /*_count: {
           select: {
-            productovariante: true,
-            productoimagenes: true,
+            //productovariante: true,
+            //productoimagenes: true,
           },
-        },
+        },*/
       },
     })
 
@@ -105,7 +108,7 @@ export async function deleteProduct(id: number) {
     const product = await prisma.productos.findUnique({
       where: { id },
       include: {
-        _count: {
+        /*_count: {
           select: {
             productovariante: true,
           },
@@ -119,7 +122,7 @@ export async function deleteProduct(id: number) {
             },
           },
         },
-      },
+      */},
     })
 
     if (!product) {
@@ -127,25 +130,25 @@ export async function deleteProduct(id: number) {
     }
 
     // Verificar si tiene órdenes asociadas
-    const hasOrders = product.productovariante.some((variant) => variant._count.ordenitems > 0)
+    //const hasOrders = product.productovariante.some((variant) => variant._count.ordenitems > 0)
 
-    if (hasOrders) {
+    /*if (hasOrders) {
       return {
         error: "No se puede eliminar el producto porque tiene órdenes asociadas",
       }
-    }
+    }*/
 
     // Eliminar en orden: imágenes, variantes, producto
     await prisma.$transaction(async (tx) => {
       // Eliminar imágenes del producto
-      await tx.productoimagenes.deleteMany({
+     /* await tx.productoimagenes.deleteMany({
         where: { producto_id: id },
       })
 
       // Eliminar variantes del producto
       await tx.productovariante.deleteMany({
         where: { producto_id: id },
-      })
+      })*/
 
       // Eliminar el producto
       await tx.productos.delete({
@@ -185,7 +188,7 @@ export async function getProductById(id: number) {
       include: {
         categorias: true,
         subcategorias: true,
-        productoimagenes: {
+        /*productoimagenes: {
           orderBy: { orden: "asc" },
         },
         productovariante: {
@@ -193,7 +196,7 @@ export async function getProductById(id: number) {
             talles: true,
           },
         },
-      },
+      */},
     })
     return product
   } catch (error) {

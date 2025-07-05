@@ -13,6 +13,7 @@ export async function ProductGrid({ categoria }: ProductGridProps) {
       categorias: {
         slug: categoria,
       },
+      producto_base_id: null
     },
     include: {
       categorias: true,

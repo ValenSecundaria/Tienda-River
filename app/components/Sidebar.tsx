@@ -1,16 +1,19 @@
 "use client"
 
 import type React from "react"
-
+import { signOut } from "next-auth/react"
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import styles from "./Sidebar.module.css"
+import botonSesion from "../components/CloseSesion"
+import { logoutAction } from "../lib/action"
 
 interface MenuItem {
   title: string
   href: string
   icon: React.ReactNode
+  onClick?: () => void
 }
 
 interface MenuSection {
@@ -133,6 +136,31 @@ const menuData: MenuSection[] = [
       },
     ],
   },
+  {
+    title: "Log-Out",
+    items: [
+      {
+        title: "Cerrar Sesión",
+        href: "#", 
+        onClick: () => logoutAction(),
+        icon: (
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 2v10" />
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+          </svg>
+        ),
+      },
+    ],
+  },
 ]
 
 export default function Sidebar() {
@@ -157,6 +185,7 @@ export default function Sidebar() {
   }
 
   return (
+    
     <aside className={styles.sidebar}>
       <div className={styles.header}>
         <div className={styles.logo}>
@@ -204,17 +233,30 @@ export default function Sidebar() {
               }`}
             >
               {section.items.map((item) => (
-                <li key={item.href} className={styles.menuItem}>
-                  <Link href={item.href} className={`${styles.menuLink} ${isActive(item.href) ? styles.active : ""}`}>
-                    <span className={styles.menuIcon}>{item.icon}</span>
-                    <span className={styles.menuText}>{item.title}</span>
-                  </Link>
+                <li key={item.title} className={styles.menuItem}>
+                  {item.onClick ? (
+                    <div
+                      className={`${styles.menuLink} ${isActive(item.href) ? styles.active : ""}`}
+                      onClick={item.onClick}
+                    >
+                      <span className={styles.menuIcon}>{item.icon}</span>
+                      <span className={styles.menuText}>{item.title}</span>
+                    </div>
+                  ) : (
+                    <Link href={item.href} className={`${styles.menuLink} ${isActive(item.href) ? styles.active : ""}`}>
+                      <span className={styles.menuIcon}>{item.icon}</span>
+                      <span className={styles.menuText}>{item.title}</span>
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
+            
           </div>
         ))}
       </nav>
+
     </aside>
+    
   )
 }

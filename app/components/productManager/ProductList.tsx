@@ -123,7 +123,7 @@ export default function ProductList({ products, onRefresh }: ProductListProps) {
               <th className={styles.th}>Producto</th>
               <th className={styles.th}>Categoría</th>
               <th className={styles.th}>Precio</th>
-              <th className={styles.th}>Variantes</th>
+              {/*<th className={styles.th}>Variantes</th>*/}
               <th className={styles.th}>Estado</th>
               <th className={styles.th}>Fecha</th>
               <th className={styles.th}>Acciones</th>
@@ -161,13 +161,13 @@ export default function ProductList({ products, onRefresh }: ProductListProps) {
                   <span className={styles.price}>{formatPrice(product.precio_base)}</span>
                 </td>
 
-                <td className={styles.td}>
+               {/* <td className={styles.td}>
                   <div className={styles.variantInfo}>
                     <span className={styles.variantCount}>{product._count.productovariante} variantes</span>
                     <span className={styles.imageCount}>{product._count.productoimagenes} imágenes</span>
                   </div>
                 </td>
-
+                */}
                 <td className={styles.td}>
                   <button
                     className={`${styles.statusBadge} ${product.activo ? styles.active : styles.inactive}`}
@@ -199,7 +199,7 @@ export default function ProductList({ products, onRefresh }: ProductListProps) {
                         <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                       </svg>
                     </a>
-
+                    {/*
                     <button
                       className={styles.deleteButton}
                       onClick={() => handleDelete(product)}
@@ -221,7 +221,7 @@ export default function ProductList({ products, onRefresh }: ProductListProps) {
                           <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2" />
                         </svg>
                       )}
-                    </button>
+                    </button>*/}
                   </div>
                 </td>
               </tr>

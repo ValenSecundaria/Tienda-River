@@ -133,6 +133,7 @@
 .menuLink:hover {
   background-color: #f9fafb;
   color: #1f2937;
+  cursor: pointer;
 }
 
 .menuLink.active {

@@ -1,5 +1,5 @@
-import ProductsManager from "../../components/productManager/ProductsManager"
+import CreateProductForm from "../../components/productManager/CreateProductForm"
 
-export default function VerProductosPage() {
-  return <ProductsManager />
+export default function AgregarProductoPage() {
+  return <CreateProductForm />
 }
