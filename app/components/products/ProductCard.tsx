@@ -48,7 +48,7 @@ export function ProductCard({ producto }) {
           <Image
             src={
               producto.imagen_principal ??
-              "/placeholder.svg?text=Sin+imagen&width=400&height=300"
+              "https://static.vecteezy.com/system/resources/previews/005/720/408/large_2x/crossed-image-icon-picture-not-available-delete-picture-symbol-free-vector.jpg"
             }
             alt={producto.nombre}
             width={400}
