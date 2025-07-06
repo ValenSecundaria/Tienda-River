@@ -1,33 +1,45 @@
 /* ================================================
-   BOTÓN TOGGLE CONTRASEÑA
+   ESTILOS BASE DEL FORMULARIO
    ================================================ */
-.passwordToggle {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #6b7280;
-  cursor: pointer;
-  padding: 0.5rem;
-  transition: all 0.3s ease;
-  z-index: 2;
-  border-radius: 6px;
+.form {
+  background: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.passwordToggle:hover {
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.05);
-}
-
-.passwordToggle:focus {
-  outline: 2px solid #dc2626;
-  outline-offset: 2px;
+.formContent {
+  padding: 2rem;
 }
 
 /* ================================================
-   MEJORAS PARA CAMPOS MÁS NATURALES
+   CONTENEDORES DE INPUT
+   ================================================ */
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputGroup {
+  margin-bottom: 1.5rem;
+}
+
+/* ================================================
+   LABELS
+   ================================================ */
+.label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
+  letter-spacing: 0.025em;
+}
+
+/* ================================================
+   INPUTS
    ================================================ */
 .input {
   width: 100%;
@@ -57,6 +69,9 @@
   font-size: 0.95rem;
 }
 
+/* ================================================
+   ICONOS DE INPUT
+   ================================================ */
 .inputIcon {
   position: absolute;
   left: 1rem;
@@ -74,20 +89,50 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-.label {
-  display: block;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 0.75rem;
-  font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
-  letter-spacing: 0.025em;
+/* ================================================
+   BOTÓN TOGGLE CONTRASEÑA
+   ================================================ */
+.passwordToggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  z-index: 2;
+  border-radius: 6px;
 }
 
-.inputGroup {
+.passwordToggle:hover {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.passwordToggle:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+/* ================================================
+   CONTENEDOR DE CAPTCHA
+   ================================================ */
+.captchaContainer {
   margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(248, 250, 252, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(220, 38, 38, 0.08);
 }
 
+/* ================================================
+   BOTONES
+   ================================================ */
 .button {
   width: 100%;
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
@@ -122,10 +167,7 @@
   box-shadow: none;
 }
 
-/* ================================================
-   BOTÓN CREAR CUENTA
-   ================================================ */
-.createAccountButton {
+.backToLoginButton {
   width: 100%;
   background: transparent;
   color: #dc2626;
@@ -138,76 +180,13 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
   letter-spacing: 0.025em;
-  margin-top: 0.5rem;
-  display: block;
 }
 
-.createAccountButton:hover {
+.backToLoginButton:hover {
   background: #dc2626;
   color: white;
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(220, 38, 38, 0.2);
-}
-
-.rememberMe {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: rgba(248, 250, 252, 0.6);
-  border-radius: 8px;
-  border: 1px solid rgba(220, 38, 38, 0.08);
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: #dc2626;
-  cursor: pointer;
-}
-
-.checkboxText {
-  font-size: 0.9rem;
-  color: #374151;
-  font-weight: 500;
-  letter-spacing: 0.025em;
-  line-height: 1;
-}
-
-.forgotPasswordLink {
-  color: #dc2626;
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
-  padding: 0.25rem;
-}
-
-.errorMessage {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.06);
-  border: 1px solid rgba(220, 38, 38, 0.2);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
-  font-weight: 500;
-  width: 100%;
-  animation: errorSlideIn 0.3s ease-out;
 }
 
 /* ================================================
@@ -230,6 +209,29 @@
   }
 }
 
+/* ================================================
+   MENSAJES DE ERROR
+   ================================================ */
+.errorContainer {
+  margin-top: 1rem;
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
+  font-weight: 500;
+  width: 100%;
+  animation: errorSlideIn 0.3s ease-out;
+}
+
 @keyframes errorSlideIn {
   from {
     opacity: 0;
@@ -242,27 +244,7 @@
 }
 
 /* ================================================
-   ESTILOS BASE DEL FORMULARIO
-   ================================================ */
-.form {
-  background: white;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.formContent {
-  padding: 2rem;
-}
-
-.inputContainer {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* ================================================
-   RESPONSIVE MEJORADO
+   RESPONSIVE
    ================================================ */
 @media (max-width: 640px) {
   .formContent {
@@ -287,9 +269,13 @@
     font-size: 0.95rem;
   }
 
-  .createAccountButton {
+  .backToLoginButton {
     padding: 0.75rem 1.25rem;
     font-size: 0.9rem;
+  }
+
+  .captchaContainer {
+    padding: 0.75rem;
   }
 }
 

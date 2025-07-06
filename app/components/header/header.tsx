@@ -26,34 +26,30 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
-
   const [productos, setProductos] = useState<any[]>([])
 
   useEffect(() => {
-      const loadProductos = async () => {
-        try {
-          const res = await fetch("/api/carrito/cookies")
-          if (!res.ok) throw new Error("Error al cargar carrito")
-          const data = await res.json()
-          setProductos(data)
-        } catch (error) {
-          console.error("Error cargando productos:", error)
-        }
+    const loadProductos = async () => {
+      try {
+        const res = await fetch("/api/carrito/cookies")
+        if (!res.ok) throw new Error("Error al cargar carrito")
+        const data = await res.json()
+        setProductos(data)
+      } catch (error) {
+        console.error("Error cargando productos:", error)
       }
+    }
 
+    loadProductos()
+    const handleCarritoUpdate = () => {
       loadProductos()
+    }
 
-      const handleCarritoUpdate = () => {
-        loadProductos()
-      }
-
-      window.addEventListener("carrito-update", handleCarritoUpdate)
-
-      return () => {
-        window.removeEventListener("carrito-update", handleCarritoUpdate)
-      }
+    window.addEventListener("carrito-update", handleCarritoUpdate)
+    return () => {
+      window.removeEventListener("carrito-update", handleCarritoUpdate)
+    }
   }, [])
-
 
   const handleMenuMouseEnter = () => {
     if (hoverTimeout) {
@@ -114,7 +110,6 @@ export default function Header() {
           (isHoveringMenu || isHeaderHovered) && !showCartPopup ? styles.showBackgroundBlur : ""
         }`}
       />
-
       <nav
         className={`${styles.customNavbar} navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top`}
         onMouseEnter={() => setIsHeaderHovered(true)}
@@ -139,7 +134,7 @@ export default function Header() {
           <Link href="/" className={`navbar-brand ${styles.brandContainer}`}>
             <div className={styles.logoContainer}>
               <div className={styles.riverShield}>
-                <img src="images/river-logo.png" alt="Escudo River Plate" className={styles.shieldImage} />
+                <img src="/images/river-logo.png" alt="Escudo River Plate" className={styles.shieldImage} />
               </div>
               <span className={styles.brandText}>Tienda River</span>
             </div>
@@ -210,7 +205,6 @@ export default function Header() {
                           <i className={`bi bi-chevron-${expandedCategory === item.label ? "up" : "down"}`} />
                         </button>
                       </div>
-
                       {expandedCategory === item.label && (
                         <div className={styles.mobileSubcategories}>
                           {item.categorias.flatMap((cat) =>
@@ -219,9 +213,7 @@ export default function Header() {
                                 key={sub.id}
                                 href={`/${slugify(item.label)}/${slugify(sub.nombre)}`}
                                 className={styles.mobileSubcategoryLink}
-                                onClick={() =>
-                                  handleMobileNavigation(`/${slugify(item.label)}/${slugify(sub.nombre)}`)
-                                }
+                                onClick={() => handleMobileNavigation(`/${slugify(item.label)}/${slugify(sub.nombre)}`)}
                               >
                                 {sub.nombre}
                               </Link>
@@ -259,12 +251,7 @@ export default function Header() {
         <div className={styles.searchBar}>
           <div className="container-fluid px-3 px-lg-4">
             <div className="d-flex align-items-center">
-              <input
-                type="text"
-                className={styles.searchInput}
-                placeholder="Buscar productos de River..."
-                autoFocus
-              />
+              <input type="text" className={styles.searchInput} placeholder="Buscar productos de River..." autoFocus />
               <button className={styles.searchCloseBtn} onClick={toggleSearch}>
                 <i className="bi bi-x-lg" />
               </button>

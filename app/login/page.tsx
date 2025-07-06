@@ -1,9 +1,14 @@
+
+"use client"
 import LoginForm from "@/app/components/login-form"
-import { Suspense } from "react"
+import Register from "@/app/components/register/Register"
+import { Suspense, useState } from "react" 
 import styles from "./loginPage.module.css"
 import Image from "next/image"
 
 export default function LoginPage() {
+  const [showRegister, setShowRegister] = useState(false) 
+
   return (
     <main className={styles.main}>
       <div className={styles.container}>
@@ -18,7 +23,11 @@ export default function LoginPage() {
           />
         </div>
         <Suspense fallback={<div>Cargando...</div>}>
-          <LoginForm />
+          {showRegister ? (
+            <Register onSwitchToLogin={() => setShowRegister(false)} />
+          ) : (
+            <LoginForm onSwitchToRegister={() => setShowRegister(true)} />
+          )}
         </Suspense>
       </div>
     </main>

@@ -6,7 +6,11 @@ import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 import styles from "./loginForm.module.css"
 
-export default function LoginForm() {
+interface LoginFormProps {
+  onSwitchToRegister?: () => void
+}
+
+export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
   const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined)
@@ -104,6 +108,12 @@ export default function LoginForm() {
           {isPending && <span className={styles.loadingSpinner}></span>}
           {isPending ? "Ingresando..." : "Ingresar"}
         </button>
+
+        {onSwitchToRegister && (
+          <button type="button" className={styles.createAccountButton} onClick={onSwitchToRegister}>
+            Crear nueva cuenta
+          </button>
+        )}
 
         <div className={styles.errorContainer} aria-live="polite" aria-atomic="true">
           {errorMessage && (
