@@ -28,9 +28,6 @@ en .env : EXPORT_API_KEY= pass123
 
 npm install cloudinary
 
-npm install formidable
-npm install --save-dev @types/formidable
-
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/2gizGE2c)
 
 # Proyecto 2 - Desarrollo de Aplicación Web Completa con Next.js y PostgreSQL

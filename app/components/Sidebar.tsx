@@ -23,114 +23,156 @@ interface MenuSection {
 }
 
 const menuData: MenuSection[] = [
-  {
-    title: "Dashboard",
-    items: [
-      {
-        title: "Inicio",
-        href: "/dashboard",
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9,22 9,12 15,12 15,22" />
-          </svg>
-        ),
-      },
-      {
-        title: "Analíticas",
-        href: "/dashboard/analiticas",
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M3 3v18h18" />
-            <path d="m19 9-5 5-4-4-3 3" />
-          </svg>
-        ),
-      },
-    ],
-  },
-  {
-    title: "Productos",
+    {
+      title: "Dashboard",
+      items: [
+        {
+          title: "Inicio",
+          href: "/dashboard",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9,22 9,12 15,12 15,22" />
+            </svg>
+          ),
+        },
+        {
+          title: "Analíticas",
+          href: "/dashboard/analiticas",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 3v18h18" />
+              <path d="m19 9-5 5-4-4-3 3" />
+            </svg>
+          ),
+        },
+      ],
+    },
+    {
+      title: "Productos",
+      collapsible: true,
+      items: [
+        {
+          title: "Ver Productos",
+          href: "/dashboard/ver-productos",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="m7.5 4.27 9 5.15" />
+              <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+              <path d="m3.3 7 8.7 5 8.7-5" />
+              <path d="M12 22V12" />
+            </svg>
+          ),
+        },
+        {
+          title: "Agregar Producto",
+          href: "/dashboard/agregar-producto",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 12h8" />
+              <path d="M12 8v8" />
+            </svg>
+          ),
+        },
+        {
+          title: "Categorías",
+          href: "/dashboard/categorias",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 7V5c0-1.1.9-2 2-2h2" />
+              <path d="M17 3h2c1.1 0 2 .9 2 2v2" />
+              <path d="M21 17v2c0 1.1-.9 2-2 2h-2" />
+              <path d="M7 21H5c-1.1 0-2-.9-2-2v-2" />
+              <rect width="7" height="5" x="7" y="7" rx="1" />
+              <rect width="7" height="5" x="10" y="12" rx="1" />
+            </svg>
+          ),
+        },
+      ],
+    },
+    {
+      title: "Usuarios",
+      collapsible: true,
+      items: [
+        {
+          title: "Administradores",
+          href: "/dashboard/administradores",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="m22 21-3-3m0 0a5 5 0 1 0-7-7 5 5 0 0 0 7 7Z" />
+            </svg>
+          ),
+        },
+        {
+          title: "Agregar Admin",
+          href: "/dashboard/agregar-admin",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" x2="19" y1="8" y2="14" />
+              <line x1="22" x2="16" y1="11" y2="11" />
+            </svg>
+          ),
+        },
+      ],
+    },
+    {
+      title: "Ventas",
+      items: [
+        {
+          title: "Órdenes",
+          href: "/dashboard/ordenes",
+          icon: (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="m7 11 2-2-2-2" />
+              <path d="M11 13h4" />
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+            </svg>
+          ),
+        },
+      ],
+    },
+    {
+    title: "Exportar Datos",
     collapsible: true,
     items: [
       {
-        title: "Ver Productos",
-        href: "/dashboard/ver-productos",
+        title: "Exportar Clientes",
+        href: "/dashboard/exportar/clientes",
         icon: (
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m7.5 4.27 9 5.15" />
-            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-            <path d="m3.3 7 8.7 5 8.7-5" />
-            <path d="M12 22V12" />
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+            <path d="M12 15L7 10H17L12 15Z" />
           </svg>
         ),
       },
       {
-        title: "Agregar Producto",
-        href: "/dashboard/agregar-producto",
+        title: "Exportar Productos",
+        href: "/dashboard/exportar/productos",
         icon: (
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 12h8" />
-            <path d="M12 8v8" />
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+            <path d="M12 15L7 10H17L12 15Z" />
           </svg>
         ),
       },
       {
-        title: "Categorías",
-        href: "/dashboard/categorias",
+        title: "Exportar Pagos",
+        href: "/dashboard/exportar/pagos",
         icon: (
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M3 7V5c0-1.1.9-2 2-2h2" />
-            <path d="M17 3h2c1.1 0 2 .9 2 2v2" />
-            <path d="M21 17v2c0 1.1-.9 2-2 2h-2" />
-            <path d="M7 21H5c-1.1 0-2-.9-2-2v-2" />
-            <rect width="7" height="5" x="7" y="7" rx="1" />
-            <rect width="7" height="5" x="10" y="12" rx="1" />
-          </svg>
-        ),
-      },
-    ],
-  },
-  {
-    title: "Usuarios",
-    collapsible: true,
-    items: [
-      {
-        title: "Administradores",
-        href: "/dashboard/administradores",
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="m22 21-3-3m0 0a5 5 0 1 0-7-7 5 5 0 0 0 7 7Z" />
-          </svg>
-        ),
-      },
-      {
-        title: "Agregar Admin",
-        href: "/dashboard/agregar-admin",
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <line x1="19" x2="19" y1="8" y2="14" />
-            <line x1="22" x2="16" y1="11" y2="11" />
-          </svg>
-        ),
-      },
-    ],
-  },
-  {
-    title: "Ventas",
-    items: [
-      {
-        title: "Órdenes",
-        href: "/dashboard/ordenes",
-        icon: (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m7 11 2-2-2-2" />
-            <path d="M11 13h4" />
-            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+            <path d="M12 15L7 10H17L12 15Z" />
           </svg>
         ),
       },
