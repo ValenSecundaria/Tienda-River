@@ -66,6 +66,33 @@ export default function ProductPageClient({ producto }) {
     }
   }
 
+  const agregarAlCarrito = async () => {
+  if (!selectedTalle || !selectedColor) return;
+
+  try {
+    const res = await fetch("/api/carrito/cookies", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productoBaseId: producto.id,
+        talle: selectedTalle,
+        color: selectedColor,
+      }),
+    });
+
+    if (res.ok) {
+      window.dispatchEvent(new Event("carrito-update"));
+      //setMensajeVisible(true);
+      //setTimeout(() => setMensajeVisible(false), 2500);
+    } else {
+      const error = await res.json();
+      console.error("Error al agregar al carrito:", error);
+    }
+  } catch (error) {
+    console.error("Error de red:", error);
+  }
+};
+
   return (
     <div className={styles.container}>
       <div className={styles.productWrapper}>
@@ -167,7 +194,7 @@ export default function ProductPageClient({ producto }) {
             </div>
 
             <div className={styles.actionSection}>
-              <button
+              <button onClick={agregarAlCarrito}
                 className={`${styles.addToCartBtn} ${
                   !selectedTalle || !selectedColor || stockSeleccionado === 0 ? styles.addToCartBtnDisabled : ""
                 }`}

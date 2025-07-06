@@ -80,13 +80,46 @@ export async function POST(req: Request) {
 
     return response;
   }
-
+/*
   const { productoId } = await req.json();
 
   if (!productoId) {
     return NextResponse.json({ error: "productoId es requerido" }, { status: 400 });
   }
+*/
+      const { productoBaseId, talle, color } = await req.json();
 
+      if (!productoBaseId || !talle || !color) {
+        return NextResponse.json({ error: "Faltan datos requeridos" }, { status: 400 });
+      }
+
+      // Verificamos que exista el producto base (por seguridad)
+      const productoBase = await prisma.productos.findUnique({
+        where: { id: productoBaseId },
+      });
+
+      if (!productoBase) {
+        return NextResponse.json({ error: "Producto base no encontrado" }, { status: 404 });
+      }
+
+      // Buscamos la variante específica
+      const variante = await prisma.productos.findFirst({
+        where: {
+          producto_base_id: productoBaseId,
+          talle,
+          color_nombre: color,
+        },
+      });
+
+      if (!variante) {
+        return NextResponse.json({ error: "Variante no encontrada" }, { status: 404 });
+      }
+
+      if (variante.stock <= 0) {
+        return NextResponse.json({ error: "La variante no tiene stock" }, { status: 400 });
+      }
+
+      const productoId = variante.id;
   // Revisar si el producto ya está en carrito para aumentar cantidad
   const productoEnCarrito = await prisma.carrito_producto.findUnique({
     where: {

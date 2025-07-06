@@ -10,7 +10,7 @@ export function ProductCard({ producto }) {
   const [agregado, setAgregado] = useState(false);
   const [mensajeVisible, setMensajeVisible] = useState(false);
 
-  const agregarAlCarrito = async () => {
+ /* const agregarAlCarrito = async () => {
     try {
       const res = await fetch("/api/carrito/cookies", {
         method: "POST",
@@ -39,7 +39,7 @@ export function ProductCard({ producto }) {
     } catch (error) {
       console.error("Error de red:", error);
     }
-  };
+  };*/
 
   return (
     <div className={styles.card}>
@@ -87,19 +87,20 @@ export function ProductCard({ producto }) {
             </span>
             <span className={styles.priceLabel}>Precio base</span>
           </div>
-
-          <button
+            
+          <Link href={`/productos/${producto.slug}`} ><button
             className={styles.cartButton}
             onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation(); // Evita redirigir al Link
-              agregarAlCarrito();
+              //e.preventDefault();
+              //e.stopPropagation(); // Evita redirigir al Link
+              //agregarAlCarrito();
             }}
             title="Agregar al carrito"
             style={{ outline: "none", boxShadow: "none" }}
           >
             <ShoppingCart className={styles.cartIcon} />
           </button>
+          </Link>
         </div>
 
         {mensajeVisible && (
