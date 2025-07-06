@@ -9,6 +9,7 @@ import "./ProductGrid.css"
 
 interface ProductGridProps {
   categoria: string
+  onProductCountChange?: (count: number) => void
 }
 
 interface Product {
@@ -42,7 +43,7 @@ interface CategoryInfo {
   imagen_url: string | null
 }
 
-export function ProductGrid({ categoria }: ProductGridProps) {
+export function ProductGrid({ categoria, onProductCountChange }: ProductGridProps) {
   const [productos, setProductos] = useState<Product[]>([])
   const [categoryInfo, setCategoryInfo] = useState<CategoryInfo | null>(null)
   const [priceRange, setPriceRange] = useState({ min: 0, max: 0 })
@@ -76,14 +77,20 @@ export function ProductGrid({ categoria }: ProductGridProps) {
 
       const data = await getCategoryProducts(categoria, apiFilters)
       setProductos(data)
+      if (onProductCountChange) {
+        onProductCountChange(data.length)
+      }
     } catch (error) {
       console.error("Error loading products:", error)
       setProductos([])
+      if (onProductCountChange) {
+        onProductCountChange(0)
+      }
     } finally {
       setLoading(false)
       setInitialLoad(false)
     }
-  }, [categoria, filters])
+  }, [categoria, filters,onProductCountChange ])
 
   // Cargar información de la categoría
   useEffect(() => {
@@ -122,6 +129,8 @@ export function ProductGrid({ categoria }: ProductGridProps) {
   }, [])
 
   return (
+
+    
     <div className="product-grid-container">
       {categoryInfo && (
         <div className="category-header">

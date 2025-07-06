@@ -1,5 +1,4 @@
-import { ProductGrid } from "@/app/components/products/ProductGrid"
-import CategoryHero from "@/app/components/CategoryHero"
+import { CategoryPageClient } from "@/app/components/CategoryPageClient"
 import { getCategoryInfo } from "@/app/lib/category-products"
 
 interface CategoryPageParams {
@@ -16,18 +15,5 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   // Obtener información de la categoría para el hero
   const categoryInfo = await getCategoryInfo(categoria)
 
-  return (
-    <div className="category-page">
-      <CategoryHero
-        categoryName={categoryInfo?.nombre}
-        categoryDescription={categoryInfo?.descripcion}
-        categoryImage={categoryInfo?.imagen_url}
-      />
-      <div style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
-        <div className="container py-5">
-          <ProductGrid categoria={categoria} />
-        </div>
-      </div>
-    </div>
-  )
+  return <CategoryPageClient categoria={categoria} categoryInfo={categoryInfo} />
 }
