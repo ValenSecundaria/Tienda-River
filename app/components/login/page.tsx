@@ -6,7 +6,6 @@ import { Suspense, useState } from "react"
 import styles from "./loginPage.module.css"
 import Image from "next/image"
 
-
 export default function LoginPage() {
   const [showRegister, setShowRegister] = useState(true)
 
