@@ -1,19 +1,14 @@
-import { CategoryPageClient } from "@/app/components/CategoryPageClient"
-import { getCategoryInfo } from "@/app/lib/category-products"
+import { CategoryPageClient } from "@/app/components/CategoryPageClient";
+import { getCategoryInfo } from "@/app/lib/category-products";
 
-interface CategoryPageParams {
-  categoria: string
-}
+export default async function CategoryPage({
+  params,
+}: {
+  params: { categoria: string };
+}) {
+  const { categoria } = params;
 
-interface CategoryPageProps {
-  params: CategoryPageParams
-}
+  const categoryInfo = await getCategoryInfo(categoria);
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { categoria } = params
-
-  // Obtener información de la categoría para el hero
-  const categoryInfo = await getCategoryInfo(categoria)
-
-  return <CategoryPageClient categoria={categoria} categoryInfo={categoryInfo} />
+  return <CategoryPageClient categoria={categoria} categoryInfo={categoryInfo} />;
 }
