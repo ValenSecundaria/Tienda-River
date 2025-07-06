@@ -125,7 +125,7 @@ export function ProductGrid({ categoria }: ProductGridProps) {
     <div className="product-grid-container">
       {categoryInfo && (
         <div className="category-header">
-          <h1 className="category-title">{categoryInfo.nombre}</h1>
+          {/*<h1 className="category-title">{categoryInfo.nombre}</h1>*/}
           {categoryInfo.descripcion && <p className="category-description">{categoryInfo.descripcion}</p>}
         </div>
       )}

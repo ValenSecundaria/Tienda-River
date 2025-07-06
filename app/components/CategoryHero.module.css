@@ -1,0 +1,271 @@
+.categoryHero {
+  background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  z-index: 1;
+}
+
+.heroOverlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: rgba(220, 20, 60, 0.1);
+}
+
+.breadcrumb {
+  margin-bottom: 20px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.breadcrumbItem {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumbItem:hover {
+  color: white;
+}
+
+.breadcrumbSeparator {
+  margin: 0 8px;
+  opacity: 0.6;
+}
+
+.breadcrumbCurrent {
+  color: white;
+  font-weight: 500;
+}
+
+.categoryTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+}
+
+.categoryDescription {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  opacity: 0.95;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.productCounter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.counterNumber {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+}
+
+.counterText {
+  font-size: 1rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.heroDecoration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.decorationLine {
+  width: 60px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 1px;
+}
+
+.decorationDot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.waveDecoration {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+  z-index: 3;
+}
+
+.waveDecoration svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 60px;
+  color: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .categoryTitle {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .categoryTitle {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+  }
+
+  .categoryDescription {
+    font-size: 1.1rem;
+  }
+
+  .counterNumber {
+    font-size: 1.3rem;
+    padding: 6px 16px;
+  }
+
+  .waveDecoration svg {
+    height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .categoryTitle {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+
+  .categoryDescription {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .productCounter {
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+  }
+
+  .counterNumber {
+    font-size: 1.2rem;
+    padding: 5px 14px;
+  }
+
+  .counterText {
+    font-size: 0.9rem;
+  }
+
+  .decorationLine {
+    width: 40px;
+  }
+
+  .breadcrumb {
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .categoryTitle {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+  }
+
+  .categoryDescription {
+    font-size: 0.95rem;
+  }
+
+  .waveDecoration svg {
+    height: 30px;
+  }
+
+  .heroDecoration {
+    gap: 10px;
+  }
+
+  .decorationLine {
+    width: 30px;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.categoryTitle,
+.categoryDescription,
+.productCounter,
+.breadcrumb {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.categoryDescription {
+  animation-delay: 0.2s;
+}
+
+.productCounter {
+  animation-delay: 0.4s;
+}
+
+.heroDecoration {
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+/* Efectos hover para interactividad */
+.counterNumber {
+  transition: all 0.3s ease;
+}
+
+.counterNumber:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
