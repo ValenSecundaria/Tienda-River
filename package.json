@@ -17,7 +17,6 @@
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "exceljs": "^4.4.0",
-    "formidable": "^3.5.4",
     "framer-motion": "^12.23.0",
     "localtunnel": "^2.0.2",
     "lucide-react": "^0.511.0",
