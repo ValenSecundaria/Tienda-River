@@ -15,11 +15,76 @@
   max-width: 100%;
 }
 
+/* Botón flotante para móvil */
+.floatingMenuButton {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 0 24px 24px 0;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 2px 0 12px rgba(37, 99, 235, 0.3);
+  transition: all 0.3s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.floatingMenuButton:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-50%) translateX(4px);
+  box-shadow: 4px 0 16px rgba(37, 99, 235, 0.4);
+}
+
+.floatingMenuButton:active {
+  transform: translateY(-50%) translateX(2px) scale(0.95);
+}
+
+/* Animación de pulso sutil para llamar la atención */
+.floatingMenuButton::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: rgba(37, 99, 235, 0.3);
+  border-radius: 0 24px 24px 0;
+  transform: translate(-50%, -50%);
+  animation: pulse 2s infinite;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .mainContent {
     margin-left: 0;
     width: 100%;
+  }
+
+  .floatingMenuButton {
+    display: flex;
   }
 
   .contentWrapper {
@@ -30,5 +95,19 @@
 @media (max-width: 640px) {
   .contentWrapper {
     padding: 12px;
+  }
+
+  .floatingMenuButton {
+    width: 44px;
+    height: 44px;
+    border-radius: 0 22px 22px 0;
+  }
+}
+
+/* Ocultar el botón cuando el sidebar está abierto */
+@media (max-width: 768px) {
+  .dashboardLayout:has(.sidebar.open) .floatingMenuButton {
+    opacity: 0;
+    pointer-events: none;
   }
 }
