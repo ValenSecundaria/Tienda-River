@@ -1,4 +1,4 @@
-clave para ingresar con 123456: 
+clave para ingresar con 123456:
 $2b$10$QvvU.o5NQCPIzM.UxADj3cRp4B7U5AMXSd1A7hxIZ2QtUrfeLzzq
 
 npm install react react-dom next
@@ -27,6 +27,9 @@ curl -H "x-api-key: pass123" "http://localhost:3000/api/export/productos?format=
 en .env : EXPORT_API_KEY= pass123
 
 npm install cloudinary
+
+npm install formidable
+npm install --save-dev @types/formidable
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/2gizGE2c)
 

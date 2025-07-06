@@ -118,31 +118,35 @@ export default function ProductBasicInfo({ data, categories, subcategories, onCh
         </div>
 
         <div className={styles.fieldFull}>
-          <label htmlFor="descripcion" className={styles.label}>
-            Descripción
-          </label>
-          <textarea
-            id="descripcion"
-            value={data.descripcion}
-            onChange={(e) => onChange({ descripcion: e.target.value })}
-            className={styles.textarea}
-            placeholder="Describe las características del producto..."
-            rows={4}
-          />
-        </div>
-
-        <div className={styles.fieldFull}>
           <label htmlFor="imagen_principal" className={styles.label}>
-            URL de Imagen Principal
+            Imagen Principal del Producto
           </label>
           <input
-            type="url"
-            id="imagen_principal"
-            value={data.imagen_principal}
-            onChange={(e) => onChange({ imagen_principal: e.target.value })}
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0]
+              if (!file) return
+
+              const formData = new FormData()
+              formData.append("image", file)
+              const res = await fetch("/api/upload-image", {
+                method: "POST",
+                body: formData,
+              })
+
+              const data = await res.json()
+              if (data.secure_url) {
+                onChange({ imagen_principal: data.secure_url })
+              }
+            }}
             className={styles.input}
-            placeholder="https://ejemplo.com/imagen.jpg"
           />
+
+          {/* Vista previa si ya hay imagen */}
+          {data.imagen_principal && (
+            <img src={data.imagen_principal} alt="Vista previa" className={styles.previewImage} />
+          )}
         </div>
       </div>
     </div>

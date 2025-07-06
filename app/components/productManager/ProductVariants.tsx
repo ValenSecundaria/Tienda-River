@@ -277,15 +277,39 @@ export default function ProductVariants({
                     )}
                   </div>
 
-                  <div className={styles.field}>
-                    <label className={styles.label}>URL de Imagen</label>
+                  <div className={styles.fieldFull}>
+                    <label className={styles.label}>Imagen de la Variante</label>
                     <input
-                      type="url"
-                      value={variant.imagen}
-                      onChange={(e) => updateExistingVariant(variant.id, "imagen", e.target.value)}
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+
+                        const formData = new FormData()
+                        formData.append("image", file)
+
+                        const res = await fetch("/api/upload-image", {
+                          method: "POST",
+                          body: formData,
+                        })
+
+                        const data = await res.json()
+                        if (data.secure_url) {
+                          updateVariant(variant.id, "imagen", data.secure_url)
+                        }
+                      }}
                       className={styles.input}
-                      placeholder="https://ejemplo.com/imagen.jpg"
                     />
+
+                    {variant.imagen && (
+                      <img
+                        src={variant.imagen}
+                        alt="Vista previa variante"
+                        className={styles.previewImage}
+                        style={{ marginTop: "8px", maxHeight: "120px", borderRadius: "6px" }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -394,15 +418,39 @@ export default function ProductVariants({
                     )}
                   </div>
 
-                  <div className={styles.field}>
-                    <label className={styles.label}>URL de Imagen</label>
+                  <div className={styles.fieldFull}>
+                    <label className={styles.label}>Imagen de la Variante</label>
                     <input
-                      type="url"
-                      value={variant.imagen}
-                      onChange={(e) => updateVariant(variant.id, "imagen", e.target.value)}
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+
+                        const formData = new FormData()
+                        formData.append("image", file)
+
+                        const res = await fetch("/api/upload-image", {
+                          method: "POST",
+                          body: formData,
+                        })
+
+                        const data = await res.json()
+                        if (data.secure_url) {
+                          updateVariant(variant.id, "imagen", data.secure_url)
+                        }
+                      }}
                       className={styles.input}
-                      placeholder="https://ejemplo.com/imagen.jpg"
                     />
+
+                    {variant.imagen && (
+                      <img
+                        src={variant.imagen}
+                        alt="Vista previa variante"
+                        className={styles.previewImage}
+                        style={{ marginTop: "8px", maxHeight: "120px", borderRadius: "6px" }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

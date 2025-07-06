@@ -17,6 +17,7 @@
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "exceljs": "^4.4.0",
+    "formidable": "^3.5.4",
     "framer-motion": "^12.23.0",
     "localtunnel": "^2.0.2",
     "lucide-react": "^0.511.0",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/formidable": "^3.4.5",
     "@types/node": "^20.17.57",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19",
