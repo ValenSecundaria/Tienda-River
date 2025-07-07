@@ -274,6 +274,6 @@ export async function updateProductWithVariants(productId: number, formData: For
     revalidatePath(`/dashboard/productos/editar/${realProductBaseId}`)
     return { success: true, data: result }
   } catch (error) {
-    return { error: `Error al actualizar el producto: ${error?.message || "Error desconocido"}` }
+    return { error: `Error al actualizar el producto: ${error || "Error desconocido"}` }
   }
 }
