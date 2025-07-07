@@ -158,10 +158,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ mensaje: "Producto agregado al carrito", item });
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: Request,{ params }: { params: Promise<{ id: string }> }) {
   const cookieStore = await cookies();
   const carritoId = cookieStore.get("carrito_id")?.value;
 
@@ -169,7 +166,9 @@ export async function DELETE(
     return NextResponse.json({ error: "Carrito no encontrado" }, { status: 400 });
   }
 
-  const productoId = parseInt(params.id);
+  //const productoId = parseInt(params.id);
+  const { id } = await params;
+  const productoId = parseInt(id);
   if (isNaN(productoId)) {
     return NextResponse.json({ error: "ID inválido" }, { status: 400 });
   }
