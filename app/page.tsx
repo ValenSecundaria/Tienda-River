@@ -5,7 +5,6 @@ import Link from "next/link";
 import styles from "./HomePage.module.css";
 import HeroBannerRiver from "./components/page-principal/hero-banner/hero-banner-river";
 
-
 type Categoria = {
   id: number;
   nombre: string;
@@ -18,32 +17,29 @@ export default function HomePage() {
   const [categorias, setCategorias] = useState<Categoria[] | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-
-  // Estado para controlar la altura del hero
+  const [isLoading, setIsLoading] = useState(true);
   const [heroHeight, setHeroHeight] = useState("500px");
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
+  // 1. Ajustar altura del hero basado en el tamaño de pantalla
   useEffect(() => {
-    // Detectar ancho de ventana y ajustar altura hero
     function ajustarAlturaHero() {
       const ancho = window.innerWidth;
       if (ancho < 576) {
-        // pantallas muy chicas (celulares)
         setHeroHeight("300px");
       } else if (ancho < 992) {
-        // tablets o pantallas medianas
         setHeroHeight("400px");
       } else {
-        // pantallas grandes
         setHeroHeight("500px");
       }
     }
 
     ajustarAlturaHero();
-
     window.addEventListener("resize", ajustarAlturaHero);
     return () => window.removeEventListener("resize", ajustarAlturaHero);
   }, []);
 
+  // 2. Obtener categorías destacadas
   useEffect(() => {
     async function fetchCategorias() {
       try {
@@ -59,13 +55,62 @@ export default function HomePage() {
     fetchCategorias();
   }, []);
 
+  // 3. Verificar carga de imágenes después de que las categorías estén listas
+  useEffect(() => {
+    if (categorias === null) return;
+
+    const timer = setTimeout(() => {
+      const images = Array.from(document.querySelectorAll('img'));
+      let loadedCount = 0;
+
+      // Si no hay imágenes, marcamos como cargado
+      if (images.length === 0) {
+        setImagesLoaded(true);
+        return;
+      }
+
+      const checkImageLoad = () => {
+        loadedCount++;
+        if (loadedCount === images.length) {
+          setImagesLoaded(true);
+        }
+      };
+
+      images.forEach(img => {
+        if (img.complete) {
+          checkImageLoad();
+        } else {
+          img.addEventListener('load', checkImageLoad);
+          img.addEventListener('error', checkImageLoad);
+        }
+      });
+
+      // Limpieza de event listeners
+      return () => {
+        images.forEach(img => {
+          img.removeEventListener('load', checkImageLoad);
+          img.removeEventListener('error', checkImageLoad);
+        });
+      };
+    }, 300); // Pequeño delay para asegurar que el DOM está listo
+
+    return () => clearTimeout(timer);
+  }, [categorias]);
+
+  // 4. Determinar cuando todo está cargado
+  useEffect(() => {
+    if (categorias !== null && imagesLoaded) {
+      setIsLoading(false);
+    }
+  }, [categorias, imagesLoaded]);
+
+  // Función para subir imágenes (mantenida de tu código original)
   async function handleUploadImage(e: React.FormEvent) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const fileInput = form.elements.namedItem("file") as HTMLInputElement;
 
     if (!fileInput.files?.[0]) {
-      console.log("⛔ No se seleccionó ningún archivo");
       alert("Selecciona una imagen");
       return;
     }
@@ -74,39 +119,50 @@ export default function HomePage() {
     formData.append("file", fileInput.files[0]);
 
     try {
-      console.log("📤 Enviando imagen al servidor...");
       setUploading(true);
-
       const res = await fetch("/api/upload-image", {
         method: "POST",
         body: formData,
       });
 
-      console.log("📬 Respuesta del servidor recibida");
-
       const data = await res.json();
-
       if (data.url) {
-        console.log("✅ Imagen subida correctamente:", data.url);
         setImageUrl(data.url);
       } else {
-        console.error("❌ Error recibido del servidor:", data);
         alert("Error al subir la imagen");
       }
     } catch (error) {
-      console.error("🔥 Error al hacer fetch:", error);
+      console.error("Error al hacer fetch:", error);
       alert("Falló la subida");
     } finally {
       setUploading(false);
     }
   }
 
+  // Pantalla de carga
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100 bg-white">
+        <div className="text-center">
+          <div 
+            className="spinner-border text-primary" 
+            style={{ width: '3rem', height: '3rem' }} 
+            role="status"
+          >
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+          <h2 className="mt-3 text-dark">Cargando la tienda...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Contenido principal
   return (
     <div className="d-flex flex-column min-vh-100">
       <main className="flex-grow-1">
-        {/* Hero Section con fondo responsive */}
-        
-        <HeroBannerRiver/>
+        {/* Hero Section */}
+        <HeroBannerRiver height={heroHeight} />
         
         {/* Categorías Destacadas */}
         <section className={`py-5 ${styles["bg-river-light"]}`}>
@@ -123,48 +179,38 @@ export default function HomePage() {
             </div>
 
             <div className="row">
-              {!categorias ? (
-                <p>Cargando categorías...</p>
-              ) : categorias.length === 0 ? (
+              {categorias?.length === 0 ? (
                 <p>No hay categorías para mostrar.</p>
               ) : (
-                categorias.map(
-                  ({ id, nombre, descripcion, slug, imagen_url }) => (
-                    <div key={id} className="col-12 col-md-4 mb-4">
-                      <Link
-                        href={`/${slug}`}
-                        className="text-decoration-none text-reset"
-                      >
-                        <div className={`${styles["card-river"]} h-100 card`}>
-                          <img
-                            src={
-                              imagen_url ??
-                              "/placeholder.svg?height=300&width=400"
-                            }
-                            className="card-img-top"
-                            alt={`Indumentaria ${nombre}`}
-                            style={{ height: "250px", objectFit: "cover" }}
-                          />
-                          <div className="card-body d-flex flex-column text-center">
-                            <h3
-                              className={`card-title fs-2 fw-bold mb-3 ${styles["text-river"]}`}
-                            >
-                              {nombre}
-                            </h3>
-                            <p className="text-muted mb-3">{descripcion}</p>
-                            <div className="mt-auto">
-                              <span
-                                className={`btn ${styles["btn-river-outline"]} btn-lg`}
-                              >
-                                Ver Productos
-                              </span>
-                            </div>
+                categorias?.map(({ id, nombre, descripcion, slug, imagen_url }) => (
+                  <div key={id} className="col-12 col-md-4 mb-4">
+                    <Link
+                      href={`/${slug}`}
+                      className="text-decoration-none text-reset"
+                    >
+                      <div className={`${styles["card-river"]} h-100 card`}>
+                        <img
+                          src={imagen_url ?? "/placeholder.svg?height=300&width=400"}
+                          className="card-img-top"
+                          alt={`Indumentaria ${nombre}`}
+                          style={{ height: "250px", objectFit: "cover" }}
+                          loading="lazy" // Mejora el rendimiento
+                        />
+                        <div className="card-body d-flex flex-column text-center">
+                          <h3 className={`card-title fs-2 fw-bold mb-3 ${styles["text-river"]}`}>
+                            {nombre}
+                          </h3>
+                          <p className="text-muted mb-3">{descripcion}</p>
+                          <div className="mt-auto">
+                            <span className={`btn ${styles["btn-river-outline"]} btn-lg`}>
+                              Ver Productos
+                            </span>
                           </div>
                         </div>
-                      </Link>
-                    </div>
-                  )
-                )
+                      </div>
+                    </Link>
+                  </div>
+                ))
               )}
             </div>
           </div>
@@ -185,20 +231,17 @@ export default function HomePage() {
                 {
                   icon: "🚚",
                   title: "Envío gratis a todo el país",
-                  description:
-                    "Tu pasión millonaria llega sin costo adicional a cualquier rincón de Argentina",
+                  description: "Tu pasión millonaria llega sin costo adicional a cualquier rincón de Argentina",
                 },
                 {
                   icon: "💳",
                   title: "Pagá como quieras",
-                  description:
-                    "Tarjeta, transferencia, efectivo o cuotas. ¡Hacé tu compra millonaria fácil!",
+                  description: "Tarjeta, transferencia, efectivo o cuotas. ¡Hacé tu compra millonaria fácil!",
                 },
                 {
                   icon: "🔄",
                   title: "Cambios sin problemas",
-                  description:
-                    "Tenés 15 días para cambiar tu producto. ¡Tu satisfacción es nuestra prioridad!",
+                  description: "Tenés 15 días para cambiar tu producto. ¡Tu satisfacción es nuestra prioridad!",
                 },
               ].map(({ icon, title, description }, i) => (
                 <div key={i} className="col-12 col-md-4 text-center mb-4">
@@ -214,4 +257,3 @@ export default function HomePage() {
     </div>
   );
 }
-

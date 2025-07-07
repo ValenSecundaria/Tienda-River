@@ -186,6 +186,13 @@ export default function Header() {
 
             {!isNavCollapsed && (
               <div className={`d-lg-none ${styles.mobileMenu}`}>
+                <button 
+                  className={styles.mobileCloseButton}
+                  onClick={handleNavCollapse}
+                  aria-label="Cerrar menú"
+                >
+                  <i className="bi bi-x-lg" />
+                </button>
                 <div className={styles.mobileMenuContent}>
                   {navItems.map((item) => (
                     <div key={item.label} className={styles.mobileCategory}>

@@ -53,7 +53,7 @@ export default function ExportarClientes() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
-    } finally {
+    } finally { 
       setIsLoading(false);
     }
   };
