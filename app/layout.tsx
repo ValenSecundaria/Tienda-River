@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: Reagitct.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <html lang="es">
