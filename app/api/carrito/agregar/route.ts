@@ -1,14 +1,14 @@
 // app/api/carrito/route.ts
 
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth";
 import { authConfig } from "../../../../auth.config";
 import { prisma } from "@/app/lib/prisma";
 
 export async function POST(request: Request) {
   try {
     /*
-    const session = await getServerSession(authConfig);
+    const session = await auth();
 
     if (!session) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
