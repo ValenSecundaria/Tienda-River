@@ -1,4 +1,4 @@
-"use client"
+/*"use client"
 
 import type React from "react"
 
@@ -183,4 +183,9 @@ export default function CreateProductForm() {
       </form>
     </div>
   )
+}*/
+
+export default function NewProductPage() {
+  return <p>Página de creación de producto (en construcción)</p>;
 }
+
