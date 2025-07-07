@@ -162,7 +162,7 @@ export default function HomePage() {
     <div className="d-flex flex-column min-vh-100">
       <main className="flex-grow-1">
         {/* Hero Section */}
-        <HeroBannerRiver height={heroHeight} />
+        <HeroBannerRiver/>
         
         {/* Categorías Destacadas */}
         <section className={`py-5 ${styles["bg-river-light"]}`}>
