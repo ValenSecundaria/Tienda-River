@@ -40,6 +40,15 @@ interface CategoryInfo {
   imagen_url: string | null
 }
 
+type CategoryFilters = {
+  search: string;
+  precioMin: string;
+  precioMax: string;
+  orderBy: "nombre" | "precio_base" | "fecha_creacion";
+  orderDirection: "asc" | "desc";
+  activo?: boolean;
+};
+
 export function ProductGrid({ categoria, onProductCountChange }: ProductGridProps) {
   const [productos, setProductos] = useState<Product[]>([])
   const [categoryInfo, setCategoryInfo] = useState<CategoryInfo | null>(null)
@@ -48,7 +57,7 @@ export function ProductGrid({ categoria, onProductCountChange }: ProductGridProp
   const [initialLoad, setInitialLoad] = useState(true)
 
   // Estado de filtros - inicialmente vacío para cargar todo
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<CategoryFilters>({
     search: "",
     precioMin: "",
     precioMax: "",
