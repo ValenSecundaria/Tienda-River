@@ -6,7 +6,28 @@ import { ShoppingCart, Heart, Check } from "lucide-react";
 import { useState } from "react";
 import styles from "./ProductCard.module.css";
 
-export function ProductCard({ producto }) {
+interface Product {
+  id: number
+  nombre: string
+  slug: string
+  descripcion: string | null
+  precio_base: number
+  categoria_id: number | null
+  subcategoria_id: number | null
+  activo: boolean
+  fecha_creacion: Date // convertido a ISO string
+  imagen_principal: string | null
+  categorias: {
+    id: number
+    nombre: string
+  } | null
+  subcategorias: {
+    id: number
+    nombre: string
+  } | null
+}
+
+export function ProductCard({ producto }: { producto: Product }) {
   const [agregado, setAgregado] = useState(false);
   const [mensajeVisible, setMensajeVisible] = useState(false);
 
