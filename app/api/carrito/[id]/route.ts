@@ -7,8 +7,8 @@ interface Params {
   };
 }
 
-export async function DELETE(request: Request, context: Params)  {
-  const { id } = context.params;
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> })  {
+  const { id } = await params;
   const idNum = parseInt(id);
 
 
