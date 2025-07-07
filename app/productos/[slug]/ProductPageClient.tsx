@@ -4,20 +4,30 @@ import { useState, useMemo } from "react"
 import Image from "next/image"
 import styles from "./ProductPage.module.css"
 
+interface Producto {
+  id: number
+  nombre: string
+  imagen_principal: string | null
+  descripcion?: string | null
+  precio_base: number
+  categorias: { nombre: string }
+  other_productos: Array<{
+    talle: string
+    color_nombre: string
+    stock: number
+  }>
+}
 
+export default function ProductPageClient({ producto }: { producto: Producto }) {
+  const [selectedTalle, setSelectedTalle] = useState<string | null>(null)
+  const [selectedColor, setSelectedColor] = useState<string | null>(null)
 
-export default function ProductPageClient({ producto }) {
-  const [selectedTalle, setSelectedTalle] = useState(null)
-  const [selectedColor, setSelectedColor] = useState(null)
-
-  // Obtener todos los talles únicos
   const tallesDisponibles = useMemo(() => {
     const talles = [...new Set(producto.other_productos.map((p) => p.talle))]
-    return talles.filter((talle) => talle) // Filtrar valores null/undefined
+    return talles.filter((talle) => talle) // filtrar valores falsy
   }, [producto.other_productos])
 
-  // Obtener colores disponibles para el talle seleccionado
-  const coloresDisponibles = useMemo(() => {
+  const coloresDisponibles = useMemo<Array<{ color: string; stock: number; disponible: boolean }>>(() => {
     if (!selectedTalle) return []
     const colores = producto.other_productos
       .filter((p) => p.talle === selectedTalle)
@@ -27,45 +37,46 @@ export default function ProductPageClient({ producto }) {
         disponible: p.stock > 0,
       }))
 
-    // Eliminar duplicados y mantener info de stock
-    const coloresUnicos = colores.reduce((acc, curr) => {
+    const coloresUnicos = colores.reduce<Array<{ color: string; stock: number; disponible: boolean }>>((acc, curr) => {
       const existing = acc.find((c) => c.color === curr.color)
       if (!existing) {
         acc.push(curr)
       } else if (curr.stock > existing.stock) {
-        // Mantener el que tenga más stock
         existing.stock = curr.stock
         existing.disponible = curr.disponible
       }
       return acc
     }, [])
 
-    return coloresUnicos.filter((c) => c.color) // Filtrar valores null/undefined
+    return coloresUnicos.filter((c) => c.color)
   }, [selectedTalle, producto.other_productos])
 
-  // Verificar si una combinación talle-color tiene stock
-  const tieneStock = (talle, color) => {
+  const tieneStock = (talle: string | null, color: string) => {
+    if (!talle) return false
     const variante = producto.other_productos.find((p) => p.talle === talle && p.color_nombre === color)
-    return variante && variante.stock > 0
+    if (!variante) return false
+    return variante.stock > 0
   }
 
-  // Obtener stock de la combinación seleccionada
   const stockSeleccionado = useMemo(() => {
     if (!selectedTalle || !selectedColor) return null
-    const variante = producto.other_productos.find((p) => p.talle === selectedTalle && p.color_nombre === selectedColor)
+    const variante = producto.other_productos.find(
+      (p) => p.talle === selectedTalle && p.color_nombre === selectedColor
+    )
     return variante ? variante.stock : 0
   }, [selectedTalle, selectedColor, producto.other_productos])
 
-  const handleTalleSelect = (talle) => {
+  const handleTalleSelect = (talle: string) => {
     setSelectedTalle(talle)
-    setSelectedColor(null) // Reset color cuando cambia el talle
+    setSelectedColor(null)
   }
 
-  const handleColorSelect = (color) => {
+  const handleColorSelect = (color: string) => {
     if (tieneStock(selectedTalle, color)) {
       setSelectedColor(color)
     }
   }
+
 
   const agregarAlCarrito = async () => {
     if (!selectedTalle || !selectedColor) return
