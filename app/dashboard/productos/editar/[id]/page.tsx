@@ -1,31 +1,24 @@
-import { notFound } from "next/navigation"
-import CreateProductForm from "../../../../components/productManager/CreateProductForm"
-//import CreateProductForm from "@/components/CreateProductForm"
-import { getProductForEdit } from "../../../../lib/edit-product"
+import { notFound } from "next/navigation";
+import CreateProductForm from "../../../../components/productManager/CreateProductForm";
+import { getProductForEdit } from "../../../../lib/edit-product";
 
-interface EditProductPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default async function EditProductPage({ params }: EditProductPageProps) {
-  const productId = Number.parseInt(params.id)
+export default async function EditProductPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
+  const productId = Number.parseInt(id);
 
   if (isNaN(productId)) {
-    notFound()
+    notFound();
   }
 
-  // Verificar que el producto existe
-  const result = await getProductForEdit(productId)
+  const result = await getProductForEdit(productId);
 
   if (result.error || !result.data) {
-    notFound()
+    notFound();
   }
 
   return (
     <div>
       <CreateProductForm productId={productId} mode="edit" />
     </div>
-  )
+  );
 }
