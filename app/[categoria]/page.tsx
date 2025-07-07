@@ -1,20 +1,9 @@
-export const dynamic = "force-dynamic";
+import { getCategoryInfo } from "@/app/lib/category-products"
+import CategoryPageClientWrapper from "@/app/components/CategoryPageClientWrapper"
 
-import { CategoryPageClient } from "@/app/components/CategoryPageClient";
-import { getCategoryInfo } from "@/app/lib/category-products";
+export default async function CategoryPage({ params }: { params: { categoria: string } }) {
+  const categoria = params.categoria
+  const categoryInfo = await getCategoryInfo(categoria)
 
-export default async function CategoryPage({
-  params,
-}: {
-  params: { categoria: string };
-}) {
-  const { categoria } = await params;
-  const categoryInfo = await getCategoryInfo(categoria);
-
-  return (
-    <CategoryPageClient
-      categoria={categoria}
-      categoryInfo={categoryInfo}
-    />
-  );
+  return <CategoryPageClientWrapper categoria={categoria} categoryInfo={categoryInfo} />
 }
