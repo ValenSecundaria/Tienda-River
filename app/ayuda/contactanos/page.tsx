@@ -374,13 +374,18 @@ export default function ContactPage() {
                   </div>
 
                   <button
-                    type="submit"
-                    style={styles.submitButton}
-                    onMouseEnter={(e) => (e.target.style.backgroundColor = "#222")}
-                    onMouseLeave={(e) => (e.target.style.backgroundColor = "#333")}
-                  >
-                    Enviar Mensaje
-                  </button>
+                      type="submit"
+                      style={styles.submitButton}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLButtonElement).style.backgroundColor = "#222";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLButtonElement).style.backgroundColor = "#333";
+                      }}
+                    >
+                      Enviar Mensaje
+                    </button>
+
                 </form>
               </div>
             </div>
