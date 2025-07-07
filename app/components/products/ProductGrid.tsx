@@ -26,14 +26,11 @@ interface Product {
   categorias: {
     id: number
     nombre: string
-    slug: string
-    descripcion: string | null
-    imagen_url: string | null
-    fecha_creacion: Date
   } | null
-  _count: {
-    productovariante: number
-  }
+  subcategorias: {
+    id: number
+    nombre: string
+  } | null
 }
 
 interface CategoryInfo {

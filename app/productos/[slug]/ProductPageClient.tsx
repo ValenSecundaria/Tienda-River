@@ -4,6 +4,8 @@ import { useState, useMemo } from "react"
 import Image from "next/image"
 import styles from "./ProductPage.module.css"
 
+
+
 export default function ProductPageClient({ producto }) {
   const [selectedTalle, setSelectedTalle] = useState(null)
   const [selectedColor, setSelectedColor] = useState(null)
@@ -99,8 +101,7 @@ export default function ProductPageClient({ producto }) {
             <Image
               src={
                 producto.imagen_principal ??
-                ("https://celadasa.vtexassets.com/arquivos/ids/230631-1200-auto?v=638197635089300000&width=1200&height=auto&aspect=true" ||
-                  "/placeholder.svg")
+                ("https://celadasa.vtexassets.com/arquivos/ids/230631-1200-auto?v=638197635089300000&width=1200&height=auto&aspect=true")
               }
               alt={producto.nombre}
               width={600}

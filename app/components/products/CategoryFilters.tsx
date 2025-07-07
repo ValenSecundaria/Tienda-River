@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useCallback } from "react"
 import styles from "./CategoryFilters.module.css"
 
@@ -28,37 +27,31 @@ export default function CategoryFilters({
   priceRange,
   productCount,
 }: CategoryFiltersProps) {
-  const [localPrecioMin, setLocalPrecioMin] = useState(
-    filters.precioMin ? Number.parseFloat(filters.precioMin) : priceRange.min,
-  )
-  const [localPrecioMax, setLocalPrecioMax] = useState(
-    filters.precioMax ? Number.parseFloat(filters.precioMax) : priceRange.max,
-  )
+  const [localPrecioMin, setLocalPrecioMin] = useState(filters.precioMin || "")
+  const [localPrecioMax, setLocalPrecioMax] = useState(filters.precioMax || "")
 
-  // Actualizar valores locales cuando cambie el rango de precios
+  // Mantener sincronizado si cambia desde afuera
   useEffect(() => {
-    if (!filters.precioMin && !filters.precioMax && priceRange.min !== priceRange.max) {
-      setLocalPrecioMin(priceRange.min)
-      setLocalPrecioMax(priceRange.max)
-    }
-  }, [priceRange, filters.precioMin, filters.precioMax])
+    setLocalPrecioMin(filters.precioMin || "")
+    setLocalPrecioMax(filters.precioMax || "")
+  }, [filters.precioMin, filters.precioMax])
 
-  // Debounce para los filtros de precio
+  // Debounce para aplicar cambios
   useEffect(() => {
     const timer = setTimeout(() => {
-      const minStr = localPrecioMin === priceRange.min ? "" : localPrecioMin.toString()
-      const maxStr = localPrecioMax === priceRange.max ? "" : localPrecioMax.toString()
-
-      if (minStr !== filters.precioMin || maxStr !== filters.precioMax) {
+      if (
+        localPrecioMin !== filters.precioMin ||
+        localPrecioMax !== filters.precioMax
+      ) {
         onFilterChange({
-          precioMin: minStr,
-          precioMax: maxStr,
+          precioMin: localPrecioMin,
+          precioMax: localPrecioMax,
         })
       }
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [localPrecioMin, localPrecioMax, filters.precioMin, filters.precioMax, priceRange, onFilterChange])
+  }, [localPrecioMin, localPrecioMax])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-AR", {
@@ -66,26 +59,6 @@ export default function CategoryFilters({
       currency: "ARS",
     }).format(price)
   }
-
-  const handleMinChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = Number.parseFloat(e.target.value)
-      if (value <= localPrecioMax) {
-        setLocalPrecioMin(value)
-      }
-    },
-    [localPrecioMax],
-  )
-
-  const handleMaxChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = Number.parseFloat(e.target.value)
-      if (value >= localPrecioMin) {
-        setLocalPrecioMax(value)
-      }
-    },
-    [localPrecioMin],
-  )
 
   const resetFilters = () => {
     onFilterChange({
@@ -95,17 +68,9 @@ export default function CategoryFilters({
       orderBy: "fecha_creacion",
       orderDirection: "desc",
     })
-    setLocalPrecioMin(priceRange.min)
-    setLocalPrecioMax(priceRange.max)
+    setLocalPrecioMin("")
+    setLocalPrecioMax("")
   }
-
-  // Calcular porcentajes para el track visual
-  const minPercent =
-    priceRange.max > priceRange.min ? ((localPrecioMin - priceRange.min) / (priceRange.max - priceRange.min)) * 100 : 0
-  const maxPercent =
-    priceRange.max > priceRange.min
-      ? ((localPrecioMax - priceRange.min) / (priceRange.max - priceRange.min)) * 100
-      : 100
 
   return (
     <div className={styles.container}>
@@ -130,15 +95,7 @@ export default function CategoryFilters({
       {/* Búsqueda */}
       <div className={styles.searchSection}>
         <div className={styles.searchBox}>
-          <svg
-            className={styles.searchIcon}
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
+          <svg className={styles.searchIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
           </svg>
@@ -150,11 +107,7 @@ export default function CategoryFilters({
             className={styles.searchInput}
           />
           {filters.search && (
-            <button
-              className={styles.clearSearch}
-              onClick={() => onFilterChange({ search: "" })}
-              title="Limpiar búsqueda"
-            >
+            <button className={styles.clearSearch} onClick={() => onFilterChange({ search: "" })}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
@@ -166,7 +119,7 @@ export default function CategoryFilters({
 
       {/* Filtros principales */}
       <div className={styles.filtersGrid}>
-        {/* Filtro de precio con slider */}
+        {/* Filtro de precio */}
         <div className={styles.filterCard}>
           <h3 className={styles.filterTitle}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -184,8 +137,8 @@ export default function CategoryFilters({
                   <input
                     type="number"
                     placeholder="Min"
-                    value={filters.precioMin}
-                    onChange={(e) => onFilterChange({ precioMin: e.target.value })}
+                    value={localPrecioMin}
+                    onChange={(e) => setLocalPrecioMin(e.target.value)}
                     className={styles.priceInput}
                     min={priceRange.min}
                     max={priceRange.max}
@@ -199,8 +152,8 @@ export default function CategoryFilters({
                   <input
                     type="number"
                     placeholder="Max"
-                    value={filters.precioMax}
-                    onChange={(e) => onFilterChange({ precioMax: e.target.value })}
+                    value={localPrecioMax}
+                    onChange={(e) => setLocalPrecioMax(e.target.value)}
                     className={styles.priceInput}
                     min={priceRange.min}
                     max={priceRange.max}
@@ -257,7 +210,7 @@ export default function CategoryFilters({
 
         {/* Botón de reset */}
         <div className={styles.resetSection}>
-          <button className={styles.resetButton} onClick={resetFilters} title="Limpiar todos los filtros">
+          <button className={styles.resetButton} onClick={resetFilters}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
               <path d="M21 3v5h-5" />

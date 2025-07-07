@@ -11,6 +11,8 @@ export interface CategoryFilters {
   activo?: boolean
 }
 
+
+
 export async function getCategoryProducts(categoria: string, filters: CategoryFilters = {}) {
   try {
     const where: any = {
@@ -47,12 +49,18 @@ export async function getCategoryProducts(categoria: string, filters: CategoryFi
     const productosData = await prisma.productos.findMany({
       where,
       include: {
-        categorias: true,
-        /*_count: {
+        categorias: {
           select: {
-            productovariante: true,
+            id: true,
+            nombre: true,
           },
-        },*/
+        },
+        subcategorias: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
       },
       orderBy: {
         [filters.orderBy || "fecha_creacion"]: filters.orderDirection || "desc",
@@ -72,6 +80,10 @@ export async function getCategoryProducts(categoria: string, filters: CategoryFi
   }
 }
 
+
+
+
+
 export async function getCategoryInfo(categoria: string) {
   try {
     const categoryInfo = await prisma.categorias.findUnique({
@@ -90,6 +102,9 @@ export async function getCategoryInfo(categoria: string) {
     return null
   }
 }
+
+
+
 
 export async function getCategoryPriceRange(categoria: string) {
   try {
