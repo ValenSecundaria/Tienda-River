@@ -17,70 +17,79 @@ function generateSlug(nombre: string): string {
 }
 
 // Obtener todos los productos con filtros
+
+
+interface Product {
+  id: number
+  nombre: string
+  slug: string
+  descripcion: string | null
+  precio_base: number
+  categoria_id: number | null
+  subcategoria_id: number | null
+  activo: boolean
+  fecha_creacion: Date // convertido a ISO string
+  imagen_principal: string | null
+  categorias: {
+    id: number
+    nombre: string
+  } | null
+  subcategorias: {
+    id: number
+    nombre: string
+  } | null
+}
+
 export async function getProducts(filters?: {
   search?: string
   categoria?: string
   activo?: boolean
   orderBy?: "nombre" | "precio_base" | "fecha_creacion"
   orderDirection?: "asc" | "desc"
-}) {
+}): Promise<Product[]> {
   try {
-    console.log("intentando obtener productos");
     const where: any = {}
 
-    // Filtro de búsqueda por nombre
     if (filters?.search) {
-      where.nombre = {
-        contains: filters.search,
-        mode: "insensitive",
-      }
+      where.nombre = { contains: filters.search, mode: "insensitive" }
     }
 
-    // Filtro por categoría
     if (filters?.categoria && filters.categoria !== "all") {
       where.categoria_id = Number.parseInt(filters.categoria)
     }
 
-    // Filtro por estado activo
     if (filters?.activo !== undefined) {
       where.activo = filters.activo
     }
 
     const products = await prisma.productos.findMany({
-      where:{
-        producto_base_id :null
+      where: {
+        ...where,
+        producto_base_id: null,
       },
       orderBy: {
         [filters?.orderBy || "fecha_creacion"]: filters?.orderDirection || "desc",
       },
       include: {
-        categorias: {
-          select: {
-            id: true,
-            nombre: true,
-          },
-        },
-        subcategorias: {
-          select: {
-            id: true,
-            nombre: true,
-          },
-        },
-        /*_count: {
-          select: {
-            //productovariante: true,
-            //productoimagenes: true,
-          },
-        },*/
+        categorias: { select: { id: true, nombre: true } },
+        subcategorias: { select: { id: true, nombre: true } },
       },
     })
 
-    return products
+    // 🔄 Serializar precio_base (Decimal) y fecha_creacion (Date)
+    return products.map((p) => ({
+      ...p,
+      precio_base: p.precio_base.toNumber(),
+      //fecha_creacion: p.fecha_creacion.toISOString(),
+      categorias: p.categorias ?? null,
+      subcategorias: p.subcategorias ?? null,
+    }))
   } catch (error) {
     console.error("Error fetching products:", error)
     return []
   }
 }
+
 
 // Obtener categorías para el filtro
 export async function getCategoriesForFilter() {

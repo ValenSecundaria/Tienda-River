@@ -6,6 +6,7 @@ import ProductFilters from "../filters/ProductFilters"
 import { getProducts, getCategoriesForFilter } from "../../lib/products"
 import styles from "./ProductAdder.module.css"
 
+
 interface Product {
   id: number
   nombre: string
@@ -15,7 +16,7 @@ interface Product {
   categoria_id: number | null
   subcategoria_id: number | null
   activo: boolean
-  fecha_creacion: Date
+  fecha_creacion: Date // convertido a ISO string
   imagen_principal: string | null
   categorias: {
     id: number
@@ -25,11 +26,8 @@ interface Product {
     id: number
     nombre: string
   } | null
-  _count: {
-    productovariante: number
-    productoimagenes: number
-  }
 }
+
 
 interface Category {
   id: number

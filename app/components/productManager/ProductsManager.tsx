@@ -15,7 +15,7 @@ interface Product {
   categoria_id: number | null
   subcategoria_id: number | null
   activo: boolean
-  fecha_creacion: Date
+  fecha_creacion: Date // convertido a ISO string
   imagen_principal: string | null
   categorias: {
     id: number
@@ -25,10 +25,6 @@ interface Product {
     id: number
     nombre: string
   } | null
-  _count: {
-    productovariante: number
-    productoimagenes: number
-  }
 }
 
 interface Category {
