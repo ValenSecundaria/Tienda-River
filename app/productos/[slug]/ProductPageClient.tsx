@@ -10,7 +10,7 @@ interface Producto {
   imagen_principal: string | null
   descripcion?: string | null
   precio_base: number
-  categorias: { nombre: string }
+  categorias: { nombre: string } | null
   other_productos: Array<{
     talle: string
     color_nombre: string
@@ -178,7 +178,7 @@ export default function ProductPageClient({ producto }: { producto: Producto }) 
         {/* Información del producto */}
         <div className={styles.infoSection}>
           <div className={styles.productInfo}>
-            <div className={styles.categoryBadge}>{producto.categorias.nombre}</div>
+            <div className={styles.categoryBadge}>{producto.categorias?.nombre}</div>
             <h1 className={styles.productTitle}>{producto.nombre}</h1>
             <p className={styles.productDescription}>{producto.descripcion}</p>
 
