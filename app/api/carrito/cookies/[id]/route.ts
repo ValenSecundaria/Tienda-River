@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } 
 ) {
   const cookieStore = await cookies();
   const carritoId = cookieStore.get("carrito_id")?.value;
@@ -12,8 +12,10 @@ export async function DELETE(
   if (!carritoId) {
     return NextResponse.json({ error: "Carrito no encontrado" }, { status: 400 });
   }
+  const { id } = await params;
+  const productoId = parseInt(id);
 
-  const productoId = parseInt(params.id);
+  //const productoId = parseInt(params.id);
   if (isNaN(productoId)) {
     return NextResponse.json({ error: "ID inválido" }, { status: 400 });
   }
