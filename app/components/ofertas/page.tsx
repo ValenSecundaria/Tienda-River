@@ -4,16 +4,26 @@
 import { useEffect, useState } from "react";
 import { ProductCard } from "../products/ProductCard"; // ajustá el path si es necesario
 
-type Producto = {
-  id: number;
-  nombre: string;
-  slug: string;
-  precio_base: number;
-  imagen_url?: string;
+interface Producto {
+  id: number
+  nombre: string
+  slug: string
+  descripcion: string | null
+  precio_base: number
+  categoria_id: number | null
+  subcategoria_id: number | null
+  activo: boolean
+  fecha_creacion: Date
+  imagen_principal: string | null
   categorias: {
-    nombre: string;
-  };
-};
+    id: number
+    nombre: string
+  } | null
+  subcategorias: {
+    id: number
+    nombre: string
+  } | null
+}
 
 export default function OfertasPage() {
   const [productos, setProductos] = useState<Producto[] | null>(null);
@@ -29,6 +39,7 @@ export default function OfertasPage() {
         const productosConCategoria = data.map((producto) => ({
           ...producto,
           categorias: {
+            id : 1,
             nombre: "Colección Oficial",
           },
         }));
