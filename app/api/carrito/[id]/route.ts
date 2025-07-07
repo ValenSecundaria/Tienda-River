@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const id = parseInt(params.id);
+interface Params {
+  params: {
+    id: string;
+  };
+}
 
-  if (isNaN(id)) {
+export async function DELETE(request: Request, context: Params)  {
+  const { id } = context.params;
+  const idNum = parseInt(id);
+
+
+
+  if (isNaN(idNum)) {
     return NextResponse.json({ error: "ID inválido" }, { status: 400 });
   }
 
@@ -16,7 +22,7 @@ export async function DELETE(
       where: {
         carrito_id_producto_id: {
           carrito_id: 1,       
-          producto_id: id,
+          producto_id: idNum,
         },
       },
     });
