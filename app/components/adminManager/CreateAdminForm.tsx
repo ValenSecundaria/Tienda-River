@@ -4,8 +4,8 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { createProductWithVariants, getFormData } from "@/app/lib/create-product"
-import ProductBasicInfo from "./ProductBasicInfo"
-import ProductVariants from "./ProductVariants"
+import ProductBasicInfo from "../productManager/ProductBasicInfo"
+import ProductVariants from "../productManager/ProductVariants"
 import styles from "./CreateAdminForm.module.css"
 
 interface FormData {

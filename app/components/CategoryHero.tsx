@@ -5,7 +5,7 @@ import styles from "./CategoryHero.module.css"
 
 interface CategoryHeroProps {
   categoryName?: string
-  categoryDescription?: string
+  categoryDescription?: string | null
   categoryImage?: string | null
   productCount?: number
 }
