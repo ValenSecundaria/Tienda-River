@@ -248,7 +248,9 @@ export default function Header() {
               aria-label="Carrito"
             >
               <i className="bi bi-cart" />
-              <span className={styles.cartBadge}>{productos.length}</span>
+              <span className={styles.cartBadge}>
+                  {productos.reduce((total, p) => total + (p.cantidad ?? 0), 0)}
+                </span>
             </button>
           </div>
         </div>

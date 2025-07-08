@@ -9,17 +9,18 @@ interface CarritoProps {
 }
 
 interface Producto {
-  id: number
-  nombre: string
-  imagen_principal: string | null
-  precio_base: number
+  id: number;
+  nombre: string;
+  imagen_principal: string | null;
+  precio_base: number;
+  cantidad: number; 
 }
 
 const inlineStyles = {
   deleteButton: {
-    backgroundColor: "#fef2f2", // fondo rojo claro
-    border: "1px solid #fecaca", // borde rojo tenue
-    color: "#b91c1c", // rojo fuerte
+    backgroundColor: "#fef2f2", 
+    border: "1px solid #fecaca", 
+    color: "#b91c1c", 
     borderRadius: "50%",
     width: "28px",
     height: "28px",
@@ -47,7 +48,7 @@ const inlineStyles = {
 
 
 
-export default function Carrito({ onClose }: CarritoProps) {
+export default function   Carrito({ onClose }: CarritoProps) {
 
   
   const popupRef = useRef<HTMLDivElement>(null)
@@ -81,6 +82,8 @@ export default function Carrito({ onClose }: CarritoProps) {
       try {
         const res = await fetch("/api/carrito/cookies");
         if (!res.ok) throw new Error("Error al cargar el carrito");
+        window.dispatchEvent(new Event("carrito-update"));
+
         const data = await res.json();
         setProductos(data);
       } catch (error) {
@@ -129,19 +132,26 @@ export default function Carrito({ onClose }: CarritoProps) {
         method: "DELETE",
       });
 
-      if (!res.ok) {
-        throw new Error("No se pudo eliminar el producto");
-      }
+      if (!res.ok) throw new Error("Error al eliminar producto");
 
-      // Actualizar el estado local
-      setProductos((prev) => prev.filter((p) => p.id !== productoId));
-      window.dispatchEvent(new Event("carrito-update"))
+      setProductos((prev) =>
+        prev
+          .map((producto) =>
+            producto.id === productoId
+              ? { ...producto, cantidad: Math.max(producto.cantidad - 1, 0) }
+              : producto
+          )
+          .filter((producto) => producto.cantidad > 0) // Solo mostramos los > 0
+      );
 
-    } catch (error) {
-      console.error("Error eliminando producto:", error);
-      alert("Error al eliminar producto del carrito");
+      window.dispatchEvent(new Event("carrito-update"));
+    } catch (err) {
+      console.error("Error al eliminar producto:", err);
+      alert("No se pudo eliminar el producto");
     }
-};
+  };
+
+
 
 
   return (
@@ -180,56 +190,79 @@ export default function Carrito({ onClose }: CarritoProps) {
           ) : (
             <div className={styles.productList}>
               <div className={styles.productCount}>
-                {productos.length} {productos.length === 1 ? "producto" : "productos"}
+                {productos.reduce((total, p) => total + p.cantidad, 0)}{" "}
+                {productos.reduce((total, p) => total + p.cantidad, 0) === 1
+                  ? "producto"
+                  : "productos"}
               </div>
-              {productos.map((producto) => (
-                <div key={producto.id} className={styles.productItem}>
-                  <div className={styles.productImage}>
-                    {producto.imagen_principal ? (
-                      <img
-                        src={producto.imagen_principal}
-                        alt={producto.nombre}
-                        className={styles.image}
-                      />
-                    ) : (
-                      <div className={styles.imagePlaceholder}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                          <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                          <polyline points="21,15 16,10 5,21"></polyline>
-                        </svg>
-                      </div>
-                    )}
+                {Array.from(new Map(productos.map(p => [p.id, p])).values()).map((producto) => (
+                  <div key={producto.id} className={styles.productItem} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: "1px solid #e5e7eb",
+                    padding: "12px 0",
+                    gap: "12px"
+                  }}>
+                    {/* Imagen del producto */}
+                    <div style={{ width: "60px", height: "60px", flexShrink: 0 }}>
+                      {producto.imagen_principal ? (
+                        <img
+                          src={producto.imagen_principal}
+                          alt={producto.nombre}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "8px",
+                            border: "1px solid #e5e7eb"
+                          }}
+                        />
+                      ) : (
+                        <div className={styles.imagePlaceholder}>
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21,15 16,10 5,21"></polyline>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Info del producto */}
+                    <div style={{ flex: 1 }}>
+                      <h4 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "4px" }}>{producto.nombre}</h4>
+                      <p style={{ margin: "0", color: "#4b5563" }}>
+                        Precio:{" "}
+                        <strong>
+                          {new Intl.NumberFormat("es-AR", {
+                            style: "currency",
+                            currency: "ARS",
+                          }).format(Number(producto.precio_base))}
+                        </strong>
+                      </p>
+                      <p style={{ margin: "4px 0 0", fontSize: "14px", color: "#1f2937" }}>
+                        Cantidad: <strong>{producto.cantidad}</strong>
+                      </p>
+                    </div>
+
+                    {/* Botón de eliminar */}
+                    <button
+                      style={inlineStyles.deleteButton}
+                      onMouseOver={(e) => {
+                        Object.assign(e.currentTarget.style, inlineStyles.deleteButtonHover);
+                      }}
+                      onMouseOut={(e) => {
+                        Object.assign(e.currentTarget.style, inlineStyles.deleteButton);
+                      }}
+                      onClick={() => handleEliminarProducto(producto.id)}
+                      aria-label="Eliminar producto"
+                    >
+                      ✕
+                    </button>
                   </div>
-
-                  <div className={styles.productInfo}>
-                    <h4 className={styles.productName}>{producto.nombre}</h4>
-                    <p className={styles.productPrice}>
-                      {new Intl.NumberFormat("es-AR", {
-                        style: "currency",
-                        currency: "ARS",
-                      }).format(Number(producto.precio_base))}
-                    </p>
-                  </div>
-
-              {/* Botón de eliminar */}
-              <button
-                style={inlineStyles.deleteButton}
-                onMouseOver={(e) => {
-                  Object.assign(e.currentTarget.style, inlineStyles.deleteButtonHover)
-                }}
-                onMouseOut={(e) => {
-                  Object.assign(e.currentTarget.style, inlineStyles.deleteButton)
-                }}
-                onClick={() => handleEliminarProducto(producto.id)}
-                aria-label="Eliminar producto"
-              >
-                ✕
-              </button>
+                ))}
 
 
-            </div>
-          ))}
 
             </div>
           )}
@@ -252,3 +285,5 @@ export default function Carrito({ onClose }: CarritoProps) {
     </div>
   )
 }
+
+

@@ -9,7 +9,6 @@ export async function GET() {
   let carrito;
 
   if (carritoId) {
-    // carritoId existe y es string, pero parseInt puede fallar si no es número
     const idNum = parseInt(carritoId);
     if (!isNaN(idNum)) {
       carrito = await prisma.carrito.findUnique({
@@ -33,7 +32,6 @@ export async function GET() {
   }
 
   if (!carrito) {
-    // No hay carrito o carrito no encontrado: crear uno nuevo en DB
     const nuevoCarrito = await prisma.carrito.create({ data: {} });
     carritoId = nuevoCarrito.id.toString();
 
@@ -46,10 +44,15 @@ export async function GET() {
     return response;
   }
 
-  // carrito encontrado, devolver productos
-  const productos = carrito.carrito_producto.map((cp) => cp.productos);
+  // Agregamos cantidad al resultado
+  const productos = carrito.carrito_producto.map((cp) => ({
+    ...cp.productos,
+    cantidad: cp.cantidad,
+  }));
+
   return NextResponse.json(productos);
 }
+
 
 export async function POST(req: Request) {
   const cookieStore = await cookies();
@@ -67,60 +70,88 @@ export async function POST(req: Request) {
   }
 
   if (!carrito) {
-    // Crear carrito nuevo
     const nuevoCarrito = await prisma.carrito.create({ data: {} });
     carritoId = nuevoCarrito.id.toString();
 
-    const response = NextResponse.json({ mensaje: "Carrito creado con cookie", carritoId });
+    const response = NextResponse.json(
+      { mensaje: "Carrito creado con cookie", carritoId },
+      { status: 201 }
+    );
     response.cookies.set("carrito_id", carritoId, {
       httpOnly: true,
       path: "/",
       maxAge: 60 * 60,
     });
-
     return response;
   }
-/*
-  const { productoId } = await req.json();
 
-  if (!productoId) {
-    return NextResponse.json({ error: "productoId es requerido" }, { status: 400 });
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    console.error("❌ Error: JSON inválido");
+    return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
-*/
-      const { productoBaseId, talle, color } = await req.json();
 
-      if (!productoBaseId || !talle || !color) {
-        return NextResponse.json({ error: "Faltan datos requeridos" }, { status: 400 });
-      }
+  const { productoBaseId, talle, color } = body;
 
-      // Verificamos que exista el producto base (por seguridad)
-      const productoBase = await prisma.productos.findUnique({
-        where: { id: productoBaseId },
-      });
+  console.log("🟡 Datos recibidos:", { productoBaseId, talle, color });
 
-      if (!productoBase) {
-        return NextResponse.json({ error: "Producto base no encontrado" }, { status: 404 });
-      }
+  if (
+    !productoBaseId ||
+    typeof productoBaseId !== "number" ||
+    !talle ||
+    typeof talle !== "string" ||
+    !color ||
+    typeof color !== "string"
+  ) {
+    console.error("❌ Datos inválidos en la solicitud");
+    return NextResponse.json(
+      { error: "Faltan o son inválidos los datos requeridos" },
+      { status: 400 }
+    );
+  }
 
-      // Buscamos la variante específica
-      const variante = await prisma.productos.findFirst({
-        where: {
-          producto_base_id: productoBaseId,
-          talle,
-          color_nombre: color,
-        },
-      });
+  const productoBase = await prisma.productos.findUnique({
+    where: { id: productoBaseId },
+  });
 
-      if (!variante) {
-        return NextResponse.json({ error: "Variante no encontrada" }, { status: 404 });
-      }
+  if (!productoBase) {
+    console.error("❌ Producto base no encontrado");
+    return NextResponse.json(
+      { error: "Producto base no encontrado" },
+      { status: 404 }
+    );
+  }
 
-      if (variante.stock <= 0) {
-        return NextResponse.json({ error: "La variante no tiene stock" }, { status: 400 });
-      }
+  const variante = await prisma.productos.findFirst({
+    where: {
+      producto_base_id: productoBaseId,
+      talle,
+      color_nombre: color,
+    },
+  });
 
-      const productoId = variante.id;
-  // Revisar si el producto ya está en carrito para aumentar cantidad
+  console.log("🔍 Variante encontrada:", variante);
+
+  if (!variante) {
+    console.error("❌ Variante no encontrada");
+    return NextResponse.json(
+      { error: "Variante no encontrada" },
+      { status: 404 }
+    );
+  }
+
+  if (variante.stock <= 0) {
+    console.warn("⚠️ Stock insuficiente:", variante.stock);
+    return NextResponse.json(
+      { error: "La variante no tiene stock" },
+      { status: 400 }
+    );
+  }
+
+  const productoId = variante.id;
+
   const productoEnCarrito = await prisma.carrito_producto.findUnique({
     where: {
       carrito_id_producto_id: {
@@ -130,52 +161,81 @@ export async function POST(req: Request) {
     },
   });
 
+  console.log("🛒 Producto en carrito:", productoEnCarrito);
+
   if (productoEnCarrito) {
-    const actualizado = await prisma.carrito_producto.update({
-      where: {
-        carrito_id_producto_id: {
-          carrito_id: carrito.id,
-          producto_id: productoId,
+    console.log(`➡️ Ya hay ${productoEnCarrito.cantidad} en el carrito. Stock disponible: ${variante.stock}`);
+
+    if (productoEnCarrito.cantidad < variante.stock) {
+      const actualizado = await prisma.carrito_producto.update({
+        where: {
+          carrito_id_producto_id: {
+            carrito_id: carrito.id,
+            producto_id: productoId,
+          },
         },
-      },
+        data: {
+          cantidad: productoEnCarrito.cantidad + 1,
+        },
+      });
+
+      console.log("✅ Cantidad actualizada:", actualizado);
+
+      return NextResponse.json(
+        { mensaje: "Cantidad actualizada en el carrito", item: actualizado },
+        { status: 200 }
+      );
+    } else {
+      console.warn("❌ Se alcanzó el límite de stock");
+      return NextResponse.json(
+        { error: "No se puede agregar más unidades, se alcanzó el stock disponible" },
+        { status: 400 }
+      );
+    }
+  } else {
+    const nuevoItem = await prisma.carrito_producto.create({
       data: {
-        cantidad: productoEnCarrito.cantidad + 1,
+        carrito_id: carrito.id,
+        producto_id: productoId,
+        cantidad: 1,
       },
     });
 
-    return NextResponse.json({ mensaje: "Cantidad actualizada en el carrito", item: actualizado });
+    console.log("🆕 Producto agregado al carrito:", nuevoItem);
+
+    return NextResponse.json(
+      { mensaje: "Producto variante agregado al carrito", item: nuevoItem },
+      { status: 201 }
+    );
   }
-
-  // Crear producto nuevo en carrito con cantidad 1
-  const item = await prisma.carrito_producto.create({
-    data: {
-      carrito_id: carrito.id,
-      producto_id: productoId,
-      cantidad: 1,
-    },
-  });
-
-  return NextResponse.json({ mensaje: "Producto agregado al carrito", item });
 }
 
-export async function DELETE(req: Request,{ params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  console.log("🛑 DELETE iniciado");
+
   const cookieStore = await cookies();
   const carritoId = cookieStore.get("carrito_id")?.value;
+  console.log("🍪 carrito_id desde cookie:", carritoId);
 
   if (!carritoId) {
+    console.log("❌ No hay carrito_id en cookies");
     return NextResponse.json({ error: "Carrito no encontrado" }, { status: 400 });
   }
 
-  //const productoId = parseInt(params.id);
   const { id } = await params;
+  console.log("🆔 Producto a eliminar ID:", id);
+
   const productoId = parseInt(id);
   if (isNaN(productoId)) {
+    console.log("❌ ID inválido recibido:", id);
     return NextResponse.json({ error: "ID inválido" }, { status: 400 });
   }
 
-  /*
   try {
-    await prisma.carrito_producto.delete({
+    const item = await prisma.carrito_producto.findUnique({
       where: {
         carrito_id_producto_id: {
           carrito_id: parseInt(carritoId),
@@ -183,12 +243,48 @@ export async function DELETE(req: Request,{ params }: { params: Promise<{ id: st
         },
       },
     });
-    return NextResponse.json({ message: "Producto eliminado del carrito" });
-  } catch (error) {
-    console.error("Error al eliminar producto:", error);
-    return NextResponse.json({ error: "No se pudo eliminar" }, { status: 500 });
-  }
-  */
 
-  return NextResponse.json({ mensaje: "Producto eliminado del carrito simulado" });
+    console.log("🔍 Item encontrado en carrito_producto:", item);
+
+    if (!item) {
+      console.log("❌ Producto no encontrado en carrito_producto");
+      return NextResponse.json({ error: "Producto no encontrado en el carrito" }, { status: 404 });
+    }
+
+    const nuevaCantidad = Math.max(item.cantidad - 1, 0);
+    console.log(`🔢 Cantidad actual: ${item.cantidad}, nueva cantidad: ${nuevaCantidad}`);
+
+    const actualizado = await prisma.carrito_producto.update({
+      where: {
+        carrito_id_producto_id: {
+          carrito_id: parseInt(carritoId),
+          producto_id: productoId,
+        },
+      },
+      data: {
+        cantidad: nuevaCantidad,
+      },
+    });
+
+    console.log("✅ Registro actualizado en carrito_producto:", actualizado);
+
+    // Aquí agregamos un fetch para verificar que siga existiendo después del update
+    const checkExist = await prisma.carrito_producto.findUnique({
+      where: {
+        carrito_id_producto_id: {
+          carrito_id: parseInt(carritoId),
+          producto_id: productoId,
+        },
+      },
+    });
+    console.log("🔎 Verificación post-update, registro existe?:", !!checkExist);
+
+    return NextResponse.json({ message: "Cantidad actualizada correctamente", item: actualizado });
+
+  } catch (error) {
+    console.error("🔥 Error al disminuir cantidad:", error);
+    return NextResponse.json({ error: "Error en el servidor" }, { status: 500 });
+  }
 }
+
+
