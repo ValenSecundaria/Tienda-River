@@ -46,9 +46,9 @@ export async function POST(req: NextRequest) {
         },
       ],
       back_urls: {
-        success: `${process.env.URL_BASE}/mercado-pago/success`,
-        failure: `${process.env.URL_BASE}/mercado-pago/failure`,
-        pending: `${process.env.URL_BASE}/mercado-pago/pending`,
+        success: `${process.env.URL_BASE}/components/mercadoPago/success`,
+        failure: `${process.env.URL_BASE}/components/mercadoPago/failure`,
+        pending: `${process.env.URL_BASE}/components/mercadoPago/pending`,
       },
       notification_url: `${process.env.URL_BASE}/api/mercado-pago/webhook`,
       auto_return: "approved",
