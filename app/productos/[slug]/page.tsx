@@ -18,7 +18,9 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 }
 
 // ✅ El componente de página recibe directamente { params }
-export default async function ProductPage({ params }: ProductPageProps) {
+
+export default async function ProductPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const { slug } = params
 
   const producto = await prisma.productos.findFirst({
