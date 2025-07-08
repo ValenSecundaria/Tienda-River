@@ -7,7 +7,7 @@ import { prisma } from "@/app/lib/prisma";
 import bcrypt from "bcrypt";
 import { Prisma } from "@prisma/client";
 
-type Usuario = Prisma.usuarios;
+type Usuario = Prisma.usuariosGetPayload<{}>;
 
 async function getUser(email: string): Promise<Usuario | null> {
   try {
