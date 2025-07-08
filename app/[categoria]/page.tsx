@@ -3,8 +3,8 @@
 import { CategoryPageClient } from "@/app/components/CategoryPageClient";
 import { getCategoryInfo } from "@/app/lib/category-products";
 
-export default async function CategoryPage(props: { params: Promise<{ categoria: string }> }) {
-  const { categoria } = await props.params;
+export default async function CategoryPage({ params }: { params: { categoria: string } }) {
+  const { categoria } = params;
 
   const categoryInfo = await getCategoryInfo(categoria);
 
@@ -12,4 +12,3 @@ export default async function CategoryPage(props: { params: Promise<{ categoria:
     <CategoryPageClient categoria={categoria} categoryInfo={categoryInfo} />
   );
 }
-
