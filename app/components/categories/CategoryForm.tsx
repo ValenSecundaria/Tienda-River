@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { createCategory, updateCategory } from "../../lib/categories"
 import styles from "./CategoryForm.module.css"
@@ -24,6 +23,7 @@ interface CategoryFormProps {
 export default function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [imagenURL, setImagenURL] = useState<string | null>(category?.imagen_url || null)
 
   const isEditing = !!category
 
@@ -33,6 +33,11 @@ export default function CategoryForm({ category, onClose, onSuccess }: CategoryF
     setError(null)
 
     const formData = new FormData(e.currentTarget)
+
+    // 🔴 Importante: añadimos la URL de la imagen subida si existe
+    if (imagenURL) {
+      formData.set("imagen_url", imagenURL)
+    }
 
     try {
       let result
@@ -108,18 +113,43 @@ export default function CategoryForm({ category, onClose, onSuccess }: CategoryF
             />
           </div>
 
+          {/* Subida de imagen a Cloudinary */}
           <div className={styles.field}>
-            <label htmlFor="imagen_url" className={styles.label}>
-              URL de Imagen
+            <label htmlFor="imagen_principal" className={styles.label}>
+              Imagen de la categoría
             </label>
             <input
-              type="url"
-              id="imagen_url"
-              name="imagen_url"
-              defaultValue={category?.imagen_url || ""}
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (!file) return
+
+                const formData = new FormData()
+                formData.append("image", file)
+
+                try {
+                  const res = await fetch("/api/upload-image", {
+                    method: "POST",
+                    body: formData,
+                  })
+                  const data = await res.json()
+                  if (data.secure_url) {
+                    setImagenURL(data.secure_url)
+                  } else {
+                    setError("No se pudo subir la imagen")
+                  }
+                } catch (err) {
+                  setError("Error al subir la imagen")
+                }
+              }}
               className={styles.input}
-              placeholder="https://ejemplo.com/imagen.jpg"
             />
+
+            {/* Vista previa */}
+            {imagenURL && (
+              <img src={imagenURL} alt="Vista previa" className={styles.previewImage} />
+            )}
           </div>
 
           <div className={styles.actions}>
