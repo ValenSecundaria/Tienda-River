@@ -49,17 +49,30 @@ const inlineStyles = {
 
 
 export default function   Carrito({ onClose }: CarritoProps) {
-
   
   const popupRef = useRef<HTMLDivElement>(null)
+  const popupFormRef = useRef<HTMLDivElement>(null)
   const [productos, setProductos] = useState<Producto[]>([])
   const [loading, setLoading] = useState(true)
+  const [estaLogueado, setEstaLogueado] = useState(false) // reemplazar con lógica real
+  const [datosUsuario, setDatosUsuario] = useState({
+    nombre: "",
+    apellido: "",
+    telefono: "",
+    email: "",
+  })
+  const [mostrarPopup, setMostrarPopup] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(e.target as Node) &&
+        (!popupFormRef.current || !popupFormRef.current.contains(e.target as Node))
+      ) {
         onClose()
       }
+
     }
 
     const handleEscapeKey = (e: KeyboardEvent) => {
@@ -96,17 +109,30 @@ export default function   Carrito({ onClose }: CarritoProps) {
     fetchProductos();
   }, []);
 
-  const handlePagarConMercadoPago = async () => {
-      try {
+  const handlePagarConMercadoPago = () => {
+    if (!estaLogueado) {
+      setMostrarPopup(true)
+      //Se envian los datos para guardar el usuario
+      return
+    }
+    iniciarPago()
+  }
+
+  const iniciarPago = async () => {
+  try {
         const res = await fetch("/api/mercado-pago/crear-preferencia", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            price: 1, // monto fijo de prueba
+            price: 1,
             title: "Producto de prueba",
             description: "Compra de prueba con Mercado Pago",
             quantity: 1,
-            productos : productos
+            productos: productos,
+            nombre: datosUsuario.nombre,
+            apellido: datosUsuario.apellido,
+            email: datosUsuario.email,
+            telefono: datosUsuario.telefono,
           }),
         });
 
@@ -125,7 +151,7 @@ export default function   Carrito({ onClose }: CarritoProps) {
       } catch (err) {
         alert("Hubo un error al iniciar el pago con Mercado Pago: " + err);
       }
-  };
+  }
 
   const handleEliminarProducto = async (productoId: number) => {
     try {
@@ -157,6 +183,63 @@ export default function   Carrito({ onClose }: CarritoProps) {
 
   return (
     <div className={styles.overlay}>
+      {mostrarPopup && (
+        <div className={styles.overlay}>
+          <div className={styles.popup} ref={popupFormRef}>
+            <div className={styles.header}>
+              <h3 className={styles.title}>Completa tus datos para continuar</h3>
+            </div>
+            <div className={styles.content}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (!datosUsuario.nombre || !datosUsuario.apellido || !datosUsuario.email || !datosUsuario.telefono) {
+                    alert("Todos los campos son obligatorios")
+                    return
+                  }
+                  setMostrarPopup(false)
+                  iniciarPago()
+                }}
+                style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+              >
+                <input
+                  type="text"
+                  placeholder="Nombre"
+                  value={datosUsuario.nombre}
+                  onChange={(e) => setDatosUsuario({ ...datosUsuario, nombre: e.target.value })}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Apellido"
+                  value={datosUsuario.apellido}
+                  onChange={(e) => setDatosUsuario({ ...datosUsuario, apellido: e.target.value })}
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={datosUsuario.email}
+                  onChange={(e) => setDatosUsuario({ ...datosUsuario, email: e.target.value })}
+                  required
+                />
+                <input
+                  type="tel"
+                  placeholder="Teléfono"
+                  value={datosUsuario.telefono}
+                  onChange={(e) => setDatosUsuario({ ...datosUsuario, telefono: e.target.value })}
+                  required
+                />
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                  <button type="submit" className={styles.payButton}>Continuar</button>
+                  <button type="button" onClick={() => setMostrarPopup(false)} className={styles.cancelButton}>Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.popup} ref={popupRef}>
         {/* Header */}
         <div className={styles.header}>

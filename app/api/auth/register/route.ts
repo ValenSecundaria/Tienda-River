@@ -22,12 +22,14 @@ export async function POST(request: Request) {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        secret: process.env.RECAPTCHA_SECRET_KEY || "",
+        secret: process.env.RECAPTCHA_SECRET_KEY || "", 
         response: captcha,
       }),
     });
 
     const data = await verifyRes.json();
+
+    console.log("Resultado de verificación reCAPTCHA:", data);
 
     if (!data.success) {
       return NextResponse.json({ error: "Captcha inválido" }, { status: 400 });
