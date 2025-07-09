@@ -135,8 +135,6 @@ export async function POST(req: Request) {
     },
   });
 
-  console.log("🎨 Variante encontrada:", variante);
-
   if (!variante) {
     return NextResponse.json(
       { error: "Variante no encontrada" },
@@ -145,7 +143,7 @@ export async function POST(req: Request) {
   }
 
   if (variante.stock <= 0) {
-    console.log("❌ Stock insuficiente");
+
     return NextResponse.json(
       { error: "La variante no tiene stock" },
       { status: 400 }
