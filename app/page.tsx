@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./HomePage.module.css";
 import HeroBannerRiver from "./components/page-principal/hero-banner/hero-banner-river";
+import ProductCarousel from "./components/product-carrusel/ProductCarrousel";
 
 type Categoria = {
   id: number;
@@ -216,6 +217,9 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Carrusel de Productos */}
+        <ProductCarousel />
+        
         {/* Ventajas */}
         <section className={`py-5 ${styles["bg-river-light"]}`}>
           <div className="container">

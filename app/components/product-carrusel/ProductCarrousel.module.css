@@ -1,0 +1,309 @@
+.carouselContainer {
+  position: relative;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 40px 0;
+  background: transparent;
+}
+
+.carouselTrack {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 450px;
+}
+
+.carouselSlides {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 300%; /* Ancho suficiente para todos los productos + clones */
+  position: relative;
+}
+
+/* Configuración base para todas las slides */
+.carouselSlide {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 33.333%; /* Cada slide ocupa 1/3 del contenedor visible */
+  padding: 0 10px;
+}
+
+/* Desktop: 3 imágenes visibles */
+@media (min-width: 992px) {
+  .carouselSlide {
+    max-width: 350px;
+  }
+
+  .productImageContainer {
+    height: 380px;
+  }
+}
+
+/* Tablet: 2 imágenes visibles */
+@media (min-width: 768px) and (max-width: 991px) {
+  .carouselSlide {
+    flex: 0 0 50%;
+    max-width: 300px;
+    padding: 0 15px;
+  }
+
+  .carouselSlides {
+    width: 200%;
+  }
+
+  .productImageContainer {
+    height: 320px;
+  }
+}
+
+/* Mobile: 1 imagen visible */
+@media (max-width: 767px) {
+  .carouselSlide {
+    flex: 0 0 100%;
+    max-width: 280px;
+    padding: 0 10px;
+  }
+
+  .carouselSlides {
+    width: 100%;
+  }
+
+  .productImageContainer {
+    height: 300px;
+  }
+
+  .carouselTrack {
+    min-height: 350px;
+  }
+}
+
+/* Contenedor de imagen optimizado */
+.productImageContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.productImageContainer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.productImageContainer:hover .productImage {
+  transform: scale(1.05);
+}
+
+.productOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+  color: white;
+  padding: 20px;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.productTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+  line-height: 1.3;
+}
+
+.productPrice {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ff4757;
+  margin: 0 0 8px 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.clickHint {
+  font-size: 0.9rem;
+  opacity: 0.95;
+  background: rgba(220, 53, 69, 0.9);
+  padding: 6px 14px;
+  border-radius: 25px;
+  display: inline-block;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Botones de navegación */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #dc3545;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #dc3545;
+}
+
+.navButton:hover:not(:disabled) {
+  background: #dc3545;
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+.navButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.navButtonPrev {
+  left: 20px;
+}
+
+.navButtonNext {
+  right: 20px;
+}
+
+/* Indicadores */
+.indicators {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+  padding: 0 20px;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #dee2e6;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicatorActive {
+  background: #dc3545;
+  border-color: #dc3545;
+  transform: scale(1.4);
+  box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+}
+
+.indicator:hover:not(.indicatorActive):not(:disabled) {
+  border-color: #adb5bd;
+  background: #f8f9fa;
+  transform: scale(1.2);
+}
+
+.indicator:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .carouselContainer {
+    padding: 20px 0;
+  }
+
+  .carouselSlide {
+    max-width: 250px;
+    padding: 0 8px;
+  }
+
+  .productImageContainer {
+    height: 250px;
+    border-radius: 12px;
+  }
+
+  .carouselTrack {
+    min-height: 300px;
+  }
+
+  .navButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .navButtonPrev {
+    left: 10px;
+  }
+
+  .navButtonNext {
+    right: 10px;
+  }
+
+  .productTitle {
+    font-size: 1rem;
+  }
+
+  .productPrice {
+    font-size: 1.1rem;
+  }
+
+  .clickHint {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
+
+  .productOverlay {
+    padding: 15px;
+  }
+}
+
+/* Tablet específico */
+@media (min-width: 577px) and (max-width: 767px) {
+  .carouselSlide {
+    flex: 0 0 80%;
+    max-width: 300px;
+  }
+
+  .productImageContainer {
+    height: 280px;
+  }
+}
+
+/* Focus states para accesibilidad */
+.navButton:focus,
+.indicator:focus,
+.carouselSlide:focus {
+  outline: 3px solid #dc3545;
+  outline-offset: 2px;
+}
+
+/* Box sizing para todos los elementos del carrusel */
+.carouselContainer,
+.carouselContainer * {
+  box-sizing: border-box;
+}
