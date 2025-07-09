@@ -37,6 +37,7 @@
     "@types/node": "^20.17.57",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19",
+    "@types/react-google-recaptcha": "^2.1.9",
     "prisma": "^6.10.1",
     "typescript": "^5"
   }
