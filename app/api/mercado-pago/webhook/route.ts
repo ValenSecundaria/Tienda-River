@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     else if (info.status === "rejected") estado_pago_id = 3;
     else if (info.status === "in_process") estado_pago_id = 4;
 
-    // Actualizar la transacción siempre
+    // Actualizar la transacción
     await prisma.transacciones.update({
       where: { id: Number(externalReference) },
       data: {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Si está aprobado, marcar orden como pagada y crear entrada en Pagos
+    // Si está aprobado: marcar orden como pagada, registrar el pago y actualizar stock
     if (estado_pago_id === 2) {
       await prisma.ordenes.updateMany({
         where: { transaccion_id: Number(externalReference) },
@@ -73,6 +73,27 @@ export async function POST(req: NextRequest) {
           icono: "mercadopago",
         },
       });
+
+      // 🔻 Actualizar stock de productos
+      const orden = await prisma.ordenes.findFirst({
+        where: { transaccion_id: Number(externalReference) },
+        include: { ordenitems: true },
+      });
+
+      if (orden) {
+        await Promise.all(
+          orden.ordenitems.map((item) =>
+            prisma.productos.update({
+              where: { id: item.producto_id },
+              data: {
+                stock: {
+                  decrement: item.cantidad,
+                },
+              },
+            })
+          )
+        );
+      }
     }
 
     return NextResponse.json({ status: "actualizado" });

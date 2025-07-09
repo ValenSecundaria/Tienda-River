@@ -67,26 +67,30 @@ model ordenes {
 model ordenitems {
   id              Int      @id @default(autoincrement())
   orden_id        Int
+  producto_id     Int // 👈 Nuevo campo clave
   cantidad        Int
   precio_unitario Decimal  @db.Decimal(10, 2)
   descuento       Decimal? @default(0) @db.Decimal(10, 2)
-  ordenes         ordenes  @relation(fields: [orden_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  // Relaciones
+  ordenes   ordenes   @relation(fields: [orden_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  productos productos @relation("ProductoOrdenItems", fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([orden_id], map: "idx_orden_items_orden_id")
+  @@index([producto_id])
 }
 
 model pagos {
   id            Int             @id @default(autoincrement())
   nombre        String          @db.VarChar(100) // MercadoPago, PayPal, etc.
-  detalle       String?         // descripción del pago
+  detalle       String? // descripción del pago
   activo        Boolean         @default(true)
   icono         String?         @db.VarChar(50)
   transacciones transacciones[] // transacciones asociadas
 
-  usuario_id    Int?            // Nuevo: usuario que realizó el pago (opcional)
-  usuario usuarios? @relation(fields: [usuario_id], references: [id], name: "PagoUsuario")
+  usuario_id Int? // Nuevo: usuario que realizó el pago (opcional)
+  usuario    usuarios? @relation(fields: [usuario_id], references: [id], name: "PagoUsuario")
 }
-
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model productos {
@@ -110,6 +114,8 @@ model productos {
   other_productos  productos[]        @relation("productosToproductos")
   categorias       categorias?        @relation(fields: [categoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   subcategorias    subcategorias?     @relation(fields: [subcategoria_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  ordenitems ordenitems[] @relation("ProductoOrdenItems")
 
   @@index([categoria_id], map: "idx_productos_categoria_id")
   @@index([subcategoria_id], map: "idx_productos_subcategoria_id")
@@ -159,20 +165,20 @@ model talles {
 }
 
 model transacciones {
-  id                 Int          @id @default(autoincrement())
-  usuario_id         Int?         // AHORA OPCIONAL
-  monto_total        Decimal      @db.Decimal(10, 2)
-  fecha              DateTime     @default(now()) @db.Timestamp(6)
+  id                 Int       @id @default(autoincrement())
+  usuario_id         Int? // AHORA OPCIONAL
+  monto_total        Decimal   @db.Decimal(10, 2)
+  fecha              DateTime  @default(now()) @db.Timestamp(6)
   estado_pago_id     Int
-  forma_pago_id      Int?         // AHORA OPCIONAL
-  codigo_transaccion String?      @unique @db.VarChar(50)
+  forma_pago_id      Int? // AHORA OPCIONAL
+  codigo_transaccion String?   @unique @db.VarChar(50)
   datos_adicionales  Json?
   ordenes            ordenes[]
 
   // Relaciones
-  estadopago         estadopago   @relation(fields: [estado_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  pagos              pagos?       @relation(fields: [forma_pago_id], references: [id]) // OPCIONAL
-  usuarios           usuarios?    @relation(fields: [usuario_id], references: [id])
+  estadopago estadopago @relation(fields: [estado_pago_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pagos      pagos?     @relation(fields: [forma_pago_id], references: [id]) // OPCIONAL
+  usuarios   usuarios?  @relation(fields: [usuario_id], references: [id])
 
   @@index([usuario_id], map: "idx_transacciones_usuario_id")
 }
@@ -189,14 +195,14 @@ model usuarios {
   ordenes        ordenes[]
   transacciones  transacciones[]
 
-  pagos   pagos[]  @relation("PagoUsuario")
+  pagos pagos[] @relation("PagoUsuario")
 }
 
 model carrito {
   id               Int                @id @default(autoincrement())
-  usuario_id       Int?                @unique
+  usuario_id       Int?               @unique
   fecha_creacion   DateTime?          @default(now()) @db.Timestamp(6)
-  usuarios         usuarios?           @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_carrito_usuario")
+  usuarios         usuarios?          @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_carrito_usuario")
   carrito_producto carrito_producto[]
 }
 

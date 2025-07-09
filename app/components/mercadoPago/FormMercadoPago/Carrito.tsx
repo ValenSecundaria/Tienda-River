@@ -105,7 +105,8 @@ export default function   Carrito({ onClose }: CarritoProps) {
             price: 1, // monto fijo de prueba
             title: "Producto de prueba",
             description: "Compra de prueba con Mercado Pago",
-            quantity: 1
+            quantity: 1,
+            productos : productos
           }),
         });
 
