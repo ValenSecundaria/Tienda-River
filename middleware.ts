@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   // Protección por API key para rutas específicas
   if (pathname.startsWith('/api/export')) {
     const apiKey = request.headers.get('x-api-key')
-    const validKey = process.env.EXPORT_API_KEY
+    const validKey = process.env.NEXT_PUBLIC_API_KEY
 
     if (apiKey !== validKey) {
       const lang = request.headers.get('accept-language') || 'en'

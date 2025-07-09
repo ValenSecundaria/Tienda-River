@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import styles from "./RegisterForm.module.css"
+import styles from "./registerForm.module.css"
 
 interface RegisterFormProps {
   onRegisterSuccess?: () => void
