@@ -8,7 +8,6 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/api/export')) {
     const apiKey = request.headers.get('x-api-key')
     const validKey = process.env.NEXT_PUBLIC_EXPORT_API_KEY
-
     if (apiKey !== validKey) {
       const lang = request.headers.get('accept-language') || 'en'
       const isSpanish = lang.toLowerCase().startsWith('es')
