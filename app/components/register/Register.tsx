@@ -201,4 +201,3 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onSwitch
 }
 
 export default RegisterForm
-  
