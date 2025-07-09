@@ -1,85 +1,45 @@
 "use client"
 
 import type React from "react"
-
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import styles from "./registerForm.module.css"
-
-declare global {
-  interface Window {
-    onCaptchaSuccess: (token: string) => void
-  }
-}
+import { useState } from "react"
+import styles from "./RegisterForm.module.css"
 
 interface RegisterFormProps {
+  onRegisterSuccess?: () => void
   onSwitchToLogin?: () => void
 }
 
-const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
-  const [captchaToken, setCaptchaToken] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
+const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, onSwitchToLogin }) => {
+  const [nombre, setNombre] = useState("")
+  const [telefono, setTelefono] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isPending, setIsPending] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const router = useRouter()
-
-  useEffect(() => {
-    window.onCaptchaSuccess = (token: string) => {
-      setCaptchaToken(token)
-    }
-    const script = document.createElement("script")
-    script.src = "https://www.google.com/recaptcha/api.js"
-    script.async = true
-    script.defer = true
-    document.body.appendChild(script)
-  }, [])
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setErrorMessage("")
-
-    if (!captchaToken) {
-      setErrorMessage("Por favor completá el CAPTCHA.")
-      return
-    }
-
     setIsPending(true)
-    const form = e.currentTarget as HTMLFormElement
-    const formData = new FormData(form)
-    const data = Object.fromEntries(formData)
-
-    const payload = {
-      email: data.email,
-      password: data.password,
-      nombre: data.nombre,
-      telefono: data.telefono,
-      captcha: captchaToken,
-    }
+    setErrorMessage(null)
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-      const json = await res.json()
+      // Simulate a registration process
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      if (res.ok) {
-        alert("Registro exitoso")
-        router.push("/")
-      } else {
-        setErrorMessage(json.error || "Error al registrarse")
+      // Simulate a successful registration
+      if (onRegisterSuccess) {
+        onRegisterSuccess()
       }
-    } catch (error) {
-      setErrorMessage("Error en la comunicación con el servidor")
-      console.error(error)
+    } catch (error: any) {
+      setErrorMessage("Hubo un error al registrar la cuenta. Intenta nuevamente.")
     } finally {
       setIsPending(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <div className={styles.form}>
       <div className={styles.formContent}>
         <div className={styles.inputGroup}>
           <label className={styles.label} htmlFor="nombre">
@@ -106,7 +66,6 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
             />
           </div>
         </div>
-
         <div className={styles.inputGroup}>
           <label className={styles.label} htmlFor="telefono">
             Teléfono
@@ -132,7 +91,6 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
             />
           </div>
         </div>
-
         <div className={styles.inputGroup}>
           <label className={styles.label} htmlFor="email">
             Email
@@ -151,7 +109,6 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
             <input className={styles.input} id="email" name="email" type="email" placeholder="tu@email.com" required />
           </div>
         </div>
-
         <div className={styles.inputGroup}>
           <label className={styles.label} htmlFor="password">
             Contraseña
@@ -205,7 +162,6 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
             </button>
           </div>
         </div>
-
         <div className={styles.captchaContainer}>
           <div
             className="g-recaptcha"
@@ -213,20 +169,19 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
             data-callback="onCaptchaSuccess"
           ></div>
         </div>
-
-        <button className={styles.button} type="submit" aria-disabled={isPending} disabled={isPending}>
-          {isPending && <span className={styles.loadingSpinner}></span>}
-          {isPending ? "Registrando..." : "Registrarse"}
-        </button>
-
+        <form onSubmit={handleSubmit}>
+          <button className={styles.button} type="submit" aria-disabled={isPending} disabled={isPending}>
+            {isPending && <span className={styles.loadingSpinner}></span>}
+            {isPending ? "Registrando..." : "Registrarse"}
+          </button>
+        </form>
         {onSwitchToLogin && (
           <button type="button" className={styles.backToLoginButton} onClick={onSwitchToLogin}>
             ¿Ya tenés cuenta? Iniciar sesión
           </button>
         )}
-
-        <div className={styles.errorContainer} aria-live="polite" aria-atomic="true">
-          {errorMessage && (
+        {errorMessage && (
+          <div className={styles.errorContainer} aria-live="polite" aria-atomic="true">
             <div className={styles.errorMessage}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -238,10 +193,10 @@ const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
               </svg>
               {errorMessage}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </form>
+    </div>
   )
 }
 

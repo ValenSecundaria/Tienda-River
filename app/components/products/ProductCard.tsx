@@ -31,37 +31,6 @@ export function ProductCard({ producto }: { producto: Product }) {
   const [agregado, setAgregado] = useState(false);
   const [mensajeVisible, setMensajeVisible] = useState(false);
 
- /* const agregarAlCarrito = async () => {
-    try {
-      const res = await fetch("/api/carrito/cookies", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productoId: producto.id,
-        }),
-      });
-
-      if (res.ok) {
-        setAgregado(true);
-        setMensajeVisible(true);
-
-        window.dispatchEvent(new Event("carrito-update"))
-        
-        setTimeout(() => {
-          setMensajeVisible(false);
-          setAgregado(false);
-        }, 2500);
-      } else {
-        const error = await res.json();
-        console.error("Error al agregar al carrito:", error);
-      }
-    } catch (error) {
-      console.error("Error de red:", error);
-    }
-  };*/
-
   return (
     <div className={styles.card}>
       <Link href={`/productos/${producto.slug}`} className={styles.cardLink}>

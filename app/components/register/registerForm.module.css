@@ -1,5 +1,5 @@
 /* ================================================
-   ESTILOS BASE DEL FORMULARIO
+   ESTILOS BASE DEL FORMULARIO - SIGUIENDO PATRÓN DEL LOGIN
    ================================================ */
 .form {
   background: white;
@@ -180,6 +180,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
   letter-spacing: 0.025em;
+  margin-bottom: 0;
 }
 
 .backToLoginButton:hover {
@@ -214,6 +215,7 @@
    ================================================ */
 .errorContainer {
   margin-top: 1rem;
+  margin-bottom: 0;
 }
 
 .errorMessage {
@@ -244,7 +246,7 @@
 }
 
 /* ================================================
-   RESPONSIVE
+   RESPONSIVE - SIGUIENDO EXACTAMENTE EL PATRÓN DEL LOGIN
    ================================================ */
 @media (max-width: 640px) {
   .formContent {
@@ -277,6 +279,10 @@
   .captchaContainer {
     padding: 0.75rem;
   }
+
+  .inputGroup {
+    margin-bottom: 1.25rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -294,5 +300,31 @@
 
   .passwordToggle {
     right: 0.75rem;
+  }
+
+  .captchaContainer {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .label {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .inputGroup {
+    margin-bottom: 1rem;
+  }
+
+  .button {
+    margin-bottom: 0.75rem;
+  }
+
+  .backToLoginButton {
+    margin-bottom: 0;
+  }
+
+  .errorContainer {
+    margin-bottom: 0;
   }
 }
