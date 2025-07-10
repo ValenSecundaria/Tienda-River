@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./HomePage.module.css";
 import HeroBannerRiver from "./components/page-principal/hero-banner/hero-banner-river";
 import ProductCarousel from "./components/product-carrusel/ProductCarrousel";
+import LoadingScreen from "./components/loading/LoadingScreen";
 
 type Categoria = {
   id: number;
@@ -141,22 +142,9 @@ export default function HomePage() {
   }
 
   // Pantalla de carga
-  if (isLoading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center min-vh-100 bg-white">
-        <div className="text-center">
-          <div 
-            className="spinner-border text-primary" 
-            style={{ width: '3rem', height: '3rem' }} 
-            role="status"
-          >
-            <span className="visually-hidden">Cargando...</span>
-          </div>
-          <h2 className="mt-3 text-dark">Cargando la tienda...</h2>
-        </div>
-      </div>
-    );
-  }
+ if (isLoading) {
+  return <LoadingScreen />;
+}
 
   // Contenido principal
   return (
