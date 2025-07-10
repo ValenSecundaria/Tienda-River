@@ -5,6 +5,7 @@ import "./globals.css";
 
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
+import NotificationPopUp from "./components/notifications/NotificationPopUp"
 
 export const metadata: Metadata = {
   title: "Tienda-River",
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
       <body className="d-flex flex-column min-vh-100">
         <Header />
+        <NotificationPopUp></NotificationPopUp>
         <main className="flex-grow-1" style={{ paddingTop: "56px" }}>
           {children}
         </main>

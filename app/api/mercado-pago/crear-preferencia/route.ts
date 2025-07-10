@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         if (isNaN(precio) || isNaN(cantidad)) continue;
 
         // 🔴 Validación de stock
-        if (productoBD.stock > cantidad) {
+        if (productoBD.stock < cantidad) {
           return NextResponse.json({
             error: `No hay suficiente stock para "${productoBD.nombre}". Stock disponible: ${productoBD.stock}, solicitado: ${cantidad}`
           }, { status: 400 });

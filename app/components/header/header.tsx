@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import styles from "./header.module.css"
 import Carrito from "../mercadoPago/FormMercadoPago/Carrito"
-import PushButton from "../notifications/PushButton"
+//import PushButton from "../notifications/PushButton"
 
 // Tipos
 type Subcategoria = { id: number; nombre: string; descripcion?: string }
@@ -140,7 +140,6 @@ export default function Header() {
               <span className={styles.brandText}>Tienda River</span>
             </div>
           </Link>
-          <PushButton></PushButton>
 
           <div className={`collapse navbar-collapse ${!isNavCollapsed ? "show" : ""}`} id="navbarNavContent">
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0 d-none d-lg-flex">
