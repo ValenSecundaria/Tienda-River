@@ -193,6 +193,39 @@ export default function CreateProductForm({ productId, mode = "create" }: Create
     )
   }
 
+  const generarDescripcionIA = async () => {
+  if (!productData.nombre) {
+    setError("Ingresá el nombre del producto primero.");
+    return;
+  }
+
+  setSubmitting(true)
+  setError(null)
+
+  try {
+    const res = await fetch("/api/IA", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombreProducto: productData.nombre }),
+    })
+
+    const data = await res.json()
+
+    if (data.descripcion) {
+      setProductData((prev) => ({
+        ...prev,
+        descripcion: data.descripcion,
+      }))
+    } else {
+      setError("No se pudo generar la descripción.")
+    }
+  } catch (error) {
+    setError("Error al conectarse con el servidor.")
+  }
+
+  setSubmitting(false)
+}
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -230,6 +263,7 @@ export default function CreateProductForm({ productId, mode = "create" }: Create
           categories={formData.categories}
           subcategories={formData.subcategories}
           onChange={handleProductDataChange}
+          generarDescripcionIA={generarDescripcionIA}
         />
 
         <ProductVariants

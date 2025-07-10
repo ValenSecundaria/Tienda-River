@@ -1,6 +1,7 @@
 "use client"
 
 import styles from "./ProductBasicInfo.module.css"
+import { useState } from "react"
 
 interface Category {
   id: number
@@ -27,11 +28,18 @@ interface ProductBasicInfoProps {
   categories: Category[]
   subcategories: Subcategory[]
   onChange: (data: Partial<ProductData>) => void
+  generarDescripcionIA?: () => void // <- ✅ Prop opcional
 }
 
-export default function ProductBasicInfo({ data, categories, subcategories, onChange }: ProductBasicInfoProps) {
+export default function ProductBasicInfo({
+  data,
+  categories,
+  subcategories,
+  onChange,
+  generarDescripcionIA,
+}: ProductBasicInfoProps) {
   const filteredSubcategories = subcategories.filter(
-    (sub) => sub.categoria_id === Number.parseInt(data.categoria_id || "0"),
+    (sub) => sub.categoria_id === Number.parseInt(data.categoria_id || "0")
   )
 
   const handleCategoryChange = (categoria_id: string) => {
@@ -40,6 +48,14 @@ export default function ProductBasicInfo({ data, categories, subcategories, onCh
       subcategoria_id: "", // Reset subcategory when category changes
     })
   }
+const [generando, setGenerando] = useState(false)
+  const handleGenerarDescripcion = async () => {
+  if (!generarDescripcionIA) return
+
+  setGenerando(true)
+  await generarDescripcionIA()
+  setGenerando(false)
+}
 
   return (
     <div className={styles.container}>
@@ -117,6 +133,41 @@ export default function ProductBasicInfo({ data, categories, subcategories, onCh
           </select>
         </div>
 
+        {/* ✅ Input para descripción con botón de IA al lado */}
+        <div className={styles.fieldFull}>
+          <label htmlFor="descripcion" className={styles.label}>
+            Descripción del Producto
+          </label>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <textarea
+              id="descripcion"
+              value={data.descripcion}
+              onChange={(e) => onChange({ descripcion: e.target.value })}
+              className={styles.input}
+              rows={3}
+              placeholder="Ej: Estas zapatillas Nike Air Max combinan estilo moderno con máxima comodidad..."
+              style={{ flex: 1 }}
+            />
+                  <button
+          type="button"
+          onClick={handleGenerarDescripcion}
+          disabled={generando}
+          className={styles.iaButton}
+          style={{
+            whiteSpace: "nowrap",
+            padding: "0 12px",
+            backgroundColor: generando ? "#999" : "#dc143c",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            cursor: generando ? "not-allowed" : "pointer",
+          }}
+        >
+          {generando ? "Generando..." : "Generar con IA"}
+        </button>
+          </div>
+        </div>
+
         <div className={styles.fieldFull}>
           <label htmlFor="imagen_principal" className={styles.label}>
             Imagen Principal del Producto
@@ -143,7 +194,6 @@ export default function ProductBasicInfo({ data, categories, subcategories, onCh
             className={styles.input}
           />
 
-          {/* Vista previa si ya hay imagen */}
           {data.imagen_principal && (
             <img src={data.imagen_principal} alt="Vista previa" className={styles.previewImage} />
           )}
