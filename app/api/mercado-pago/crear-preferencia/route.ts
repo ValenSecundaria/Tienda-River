@@ -60,24 +60,27 @@ export async function POST(req: NextRequest) {
     console.log("El monto total de tu compra es de :" + total);
     console.log("tus productos son:"+ itemsMP);
     // Crear transacción y orden
-    const transaccion = await prisma.transacciones.create({
+        const transaccion = await prisma.transacciones.create({
       data: {
         usuario_id: 1,
         monto_total: total,
         estado_pago_id: 1,
         forma_pago_id: 1,
       },
-    });
+    })
 
-    const orden = await prisma.ordenes.create({
-      data: {
-        usuario_id: 1,
-        estado_orden_id: 1,
-        transaccion_id: transaccion.id,
-        total,
-        direccion_envio: body.direccion || null,
-      },
-    });
+    const datosAdicionales = `${body.nombre}-*-${body.email}-*-${body.telefono || ""}`;
+
+      const orden = await prisma.ordenes.create({
+        data: {
+          usuario_id: 1,
+          estado_orden_id: 1,
+          transaccion_id: transaccion.id,
+          total,
+          direccion_envio: body.direccion || null,
+          notas: datosAdicionales
+        },
+      })
 
         await Promise.all(
       productos.map((p: any) => {

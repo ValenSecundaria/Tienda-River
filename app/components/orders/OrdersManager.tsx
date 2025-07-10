@@ -27,20 +27,26 @@ interface Order {
     nombre: string
     es_final: boolean
   }
-  transacciones: {
-    id: number
-    codigo_transaccion: string | null
-    monto_total: number
-    fecha: Date
-    estadopago: {
-      nombre: string
-      es_final: boolean
-    }
-    pagos: {
-      nombre: string
-      icono: string | null
-    } | null
+ transacciones: {
+  id: number
+  codigo_transaccion: string | null
+  monto_total: number
+  fecha: Date
+  estadopago: {
+    nombre: string
+    es_final: boolean
   }
+  pagos: {
+    nombre: string
+    icono: string | null
+  } | null
+  datos_adicionales?: {
+    nombre_cliente: string
+    email_cliente: string
+    telefono_cliente: string | null
+  } | null
+}
+
   ordenitems: Array<{
     id: number
     orden_id: number

@@ -57,7 +57,7 @@ export default function   Carrito({ onClose }: CarritoProps) {
   const [estaLogueado, setEstaLogueado] = useState(false) // reemplazar con lógica real
   const [datosUsuario, setDatosUsuario] = useState({
     nombre: "",
-    apellido: "",
+    direccion: "",
     telefono: "",
     email: "",
   })
@@ -129,7 +129,7 @@ export default function   Carrito({ onClose }: CarritoProps) {
         body: JSON.stringify({
           productos: productos,
           nombre: datosUsuario.nombre,
-          apellido: datosUsuario.apellido,
+          direccion: datosUsuario.direccion,
           email: datosUsuario.email,
           telefono: datosUsuario.telefono,
         }),
@@ -237,7 +237,7 @@ export default function   Carrito({ onClose }: CarritoProps) {
 
                   if (
                     !datosUsuario.nombre ||
-                    !datosUsuario.apellido ||
+                    !datosUsuario.direccion ||
                     !datosUsuario.email ||
                     !datosUsuario.telefono
                   ) {
@@ -258,7 +258,7 @@ export default function   Carrito({ onClose }: CarritoProps) {
               >
                 {[
                   { label: "Nombre", type: "text", value: datosUsuario.nombre, key: "nombre" },
-                  { label: "Apellido", type: "text", value: datosUsuario.apellido, key: "apellido" },
+                  { label: "Direccion", type: "text", value: datosUsuario.direccion, key: "direccion" },
                   { label: "Email", type: "email", value: datosUsuario.email, key: "email" },
                   { label: "Teléfono", type: "tel", value: datosUsuario.telefono, key: "telefono" },
                 ].map(({ label, type, value, key }) => (
