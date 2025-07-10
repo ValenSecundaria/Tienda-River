@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import styles from "./header.module.css"
 import Carrito from "../mercadoPago/FormMercadoPago/Carrito"
+import HeaderSkeleton from "./HeaderSkeleton"
 //import PushButton from "../notifications/PushButton"
 
 // Tipos
@@ -98,10 +99,7 @@ export default function Header() {
 
   if (loading)
     return (
-      <div className="text-center my-5">
-        <div className="spinner-border text-primary" role="status" />
-        <p className="mt-2">Cargando menú...</p>
-      </div>
+      <HeaderSkeleton/>
     )
 
   return (
