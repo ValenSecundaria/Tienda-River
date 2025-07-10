@@ -217,3 +217,11 @@ model carrito_producto {
 
   @@unique([carrito_id, producto_id], map: "unique_carrito_producto")
 }
+
+model push_subscription {
+  id         Int      @id @default(autoincrement())
+  endpoint   String   @unique
+  p256dh     String
+  auth       String
+  created_at DateTime @default(now()) @db.Timestamp(6)
+}
