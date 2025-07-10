@@ -62,6 +62,9 @@ export default function   Carrito({ onClose }: CarritoProps) {
     email: "",
   })
   const [mostrarPopup, setMostrarPopup] = useState(false)
+  const [errorStock, setErrorStock] = useState<string | null>(null);
+  const [volverAlFormulario, setVolverAlFormulario] = useState(false);
+
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -112,46 +115,54 @@ export default function   Carrito({ onClose }: CarritoProps) {
   const handlePagarConMercadoPago = () => {
     if (!estaLogueado) {
       setMostrarPopup(true)
-      //Se envian los datos para guardar el usuario
       return
     }
     iniciarPago()
   }
 
   const iniciarPago = async () => {
-  try {
-        const res = await fetch("/api/mercado-pago/crear-preferencia", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            price: 1,
-            title: "Producto de prueba",
-            description: "Compra de prueba con Mercado Pago",
-            quantity: 1,
-            productos: productos,
-            nombre: datosUsuario.nombre,
-            apellido: datosUsuario.apellido,
-            email: datosUsuario.email,
-            telefono: datosUsuario.telefono,
-          }),
-        });
+    console.log("Iniciando pago...");
+    try {
+      const res = await fetch("/api/mercado-pago/crear-preferencia", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productos: productos,
+          nombre: datosUsuario.nombre,
+          apellido: datosUsuario.apellido,
+          email: datosUsuario.email,
+          telefono: datosUsuario.telefono,
+        }),
+      });
 
-        if (!res.ok) {
-          const errorText = await res.text();
-          alert("Error en la API: " + errorText);
+      const data = await res.json();
+
+      if (!res.ok) {
+        // 🟥 Si el error es por stock, mostrar popup de error y volver al formulario
+        if (data.error?.includes("stock")) {
+          setErrorStock(data.error);
+          setVolverAlFormulario(mostrarPopup); // Recordar si venía del formulario
           return;
         }
 
-        const data = await res.json();
-        if (data.init_point) {
-          window.location.href = data.init_point;
-        } else {
-          alert("No se recibió el link de pago");
-        }
-      } catch (err) {
-        alert("Hubo un error al iniciar el pago con Mercado Pago: " + err);
+        // Otros errores
+        alert(data.error || "Error en la API");
+        return;
       }
-  }
+
+      // ✅ Redirigir a Mercado Pago si todo salió bien
+      if (data.init_point) {
+        window.location.href = data.init_point;
+      } else {
+        alert("No se recibió el link de pago");
+      }
+
+    } catch (err) {
+      alert("Hubo un error al iniciar el pago con Mercado Pago: " + err);
+    }
+};
+
+
 
   const handleEliminarProducto = async (productoId: number) => {
     try {
@@ -183,6 +194,35 @@ export default function   Carrito({ onClose }: CarritoProps) {
 
   return (
     <div className={styles.overlay}>
+      {errorStock && (
+          <div className={styles.overlay}>
+            <div className={styles.popup}>
+              <div className={styles.header}>
+                <h3 className={styles.title}>Error de stock</h3>
+              </div>
+              <div className={styles.content}>
+                <p style={{ color: "#b91c1c", fontWeight: 500 }}>
+                  {errorStock}
+                </p>
+                <div style={{ marginTop: "20px", textAlign: "right" }}>
+                  <button
+                    onClick={() => {
+                      setErrorStock(null);
+                      if (volverAlFormulario) {
+                        setMostrarPopup(true);      
+                        setVolverAlFormulario(false); 
+                      }
+                    }}
+                    className={styles.cancelButton}
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+      )}
+
       {mostrarPopup && (
         <div className={styles.overlay}>
           <div className={styles.popup} ref={popupFormRef}>
@@ -192,49 +232,111 @@ export default function   Carrito({ onClose }: CarritoProps) {
             <div className={styles.content}>
               <form
                 onSubmit={(e) => {
-                  e.preventDefault()
-                  if (!datosUsuario.nombre || !datosUsuario.apellido || !datosUsuario.email || !datosUsuario.telefono) {
-                    alert("Todos los campos son obligatorios")
-                    return
+                  e.preventDefault();
+                  console.log("Formulario enviado");
+
+                  if (
+                    !datosUsuario.nombre ||
+                    !datosUsuario.apellido ||
+                    !datosUsuario.email ||
+                    !datosUsuario.telefono
+                  ) {
+                    alert("Todos los campos son obligatorios");
+                    return;
                   }
-                  setMostrarPopup(false)
-                  iniciarPago()
+
+                  setMostrarPopup(false);
+                  iniciarPago();
                 }}
-                style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                  maxWidth: "400px",
+                  margin: "0 auto",
+                }}
               >
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  value={datosUsuario.nombre}
-                  onChange={(e) => setDatosUsuario({ ...datosUsuario, nombre: e.target.value })}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Apellido"
-                  value={datosUsuario.apellido}
-                  onChange={(e) => setDatosUsuario({ ...datosUsuario, apellido: e.target.value })}
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={datosUsuario.email}
-                  onChange={(e) => setDatosUsuario({ ...datosUsuario, email: e.target.value })}
-                  required
-                />
-                <input
-                  type="tel"
-                  placeholder="Teléfono"
-                  value={datosUsuario.telefono}
-                  onChange={(e) => setDatosUsuario({ ...datosUsuario, telefono: e.target.value })}
-                  required
-                />
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                  <button type="submit" className={styles.payButton}>Continuar</button>
-                  <button type="button" onClick={() => setMostrarPopup(false)} className={styles.cancelButton}>Cancelar</button>
+                {[
+                  { label: "Nombre", type: "text", value: datosUsuario.nombre, key: "nombre" },
+                  { label: "Apellido", type: "text", value: datosUsuario.apellido, key: "apellido" },
+                  { label: "Email", type: "email", value: datosUsuario.email, key: "email" },
+                  { label: "Teléfono", type: "tel", value: datosUsuario.telefono, key: "telefono" },
+                ].map(({ label, type, value, key }) => (
+                  <div key={key} style={{ display: "flex", flexDirection: "column" }}>
+                    <label
+                      htmlFor={key}
+                      style={{
+                        marginBottom: "6px",
+                        fontWeight: "600",
+                        fontSize: "14px",
+                        color: "#374151",
+                        userSelect: "none",
+                      }}
+                    >
+                      {label}
+                    </label>
+                    <input
+                      id={key}
+                      type={type}
+                      placeholder={label}
+                      value={value}
+                      onChange={(e) => setDatosUsuario({ ...datosUsuario, [key]: e.target.value })}
+                      required
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: "6px",
+                        border: "1.5px solid #d1d5db",
+                        fontSize: "14px",
+                        outline: "none",
+                        transition: "border-color 0.2s ease-in-out",
+                      }}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = "#3b82f6")}
+                      onBlur={(e) => (e.currentTarget.style.borderColor = "#d1d5db")}
+                    />
+                  </div>
+                ))}
+
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
+                  <button
+                    type="submit"
+                    className={styles.payButton}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "#2563eb",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "background-color 0.2s ease-in-out",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#1e40af")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
+                  >
+                    Continuar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMostrarPopup(false)}
+                    className={styles.cancelButton}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "#e5e7eb",
+                      color: "#374151",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "background-color 0.2s ease-in-out",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#d1d5db")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#e5e7eb")}
+                  >
+                    Cancelar
+                  </button>
                 </div>
               </form>
+
             </div>
           </div>
         </div>
