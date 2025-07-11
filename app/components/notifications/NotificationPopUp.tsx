@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { registerServiceWorker, subscribeUserToPush } from "@/app/lib/push" // Asegurate que la ruta sea correcta
+import { registerServiceWorker, subscribeUserToPush } from "@/app/lib/push"
 
 export default function NotificationPrompt() {
   const [showPrompt, setShowPrompt] = useState(false)
@@ -10,13 +10,21 @@ export default function NotificationPrompt() {
     if (typeof window !== "undefined" && "Notification" in window) {
       if (Notification.permission === "default") {
         setShowPrompt(true)
+      } else if (Notification.permission === "granted") {
+        // Ya está permitido, registramos igual
+        handleAllow()
       }
     }
   }, [])
 
   const handleAllow = async () => {
-    const permission = await Notification.requestPermission()
-    console.log("Permiso de notificación:", permission)
+    let permission = Notification.permission
+
+    // Si todavía no pidió permiso, lo pedimos
+    if (permission === "default") {
+      permission = await Notification.requestPermission()
+      console.log("Permiso de notificación:", permission)
+    }
 
     if (permission === "granted") {
       try {
@@ -29,9 +37,9 @@ export default function NotificationPrompt() {
           body: JSON.stringify({ subscription: sub }),
         })
 
-        console.log("Suscripción push guardada con éxito")
+        console.log("✅ Suscripción push guardada con éxito")
       } catch (err) {
-        console.error("Error al registrar la suscripción push", err)
+        console.error("❌ Error al registrar la suscripción push", err)
       }
     }
 
