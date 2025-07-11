@@ -1,32 +1,7 @@
-clave para ingresar con 123456:
-$2b$10$QvvU.o5NQCPIzM.UxADj3cRp4B7U5AMXSd1A7hxIZ2QtUrfeLzzq
+Link Vercel: https://proyecto-2-gemetro-didier-c6ni.vercel.app/
 
-npm install react react-dom next
-
-npm install lucide-react
-
-npm install --save-dev @types/react @types/node
-
-npm i prisma
-
-npx prisma
-
-npx prisma init
-
-npm install bcrypt
-
-npm install -D @types/bcrypt
-
-npx prisma generate # Para generar el cliente (para un proyecto nuevo)
-npx prisma migrate dev # Para aplicar la estructura ( o npx prisma db push para las tablas)
-
-npm install mercadopago@1.5.7 //Dependencias de mp
-
-npm install exceljs (para exportar datos)
-curl -H "x-api-key: pass123" "http://localhost:3000/api/export/productos?format=xlsx" -o productos.xlsx (Para probar localmente, te genera una planilla excel en la carpeta de la consola donde estes ubicado).
-en .env : EXPORT_API_KEY= pass123
-
-npm install cloudinary
+usuario: invitado@gmail.com
+clave: 12345678
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/2gizGE2c)
 
