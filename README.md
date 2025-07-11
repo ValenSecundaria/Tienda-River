@@ -3,6 +3,8 @@ Link Vercel: https://proyecto-2-gemetro-didier-c6ni.vercel.app/
 usuario: invitado@gmail.com
 clave: 12345678
 
+Mercado pago esta en produccion. Los pagos son acreditados a cuenta de la comision
+
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/2gizGE2c)
 
 # Proyecto 2 - Desarrollo de Aplicación Web Completa con Next.js y PostgreSQL
