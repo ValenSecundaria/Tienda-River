@@ -26,6 +26,15 @@
   outline-offset: 2px;
 }
 
+.errorMessageMini {
+  color: #dc2626; /* rojo sutil, no tan brillante */
+  font-size: 0.75rem; /* texto pequeño */
+  margin-top: 0.25rem;
+  padding-left: 0.25rem;
+}
+
+
+
 /* ================================================
    MEJORAS PARA CAMPOS MÁS NATURALES
    ================================================ */

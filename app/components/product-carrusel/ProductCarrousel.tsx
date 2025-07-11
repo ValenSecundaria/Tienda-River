@@ -34,7 +34,7 @@ export default function ProductCarousel() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
 
-  const router = useRouter() // ✅ ¡Ahora está adentro del componente!
+  const router = useRouter() 
 
   useEffect(() => {
     async function fetchProductos() {
