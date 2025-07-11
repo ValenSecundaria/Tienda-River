@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { registerServiceWorker, subscribeUserToPush } from "@/app/lib/push" // Asegurate que la ruta sea correcta
 
 export default function NotificationPrompt() {
   const [showPrompt, setShowPrompt] = useState(false)
@@ -8,17 +9,33 @@ export default function NotificationPrompt() {
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
       if (Notification.permission === "default") {
-        // Solo mostrar si no fue aceptado ni rechazado
         setShowPrompt(true)
       }
     }
   }, [])
 
-  const handleAllow = () => {
-    Notification.requestPermission().then((permission) => {
-      console.log("Permiso de notificación:", permission)
-      setShowPrompt(false)
-    })
+  const handleAllow = async () => {
+    const permission = await Notification.requestPermission()
+    console.log("Permiso de notificación:", permission)
+
+    if (permission === "granted") {
+      try {
+        const registration = await registerServiceWorker()
+        const sub = await subscribeUserToPush(registration)
+
+        await fetch("/api/web-push/subscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subscription: sub }),
+        })
+
+        console.log("Suscripción push guardada con éxito")
+      } catch (err) {
+        console.error("Error al registrar la suscripción push", err)
+      }
+    }
+
+    setShowPrompt(false)
   }
 
   const handleDeny = () => {
@@ -62,12 +79,7 @@ export default function NotificationPrompt() {
           animation: "slideIn 0.3s ease-out",
         }}
       >
-        {/* Logo */}
-        <div
-          style={{
-            marginBottom: "1.5rem",
-          }}
-        >
+        <div style={{ marginBottom: "1.5rem" }}>
           <img
             src="/images/river-logo.png"
             alt="Tienda River Logo"
@@ -83,38 +95,19 @@ export default function NotificationPrompt() {
           />
         </div>
 
-        {/* Título */}
-        <h3
-          style={{
-            fontSize: "1.5rem",
-            fontWeight: "700",
-            color: "#1f2937",
-            marginBottom: "0.5rem",
-            lineHeight: "1.3",
-          }}
-        >
+        <h3 style={{ fontSize: "1.5rem", fontWeight: "700", color: "#1f2937", marginBottom: "0.5rem" }}>
           ¡Sumate a la banda!
         </h3>
 
-        {/* Descripción */}
-        <p
-          style={{
-            fontSize: "1rem",
-            color: "#6b7280",
-            marginBottom: "2rem",
-            lineHeight: "1.5",
-            fontWeight: "400",
-          }}
-        >
+        <p style={{ fontSize: "1rem", color: "#6b7280", marginBottom: "2rem", lineHeight: "1.5" }}>
           Recibí notificaciones sobre ofertas exclusivas, nuevos productos y promociones especiales de Tienda River.
         </p>
 
-        {/* Botones */}
         <div
           style={{
             display: "flex",
             gap: "0.75rem",
-            flexDirection: window.innerWidth < 400 ? ("column" as const) : ("row" as const),
+            flexDirection: typeof window !== "undefined" && window.innerWidth < 400 ? "column" : "row",
           }}
         >
           <button
@@ -131,16 +124,6 @@ export default function NotificationPrompt() {
               cursor: "pointer",
               transition: "all 0.2s ease",
               outline: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f9fafb"
-              e.currentTarget.style.borderColor = "#d1d5db"
-              e.currentTarget.style.color = "#374151"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent"
-              e.currentTarget.style.borderColor = "#e5e7eb"
-              e.currentTarget.style.color = "#6b7280"
             }}
           >
             Rechazar
@@ -162,20 +145,11 @@ export default function NotificationPrompt() {
               outline: "none",
               boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-1px)"
-              e.currentTarget.style.boxShadow = "0 6px 16px rgba(246, 59, 59, 0.4)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)"
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(246, 59, 59, 0.3)"
-            }}
           >
             🎉 Unirme a la banda
           </button>
         </div>
 
-        {/* Texto pequeño */}
         <p
           style={{
             fontSize: "0.75rem",
